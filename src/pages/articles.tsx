@@ -7,12 +7,14 @@ import Typewriter from "@/components/common/TypeWriter";
 
 const Articles: React.FC = () => {
   return (
-    <main className="bg-gradient-to-b from-[#D3DDFF] to-white layout pb-16">
-      <Title text="Market Blogs" className="text-center" />
-      <Typewriter
-        text="Explore the latest insights and trends in the stock market. Stay updated with expert opinions, tips, and news on various financial topics."
-        className="max-w-screen-md mx-auto text-center h-14"
-      />
+    <main className="bg-gradient-to-b from-[#D3DDFF] to-white layout space-y-6 pb-16">
+      <div>
+        <Title text="Market Blogs" className="text-center" />
+        <Typewriter
+          text="Explore the latest insights and trends in the stock market. Stay updated with expert opinions, tips, and news on various financial topics."
+          className="max-w-screen-md mx-auto text-center h-14"
+        />
+      </div>
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 layout">
         {BLOGS_DATA.map((blog) => (
           <div
