@@ -33,7 +33,7 @@ const StockDetailsPage = () => {
       href: PRODUCTS,
     },
     {
-      label: productDetails.title,
+      label: productDetails?.title ?? "",
       href: PRODUCTS_DETAIL,
     },
   ];
