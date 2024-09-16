@@ -1,0 +1,255 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+:root {
+  height: 100%;
+  font-family: "Nunito", Arial, Helvetica, sans-serif !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 10% 100%;
+    --foreground: 0 0% 15%;
+
+    --card: 0 10% 100%;
+    --card-foreground: 0 0% 15%;
+
+    --popover: 0 10% 100%;
+    --popover-foreground: 0 0% 15%;
+
+    --primary: 0 10% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 88%;
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 0 0% 85%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 240 3% 95%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+
+    --border: 0 0% 80%;
+    --input: 120 0% 80%;
+    --ring: 0 0% 65%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-lg;
+  }
+}
+.layout {
+  margin: auto;
+  padding-top: 3rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    padding-top: 4rem;
+    padding-inline: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    padding-top: 4rem;
+    padding-inline: 8rem;
+  }
+}
+
+.banner {
+  background: linear-gradient(
+    135deg,
+    #d2eaff 25%,
+    #94cafd 50%,
+    #abe6ff 75%,
+    #ffffff 100%
+  );
+  animation: gradient 10s ease infinite;
+  background-size: 400% 400%;
+}
+.banner-2 {
+  background: linear-gradient(
+    135deg,
+    #f4faff 25%,
+    #b9ddff 50%,
+    #c4edff 75%,
+    #ffffff 100%
+  );
+  animation: gradient 10s ease infinite;
+  background-size: 400% 400%;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.mask {
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 3%,
+    white 97%,
+    transparent 100%
+  );
+  mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 3%,
+    white 97%,
+    transparent 100%
+  );
+}
+.mask-xl {
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 15%,
+    white 85%,
+    transparent 100%
+  );
+  mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 15%,
+    white 85%,
+    transparent 100%
+  );
+}
+
+.swiper-pagination {
+  position: static !important;
+  margin-top: 1rem;
+}
+.custom-height-wrapper .swiper-wrapper {
+  height: 400px !important;
+}
+
+.scroller {
+  max-width: fit-content;
+  position: relative;
+  overflow: hidden;
+}
+
+.scroller__inner {
+  display: flex;
+  flex-direction: var(--flex-direction, column);
+  position: relative;
+  z-index: 1;
+}
+
+.scroller[data-animated="true"] .scroller__inner {
+  animation: scroll var(--_animation-duration, 40s)
+    var(--_animation-direction, forwards) linear infinite;
+}
+
+.scroller[data-direction="right"] {
+  --_animation-direction: reverse;
+}
+
+.scroller[data-animated="true"][data-flex-direction="row"] {
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 10%,
+    white 90%,
+    transparent 100%
+  );
+  mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    white 10%,
+    white 90%,
+    transparent 100%
+  );
+}
+
+.scroller[data-animated="true"][data-flex-direction="column"] {
+  -webkit-mask: linear-gradient(
+    180deg,
+    transparent 0%,
+    white 10%,
+    white 90%,
+    transparent 100%
+  );
+  mask: linear-gradient(
+    180deg,
+    transparent 0%,
+    white 10%,
+    white 90%,
+    transparent 100%
+  );
+}
+.scroller[data-direction="left"] {
+  --_animation-direction: forwards;
+}
+
+.scroller[data-speed="fast"] {
+  --_animation-duration: 20s;
+}
+.scroller[data-speed="medium"] {
+  --_animation-duration: 40s;
+}
+
+.scroller[data-speed="slow"] {
+  --_animation-duration: 60s;
+}
+
+.scroller[data-flex-direction="row"] {
+  --flex-direction: row;
+}
+
+.scroller[data-flex-direction="column"] {
+  --flex-direction: column;
+}
+
+@keyframes scroll {
+  to {
+    transform: var(--translate-end);
+  }
+}
+
+.scroller[data-flex-direction="row"] .scroller__inner {
+  --translate-end: translateX(calc(-50%));
+  width: max-content;
+}
+
+.scroller[data-flex-direction="column"] .scroller__inner {
+  --translate-end: translateY(calc(-50%));
+  height: max-content;
+}

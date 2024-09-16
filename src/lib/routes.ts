@@ -1,0 +1,10 @@
+export const HOME = "/";
+export const CONTACT = "/contact";
+export const PRODUCTS = "/products";
+export const ARTICLES = "/articles";
+export const ABOUT_US = "/about-us";
+export const PRIVACY_POLICY = "/privacy-policy";
+export const TERMS_AND_CONDITION = "/terms-conditions";
+export const PLAN = "/plan";
+export const PRODUCTS_DETAIL = `${PRODUCTS}/details`;
+export const ACCOMPLISHMENTS = "/accomplishment";
