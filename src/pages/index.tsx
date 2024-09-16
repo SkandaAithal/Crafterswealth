@@ -24,16 +24,18 @@ export default function Home() {
 
   return (
     <main>
-      <section className="banner h-[90dvh] py-20 px-4 w-full grid place-content-center text-center">
-        <Title text="Investment Made Easy with" />
-        <h1 className="text-3xl md:text-5xl lg:text-6xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-[#0C1B6C] via-[#2C3E98] to-[#384EC2] font-normal">
-          <span className="font-[1000]">Crafters</span>Wealth
-        </h1>
-        <div className="grid place-content-center">
-          <Typewriter
-            text="Get daily insights from our research papers on which stocks to buy and when to sell!"
-            className="font-semibold text-sm lg:text-xl h-10"
-          />
+      <section className="banner h-[90dvh] layout w-full grid place-content-center text-center">
+        <div>
+          <Title text="Investment Made Easy with" className="!text-wrap" />
+          <h1 className="text-3xl md:text-5xl lg:text-6xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-[#0C1B6C] via-[#2C3E98] to-[#384EC2] font-normal">
+            <span className="font-[1000]">Crafters</span>Wealth
+          </h1>
+          <div className="grid place-content-center">
+            <Typewriter
+              text="Get daily insights from our research papers on which stocks to buy and when to sell!"
+              className="font-semibold text-sm lg:text-xl h-10"
+            />
+          </div>
         </div>
 
         <Button
