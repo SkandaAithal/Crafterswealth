@@ -23,21 +23,6 @@ const StockDetailsPage = () => {
   const productDetails =
     STOCK_RESEARCH_CONFIG[id as keyof typeof STOCK_RESEARCH_CONFIG];
 
-  const pageRoutes = [
-    {
-      label: "Home",
-      href: HOME,
-    },
-    {
-      label: "Opportunities",
-      href: PRODUCTS,
-    },
-    {
-      label: productDetails?.title ?? "",
-      href: PRODUCTS_DETAIL,
-    },
-  ];
-
   if (!productDetails) {
     return (
       <div className="text-center min-h-[90dvh] grid place-content-center">
@@ -57,6 +42,21 @@ const StockDetailsPage = () => {
       </div>
     );
   }
+
+  const pageRoutes = [
+    {
+      label: "Home",
+      href: HOME,
+    },
+    {
+      label: "Opportunities",
+      href: PRODUCTS,
+    },
+    {
+      label: productDetails?.title ?? "",
+      href: PRODUCTS_DETAIL,
+    },
+  ];
 
   return (
     <main>
