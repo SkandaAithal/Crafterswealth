@@ -1,15 +1,15 @@
 import React, { Fragment, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Slider } from "../ui/slider";
-import { formatNumberToIndianSystem } from "@/lib/utils";
+import { formatNumberInShort } from "@/lib/utils";
 import { TimePeriod } from "@/lib/types/stocks-chart";
 import { barChartGraphData } from "@/lib/constants";
 import { Button } from "../ui/button";
 import AnimateOnce from "../common/AnimateOnce";
 
 const StocksBarChart = () => {
-  const MAX_VALUE = 1000000;
-  const [value, setValue] = useState([(MAX_VALUE / 10) * 5]);
+  const MAX_VALUE = 500000;
+  const [value, setValue] = useState([MAX_VALUE / 2]);
   const investedAmount = value[0];
   const [timePeriod, setTimePeriod] = useState<TimePeriod>(TimePeriod.OneMonth);
 
@@ -28,16 +28,16 @@ const StocksBarChart = () => {
             className={twMerge(
               "w-16 relative transition-all duration-500",
               timePeriod === TimePeriod.ThreeMonths
-                ? "h-36"
+                ? "h-32"
                 : timePeriod === TimePeriod.SixMonths
-                  ? "h-28"
-                  : "h-40"
+                  ? "h-36"
+                  : "h-28"
             )}
           >
             <div
               className={twMerge(
                 "w-full absolute text-sm font-semibold text-center transition-all duration-500",
-                gainLoss >= 0 ? "bg-green-500" : "bg-red-500"
+                gainLoss >= 0 ? "bg-green-400" : "bg-red-500"
               )}
               style={{
                 height: `${gainLossHeight}%`,
@@ -46,7 +46,7 @@ const StocksBarChart = () => {
             >
               <p className="-translate-y-6">
                 ₹
-                {formatNumberToIndianSystem(
+                {formatNumberInShort(
                   investedAmount + investedAmount * Math.abs(gainLoss)
                 )}
               </p>
@@ -59,28 +59,28 @@ const StocksBarChart = () => {
   };
 
   return (
-    <div className="py-8 px-4 relative bg-white min-w-full md:min-w-96 md:max-w-96 space-y-16 rounded-lg shadow-md">
+    <div className="py-8 px-4 relative bg-white min-w-full md:min-w-[360px] md:max-w-96 space-y-16 rounded-lg shadow-md mt-6">
       <div>
-        <h1 className="text-xl font-bold mb-6">What if you invest in us</h1>
+        <h1 className="text-xl font-bold mb-6">What if you invest with us</h1>
         <Slider
           value={value}
           onValueChange={(newValue) => setValue(newValue)}
-          min={MAX_VALUE / 10}
+          min={(MAX_VALUE * 2) / 100}
           max={MAX_VALUE}
           step={MAX_VALUE / 100}
           className="w-full"
         />
         <div className="flex justify-between font-bold text-base mt-2">
-          <p>{formatNumberToIndianSystem(investedAmount)}</p>
+          <p>{formatNumberInShort(investedAmount)}</p>
           <p className="text-xs text-gray-700">
-            {formatNumberToIndianSystem(MAX_VALUE)}
+            {formatNumberInShort(MAX_VALUE)}
           </p>
         </div>
         <div className="mt-4 text-base flex justify-between">
-          Your investment from Crafterswealth
-          <span className="text-green-500 font-bold">
+          Your investment with Crafterswealth
+          <span className="text-green-400 font-bold">
             ₹
-            {formatNumberToIndianSystem(
+            {formatNumberInShort(
               investedAmount +
                 investedAmount *
                   Math.abs(barChartGraphData[timePeriod].Crafterswealth)
@@ -89,14 +89,14 @@ const StocksBarChart = () => {
         </div>
         <div className="text-sm flex justify-between">
           <p>With absolute return in the last {timePeriod}</p>
-          <p className="text-green-500">
+          <p className="text-green-400">
             {(barChartGraphData[timePeriod].Crafterswealth * 100).toFixed(1)}%
           </p>
         </div>
       </div>
 
-      <div className="h-64 flex flex-col justify-end">
-        <div className="space-y-3">
+      <div className="h-[280px] flex flex-col justify-end">
+        <div className="space-y-4">
           <div className="flex justify-around mt-8 border-b-[1px] border-gray-300">
             {Object.keys(barChartGraphData[timePeriod]).map((key) => (
               <Fragment key={key}>
@@ -116,14 +116,21 @@ const StocksBarChart = () => {
             ))}
           </div>
 
-          <div className="flex text-sm justify-around text-center ">
-            {Object.keys(barChartGraphData).map((key) => (
+          <div className="flex text-sm text-center justify-center">
+            {Object.keys(barChartGraphData).map((key, index) => (
               <Button
                 key={key}
                 onClick={() => handleTimePeriodChange(key as TimePeriod)}
                 className={twMerge(
-                  "text-primary px-3 cursor-pointer py-1 rounded-full",
-                  key === timePeriod ? "bg-primary-blue/60" : ""
+                  "text-primary px-3 cursor-pointer py-1.5 rounded-none border-[0.1px] border-white",
+                  key === timePeriod
+                    ? "bg-primary-blue-80 hover:bg-primary-blue-80"
+                    : "",
+                  index === 0
+                    ? "rounded-l-full"
+                    : index === Object.keys(barChartGraphData).length - 1
+                      ? "rounded-r-full"
+                      : ""
                 )}
               >
                 {key}

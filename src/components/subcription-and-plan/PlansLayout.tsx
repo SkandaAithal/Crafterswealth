@@ -1,15 +1,27 @@
 import React, { useState } from "react";
-import { Switch } from "../ui/switch";
-import { PREMIUM_PLAN_DATA, STANDARD_PLAN_DATA } from "@/lib/constants";
-import { motion, AnimatePresence } from "framer-motion";
 import PlanCard from "./PlanCard";
+import { PlanPageProps } from "@/lib/types/plan";
+import { motion, AnimatePresence } from "framer-motion";
+import { Switch } from "../ui/switch";
 
-const PlansLayout = () => {
-  const [isStandard, setIsStandard] = useState(true);
+const PlansLayout: React.FC<PlanPageProps> = ({ plans, checkIfPremium }) => {
+  const plan1 = plans[0].name;
+  const plan2 = plans[1].name;
+  const [selectedPlan, setSelectedPlan] = useState(plan1);
 
   const toggleSwitch = () => {
-    setIsStandard(!isStandard);
+    setSelectedPlan((prev) => {
+      const plan = prev === plan1 ? plan2 : plan1;
+      if (checkIfPremium) {
+        checkIfPremium(plan === plan2);
+      }
+      return plan;
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const currentPlanData =
+    plans.find((plan) => plan.name === selectedPlan)?.plans || [];
 
   const transitionVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -20,42 +32,25 @@ const PlansLayout = () => {
   return (
     <div className="md:px-6">
       <div className="flex items-center gap-4 text-xl font-semibold mb-6 justify-center">
-        <h1>Standard</h1>
-        <Switch checked={!isStandard} onClick={toggleSwitch} />
-        <h1>Premium</h1>
+        <h1>{plan1}</h1>
+        <Switch checked={selectedPlan === plan2} onClick={toggleSwitch} />
+        <h1>{plan2}</h1>
       </div>
 
-      <div>
-        <AnimatePresence mode="wait">
-          {isStandard ? (
-            <motion.div
-              key="standard"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={transitionVariants}
-              className="flex flex-col md:flex-row gap-8 justify-center"
-            >
-              {STANDARD_PLAN_DATA.map((plan, index) => (
-                <PlanCard key={index} plan={plan} className="md:w-[400px]" />
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="premium"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={transitionVariants}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            >
-              {PREMIUM_PLAN_DATA.map((plan, index) => (
-                <PlanCard key={index} plan={plan} />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      <AnimatePresence>
+        <motion.div
+          className="flex flex-col md:flex-row flex-wrap gap-8 justify-center"
+          key={selectedPlan}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={transitionVariants}
+        >
+          {currentPlanData.map((plan) => (
+            <PlanCard key={plan.type} plan={plan} className="md:w-[350px]" />
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

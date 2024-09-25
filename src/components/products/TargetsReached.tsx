@@ -9,6 +9,8 @@ import AnimateOnce from "../common/AnimateOnce";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import { ACCOMPLISHMENTS } from "@/lib/routes";
+import { formatToIndianNumberingSystem } from "@/lib/utils";
+import Link from "next/link";
 
 const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
   const router = useRouter();
@@ -25,7 +27,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
           onlyTargets ? "grid-cols-1" : "md:grid-cols-[auto,auto]"
         )}
       >
-        <Scroller move="left">
+        <Scroller move="left" onHoverStop baseSpeed={6}>
           {TARGETS_REACHED_ITEMS.map((item) => {
             const percentGain = (
               ((item.sell - item.buy) / item.buy) *
@@ -33,29 +35,37 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
             ).toFixed(2);
 
             return (
-              <div
+              <Link
                 key={item.id}
-                className="p-4 w-60 rounded-xl m-4 bg-[rgba(235,244,236,0.9)] shadow-md flex flex-col justify-between"
+                href={item.pdfLink}
+                target="_blank"
+                className=" rounded-xl overflow-hidden m-4 h-56 w-60 shadow-lg"
               >
-                <h1 className="text-xl font-bold text-center mb-4">
-                  {item.stock}
-                </h1>
+                <div className="p-5 bg-[rgba(204,235,255,0.75)]  h-full flex flex-col justify-between">
+                  <h1 className="text-xl font-bold text-center mb-4">
+                    {item.stock}
+                  </h1>
 
-                <div className="flex justify-between mb-4">
-                  <div className="text-left">
-                    <p className="text-gray-700">Buy</p>
-                    <p className="text-lg font-semibold">₹{item.buy}</p>
+                  <div className="flex justify-between mb-4">
+                    <div className="text-left">
+                      <p className="text-gray-700">Buy</p>
+                      <p className="text-lg font-semibold">
+                        ₹{formatToIndianNumberingSystem(item.buy)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-gray-700">Sell</p>
+                      <p className="text-lg font-semibold">
+                        ₹{formatToIndianNumberingSystem(item.sell)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-gray-700">Sell</p>
-                    <p className="text-lg font-semibold">₹{item.sell}</p>
+
+                  <div className="flex items-center justify-center text-2xl font-bold text-green-400">
+                    <BsTriangleFill className="mr-1" size={16} />+{percentGain}%
                   </div>
                 </div>
-
-                <div className="flex items-center justify-center text-2xl font-bold text-green-600">
-                  <BsTriangleFill className="mr-1" size={16} />+{percentGain}%
-                </div>
-              </div>
+              </Link>
             );
           })}
         </Scroller>

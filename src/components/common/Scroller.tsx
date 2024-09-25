@@ -5,6 +5,7 @@ interface ScrollerProps {
   move?: "left" | "right";
   baseSpeed?: number;
   direction?: "row" | "column";
+  onHoverStop?: boolean;
 }
 
 const Scroller: React.FC<ScrollerProps> = ({
@@ -12,6 +13,7 @@ const Scroller: React.FC<ScrollerProps> = ({
   move = "left",
   baseSpeed = 4,
   direction = "row",
+  onHoverStop = false,
 }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +22,9 @@ const Scroller: React.FC<ScrollerProps> = ({
     if (scroller) {
       scroller.setAttribute("data-animated", "true");
 
-      const scrollerInner = scroller.querySelector(".scroller__inner");
+      const scrollerInner = scroller.querySelector(
+        ".scroller__inner"
+      ) as HTMLDivElement;
       if (scrollerInner) {
         const scrollerItems = scrollerInner.children;
         const itemCount = scrollerItems.length;
@@ -33,9 +37,27 @@ const Scroller: React.FC<ScrollerProps> = ({
           duplicatedItem.setAttribute("aria-hidden", "true");
           scrollerInner.appendChild(duplicatedItem);
         });
+
+        if (onHoverStop) {
+          const handleMouseEnter = () => {
+            scrollerInner.style.animationPlayState = "paused";
+          };
+
+          const handleMouseLeave = () => {
+            scrollerInner.style.animationPlayState = "running";
+          };
+
+          scroller.addEventListener("mouseenter", handleMouseEnter);
+          scroller.addEventListener("mouseleave", handleMouseLeave);
+
+          return () => {
+            scroller.removeEventListener("mouseenter", handleMouseEnter);
+            scroller.removeEventListener("mouseleave", handleMouseLeave);
+          };
+        }
       }
     }
-  }, [baseSpeed]);
+  }, [baseSpeed, onHoverStop]);
 
   return (
     <div

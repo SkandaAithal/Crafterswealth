@@ -6,8 +6,8 @@ import { FaInstagram, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <section className="text-center grid place-content-center gap-4 py-10 px-4 bg-gradient-to-b from-[#131232] to-[#092892] text-primary">
-      <Title text="Crafterwealth" className="text-primary" size="H2" />
+    <section className="text-center grid place-content-center gap-4 py-10 px-4 bg-gradient-to-b from-primary-blue-80 to-primary-blue-100 text-primary">
+      <Title text="CraftersWealth" className="text-primary" size="H2" />
       <div className="flex justify-center gap-8 flex-wrap">
         {FOOTER_ROUTES.map((routemap, idx) => (
           <Link key={idx} href={routemap.route}>

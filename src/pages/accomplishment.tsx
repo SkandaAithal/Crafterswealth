@@ -29,7 +29,7 @@ const Accomplishment = () => {
   ];
 
   return (
-    <main className="pb-16">
+    <main className="pb-16 min-h-screen">
       <section className="text-center banner-2 md:text-start  pb-16">
         <BreadCrumbsComponent routes={pageRoutes} />
         <div className="h-56 layout grid md:grid-cols-2 ">
@@ -40,7 +40,7 @@ const Accomplishment = () => {
         </div>
       </section>
       <div className="layout">
-        <TargetsReachedTable />
+        <TargetsReachedTable headerClassName="bg-primary" />
       </div>
     </main>
   );

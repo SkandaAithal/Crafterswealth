@@ -12,13 +12,13 @@ const Title: React.FC<TitleProps> = ({ size = "H1", className = "", text }) => {
     <AnimateOnce>
       {size === "H1" ? (
         <h1
-          className={`text-black text-4xl md:text-6xl text-nowrap lg:text-7xl font-bold mb-6 ${className}`}
+          className={`text-black text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${className}`}
         >
           {text}
         </h1>
       ) : (
         <h1
-          className={`text-3xl md:text-4xl lg:text-5xl mb-4 font-bold ${className}`}
+          className={`text-2xl md:text-3xl lg:text-4xl mb-4 font-bold ${className}`}
         >
           {text}
         </h1>

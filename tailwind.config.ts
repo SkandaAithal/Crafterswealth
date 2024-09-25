@@ -30,6 +30,8 @@ const config: Config = {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           blue: "#017aff",
+          "blue-80": "#2a2a8d",
+          "blue-100": "#001351",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -80,6 +82,10 @@ const config: Config = {
             height: "0",
           },
         },
+      },
+      backgroundImage: {
+        "product-bg-img": "url('/product-bg-image.png')",
+        "plan-bg-image": "url('/plan-bg-image.png')",
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

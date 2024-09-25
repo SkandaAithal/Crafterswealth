@@ -6,12 +6,7 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "../ui/dropdown-menu";
+
 import {
   Accordion,
   AccordionItem,
@@ -20,18 +15,18 @@ import {
 } from "../ui/accordion";
 import { HEADER_ROUTES } from "@/lib/constants";
 import { HOME } from "@/lib/routes";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 const Header = () => {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const closeSheet = () => {
     setIsSheetOpen(false);
-  };
-
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
   };
 
   const renderRoutes = (isMobile = false) => {
@@ -40,10 +35,10 @@ const Header = () => {
         routeMap.route === HOME
           ? router.pathname === routeMap.route
           : routeMap.subroutes
-            ? routeMap.subroutes.some((subroute) =>
-                router.pathname.startsWith(subroute.route)
+            ? routeMap.subroutes.some(
+                (subroute) => router.pathname === subroute.route
               )
-            : router.pathname.startsWith(routeMap.route);
+            : router.pathname === routeMap.route;
 
       const activeClassName = isRouteActive ? "!text-primary-blue" : "";
 
@@ -77,35 +72,39 @@ const Header = () => {
 
         return (
           <div key={routeMap.name} className="relative">
-            <DropdownMenu
-              open={isDropdownOpen}
-              onOpenChange={setIsDropdownOpen}
-            >
-              <DropdownMenuTrigger asChild>
+            <HoverCard openDelay={20}>
+              <HoverCardTrigger asChild>
                 <Button
                   variant="transparent"
-                  className={twMerge("font-semibold", activeClassName)}
+                  className={twMerge(
+                    "font-semibold flex items-center gap-1",
+                    activeClassName
+                  )}
                 >
                   {routeMap.name}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="p-2 w-52">
-                {routeMap.subroutes.map((subroute) => (
-                  <DropdownMenuItem key={subroute.name}>
-                    <Link
-                      href={subroute.route}
-                      onClick={closeDropdown}
-                      className="flex justify-between cursor-pointer w-full"
+              </HoverCardTrigger>
+              <HoverCardContent className="p-1 w-52">
+                <div>
+                  {routeMap.subroutes.map((subroute) => (
+                    <div
+                      key={subroute.name}
+                      className="p-2 rounded-md hover:bg-accent text-base"
                     >
-                      <>
-                        <p>{subroute.name}</p>
-                        <subroute.icon size={24} />
-                      </>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                      <Link
+                        href={subroute.route}
+                        className="flex justify-between cursor-pointer w-full"
+                      >
+                        <>
+                          <p>{subroute.name}</p>
+                          <subroute.icon size={24} />
+                        </>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </HoverCardContent>
+            </HoverCard>
           </div>
         );
       }
@@ -114,7 +113,7 @@ const Header = () => {
         <div
           key={routeMap.name}
           className={twMerge(
-            "relative font-semibold transition-all duration-200",
+            "relative font-semibold transition-all duration-200 text-center w-fit",
             activeClassName
           )}
         >
@@ -147,7 +146,7 @@ const Header = () => {
   return (
     <header
       id="header"
-      className="bg-background shadow-md md:pt-6 md:px-8 p-4 max-w-screen-2xl mx-auto flex justify-between items-center sticky top-0 w-full z-[20]"
+      className="bg-background shadow-md md:pt-6 md:px-8 p-4 mx-auto flex justify-between items-center sticky top-0 w-full z-[50]"
     >
       {renderLogo()}
       <nav className="hidden md:flex space-x-6">{renderRoutes()}</nav>

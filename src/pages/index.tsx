@@ -9,11 +9,8 @@ import ProductsSwiper from "@/components/products/ProductsSwiper";
 import StocksBarChart from "@/components/products/StocksBarChart";
 import TargetsReached from "@/components/products/TargetsReached";
 import { Button } from "@/components/ui/button";
-import {
-  INDIAN_STOCKS,
-  MUST_BUY_CARDS_DATA,
-  SYMBOLS_DATA,
-} from "@/lib/constants";
+import LazyImage from "@/components/ui/lazy-image";
+import { INDIAN_STOCKS, SYMBOLS_DATA } from "@/lib/constants";
 import { PRODUCTS } from "@/lib/routes";
 import { useRouter } from "next/router";
 
@@ -24,71 +21,66 @@ export default function Home() {
 
   return (
     <main>
-      <section className="banner h-[90dvh] layout w-full grid place-content-center text-center">
-        <div>
-          <Title text="Investment Made Easy with" className="!text-wrap" />
-          <h1 className="text-3xl md:text-5xl lg:text-6xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-[#0C1B6C] via-[#2C3E98] to-[#384EC2] font-normal">
-            <span className="font-[1000]">Crafters</span>Wealth
-          </h1>
-          <div className="grid place-content-center">
-            <Typewriter
-              text="Get daily insights from our research papers on which stocks to buy and when to sell!"
-              className="font-semibold text-sm lg:text-xl h-10"
+      <section className="banner min-h-[90dvh] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid md:grid-cols-2 place-content-center text-center md:text-left ">
+        <div className="flex flex-col justify-center items-start md:gap-10  ">
+          <div className="">
+            <Title
+              text="Investment Made Easy with"
+              className="!text-wrap lg:text-6xl"
             />
+            <h1 className="text-3xl md:text-5xl lg:text-6xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-[#0C1B6C] via-[#2C3E98] to-[#384EC2] font-normal">
+              <span className="font-[1000]">Crafters</span>Wealth
+            </h1>
+            <div className="grid place-content-center">
+              <Typewriter
+                text="Get daily insights from our research papers on which stocks to buy and when to sell!"
+                className="font-semibold text-sm lg:text-xl h-10"
+              />
+            </div>
+          </div>
+
+          <div className="text-center md:text-start w-full">
+            <Button
+              onClick={handleredirectToProductsPage}
+              className="w-fit mt-5 text-2xl font-bold !px-16 md:!py-3"
+            >
+              Buy Now
+            </Button>
           </div>
         </div>
-
-        <Button
-          onClick={handleredirectToProductsPage}
-          className="w-fit mx-auto mt-5 text-2xl font-bold !px-20 md:!py-4"
-        >
-          Buy Now
-        </Button>
+        <LazyImage
+          src="/hero-banner.png"
+          alt="banner-image"
+          height={300}
+          width={300}
+          isLazyLoad
+          skeletonClassName="rounded-xl w-[300px] hidden md:block m-auto h-[500px]"
+          className="w-full h-full hidden md:block"
+        />
       </section>
+
       <TradingViewTicker symbols={SYMBOLS_DATA} />
 
-      <section className="max-w-screen-xl text-center mx-auto py-20 space-y-12 ">
-        <Title text="Our Products" className="" />
-        <ProductsSwiper />
+      <section className="bg-gradient-to-b from-accent to-white pt-16 px-0 md:px-20 xl:px-[144px] text-center mx-auto space-y-12 ">
+        <Title text="Today’s Must Buy" />
+        <div className=" md:grid grid-cols-1 lg:grid-cols-3 place-content-center gap-6">
+          <div className="md:col-span-2 mask my-auto">
+            <ProductsSwiper />
+          </div>
+          <div className="flex justify-center xl:justify-end items-center px-4 md:px-0">
+            <StocksBarChart />
+          </div>
+        </div>
         <div className="grid gap-6">
           <TargetsReached />
         </div>
       </section>
-      <section className="bg-accent layout flex flex-col md:flex-row justify-center gap-14 items-center">
-        <div>
-          <AnimateOnce>
-            <Title text="Today’s Must Buy Report" size="H2" />
-            <p className="">
-              Dive into our daily research papers for a new investment
-              opportunity each day! These papers provide detailed insights into
-              which stocks to buy, at what price to buy, and when to sell,
-              maximizing your potential gains.
-            </p>
-          </AnimateOnce>
-          <AnimateOnce>
-            <div className="grid lg:grid-cols-2 gap-6 my-6 cursor-default">
-              {MUST_BUY_CARDS_DATA.map(({ text, title }) => (
-                <div
-                  className="bg-primary rounded-lg p-4 shadow-lg"
-                  key={title}
-                >
-                  <h3 className="text-black font-bold mb-4 text-xl">{title}</h3>
-                  <p>{text}</p>
-                </div>
-              ))}
-            </div>
-            <Button
-              onClick={handleredirectToProductsPage}
-              variant="ghost"
-              className="w-fit mx-auto"
-            >
-              Access Now
-            </Button>
-          </AnimateOnce>
-        </div>
-        <StocksBarChart />
-      </section>
-      <div className="bg-accent layout">
+
+      <section className="layout pb-16 space-y-20">
+        <AnimateOnce>
+          <FAQ />
+        </AnimateOnce>
+
         <Scroller>
           {INDIAN_STOCKS.map((stock) => (
             <div
@@ -99,12 +91,7 @@ export default function Home() {
             </div>
           ))}
         </Scroller>
-      </div>
 
-      <section className="bg-gradient-to-b from-accent to-white layout pb-16 space-y-10">
-        <AnimateOnce>
-          <FAQ />
-        </AnimateOnce>
         <AnimateOnce>
           <Testimonials />
         </AnimateOnce>

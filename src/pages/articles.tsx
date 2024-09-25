@@ -1,9 +1,8 @@
 import Title from "@/components/common/Title";
 import React from "react";
-import { BLOGS_DATA } from "@/lib/constants"; // Make sure the path to your data is correct
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { BLOGS_DATA } from "@/lib/constants";
 import Typewriter from "@/components/common/TypeWriter";
+import LazyImage from "@/components/ui/lazy-image";
 
 const Articles: React.FC = () => {
   return (
@@ -15,26 +14,30 @@ const Articles: React.FC = () => {
           className="max-w-screen-md mx-auto text-center h-14"
         />
       </div>
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 layout">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 layout md:pt-6">
         {BLOGS_DATA.map((blog) => (
           <div
             key={blog.id}
-            className="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-between"
+            className="bg-white rounded-lg shadow-lg flex overflow-hidden flex-col justify-between"
           >
-            <Image
+            <LazyImage
               height={200}
               width={200}
               src={blog.image}
               alt={blog.title}
-              className="w-full h-40 object-cover rounded-lg mb-4"
+              isLazyLoad
+              className="w-full h-48 object-cover"
             />
-            <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-            <p className="line-clamp-2 text-gray-600 mb-4">
-              {blog.description}
-            </p>
-            <Button variant="ghost" className="mt-auto">
-              Read More
-            </Button>
+            <div className="p-4">
+              <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
+              <p className="line-clamp-2 text-gray-600 mb-4">
+                {blog.description}
+              </p>
+              <p className="text-sm">
+                <span className="italic">posted at </span>
+                {blog.postedAt}
+              </p>
+            </div>
           </div>
         ))}
       </section>

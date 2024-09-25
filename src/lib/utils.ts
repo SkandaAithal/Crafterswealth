@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatNumberToIndianSystem(number: number) {
+export function formatNumberInShort(number: number) {
   if (number >= 10000000) {
     const croreValue = number / 10000000;
     return croreValue % 1 === 0
@@ -53,3 +53,10 @@ export const isEmpty = (object: any): boolean => {
 
   return false;
 };
+
+export function formatToIndianNumberingSystem(number: number) {
+  return new Intl.NumberFormat("en-IN").format(number);
+}
+
+export const getFirstIfArray = <T>(data: T[] | T): T =>
+  Array.isArray(data) ? data[0] : data;

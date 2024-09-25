@@ -8,3 +8,7 @@ export const TERMS_AND_CONDITION = "/terms-conditions";
 export const PLAN = "/plan";
 export const PRODUCTS_DETAIL = `${PRODUCTS}/details`;
 export const ACCOMPLISHMENTS = "/accomplishment";
+export const MY_PAPERS = `${PRODUCTS}/my-papers`;
+
+// api routes
+export const GET_STOCKS_API = "/api/stocks";
