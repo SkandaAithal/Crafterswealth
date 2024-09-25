@@ -1,12 +1,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import CryptoJS from "crypto-js";
-import yahooFinance from "yahoo-finance2";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const yahooFinance = require("yahoo-finance2").default;
 import { ENCRYPTION_KEY } from "@/lib/constants";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
     const { payload } = req.body;
     const decryptedBytes = CryptoJS.AES.decrypt(payload, ENCRYPTION_KEY);
