@@ -11,4 +11,7 @@ export const ACCOMPLISHMENTS = "/accomplishment";
 export const MY_PAPERS = `${PRODUCTS}/my-papers`;
 
 // api routes
-export const GET_STOCKS_API = "/api/stocks";
+export const GET_STOCKS_API =
+  typeof window !== "undefined"
+    ? `${window.location.origin}/api/stocks`
+    : "/api/stocks";
