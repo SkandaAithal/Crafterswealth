@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { BreadcrumbsProps } from "@/lib/types/breadcrumbs";
+import { BreadcrumbsProps } from "@/lib/types/components/breadcrumbs";
 
 const BreadCrumbsComponent: React.FC<BreadcrumbsProps> = ({ routes }) => {
   const router = useRouter();
