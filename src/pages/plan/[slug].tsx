@@ -1,24 +1,59 @@
 import Title from "@/components/common/Title";
 import Typewriter from "@/components/common/TypeWriter";
 import PlansLayout from "@/components/subcription-and-plan/PlansLayout";
-import client from "@/lib/apollo-client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useWindowWidth } from "@/lib/hooks/use-window-width";
+import { useApp } from "@/lib/provider/app-provider";
 import { GET_PRODUCT_PLANS } from "@/lib/queries/products.query";
 import { PRODUCTS } from "@/lib/routes";
-import { PlanPageProps, ProductResponse } from "@/lib/types/plan";
-import { GetServerSideProps, NextPage } from "next";
+import { Plan, ProductResponse } from "@/lib/types/common/plan";
+import { isEmpty } from "@/lib/utils";
+import { useLazyQuery } from "@apollo/client";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 
-const PlansPage: NextPage<PlanPageProps> = ({ plans }) => {
+const PlansPage = () => {
   const [isPremium, setIsPremium] = useState(false);
-  const checkIfPremium = (val: boolean) => setIsPremium(val);
+  const param = useParams();
+  const { products } = useApp();
+  const slug = param?.slug ?? "";
+  const [getPlans, { data, loading }] =
+    useLazyQuery<ProductResponse>(GET_PRODUCT_PLANS);
 
+  const plansApiData = data?.product?.plans;
+  const plansFromState =
+    products.find((product) => product.id === slug)?.plans ?? [];
+
+  const plans = isEmpty(plansFromState)
+    ? isEmpty(plansApiData)
+      ? []
+      : plansApiData
+    : plansFromState;
+
+  useEffect(() => {
+    if (slug && isEmpty(products)) {
+      getPlans({ variables: { id: param.slug } });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, products]);
+
+  const windowWidth = useWindowWidth();
+
+  let skeletonCount = 3;
+  if (windowWidth && windowWidth < 768) {
+    skeletonCount = 1;
+  } else if (windowWidth && windowWidth >= 768 && windowWidth < 1024) {
+    skeletonCount = 2;
+  }
+
+  const checkIfPremium = (val: boolean) => setIsPremium(val);
   return (
     <main
       className={twMerge(
-        "transition-colors duration-500",
+        "transition-colors duration-500 min-h-screen",
         isPremium
           ? "bg-gradient-to-b from-[#c8ecfc] to-primary"
           : "bg-gradient-to-b from-accent to-primary"
@@ -36,31 +71,22 @@ const PlansPage: NextPage<PlanPageProps> = ({ plans }) => {
       </div>
 
       <section className="layout !pt-8 pb-16">
-        <PlansLayout plans={plans} checkIfPremium={checkIfPremium} />
+        {!isEmpty(plans) && !loading ? (
+          <PlansLayout
+            loading={loading}
+            plans={plans as Plan[]}
+            checkIfPremium={checkIfPremium}
+          />
+        ) : (
+          <div className="flex justify-center mt-8 mx-auto gap-8">
+            {Array.from({ length: skeletonCount }).map((_, index) => (
+              <Skeleton key={index} className="h-[500px] w-[350px]" />
+            ))}
+          </div>
+        )}
       </section>
     </main>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug } = context.params!;
-
-  try {
-    const { data } = await client.query<ProductResponse>({
-      query: GET_PRODUCT_PLANS,
-      variables: { id: slug },
-    });
-
-    const plans = data?.product?.plans ?? [];
-
-    if (!plans.length) {
-      return { notFound: true };
-    }
-
-    return { props: { plans } };
-  } catch (error) {
-    return { notFound: true };
-  }
 };
 
 export default PlansPage;

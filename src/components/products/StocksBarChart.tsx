@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Slider } from "../ui/slider";
-import { formatNumberInShort } from "@/lib/utils";
-import { TimePeriod } from "@/lib/types/stocks-chart";
+import { TimePeriod } from "@/lib/types/components/stocks-chart";
 import { barChartGraphData } from "@/lib/constants";
 import { Button } from "../ui/button";
 import AnimateOnce from "../common/AnimateOnce";
+import { formatNumberInShort } from "@/lib/utils";
 
 const StocksBarChart = () => {
   const MAX_VALUE = 500000;

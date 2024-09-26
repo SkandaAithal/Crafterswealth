@@ -4,9 +4,9 @@ import { Autoplay } from "swiper/modules";
 import { TESTIMONIALS } from "@/lib/constants";
 import { SwiperSlide } from "swiper/react";
 import { ImQuotesLeft, ImQuotesRight } from "react-icons/im";
-import { getInitials } from "@/lib/utils";
 import Title from "../common/Title";
 import { Swiper as SwiperType } from "swiper/types";
+import { getInitials } from "@/lib/utils";
 
 const Testimonials = () => {
   const handleMouseEnter = (swiper: SwiperType) => {

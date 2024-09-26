@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { twMerge } from "tailwind-merge";
-import { PlanDetail } from "@/lib/types/plan";
+import { PlanDetail } from "@/lib/types/common/plan";
 import { FaCheck } from "react-icons/fa";
 import { formatToIndianNumberingSystem } from "@/lib/utils";
 

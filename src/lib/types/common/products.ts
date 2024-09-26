@@ -1,3 +1,5 @@
+import { Plan } from "./plan";
+
 export interface ProductCategory {
   id: string;
   name: string;
@@ -24,6 +26,7 @@ export interface ProductNode {
   productCategories: {
     nodes: ProductCategory[];
   };
+  plans: Plan[];
   stock: Stock;
   featuredImage: FeaturedImage;
 }

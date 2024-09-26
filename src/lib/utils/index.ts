@@ -5,6 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const isBrowser = (): boolean => typeof window !== "undefined";
+
 export function formatNumberInShort(number: number) {
   if (number >= 10000000) {
     const croreValue = number / 10000000;

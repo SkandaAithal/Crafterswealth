@@ -7,10 +7,10 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { FAQ_DATA } from "@/lib/constants";
-import { getFirstIfArray } from "@/lib/utils";
 import { AiFillSignal } from "react-icons/ai";
 import { SwiperSlide } from "swiper/react";
 import SwiperComponent from "../common/SwiperComponent";
+import { getFirstIfArray } from "@/lib/utils";
 
 const FAQ = () => {
   const swiperRef = useRef<any>(null);

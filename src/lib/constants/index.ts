@@ -10,10 +10,10 @@ import {
   TERMS_AND_CONDITION,
 } from "../routes";
 import { CiWallet } from "react-icons/ci";
-import { InvestmentType, TimePeriod } from "../types/stocks-chart";
+import { InvestmentType, TimePeriod } from "../types/components/stocks-chart";
 
 export const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY!;
-
+export const APP_INFO = "app-info";
 export const HEADER_ROUTES = [
   { name: "Home", route: HOME },
   { name: "Opportunity Dashboard", route: PRODUCTS },

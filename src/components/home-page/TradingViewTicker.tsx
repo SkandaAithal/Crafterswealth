@@ -1,4 +1,4 @@
-import { TradingViewTickerProps } from "@/lib/types/trading-view";
+import { TradingViewTickerProps } from "@/lib/types/components/trading-view";
 import { useEffect } from "react";
 
 const TradingViewTicker: React.FC<TradingViewTickerProps> = ({ symbols }) => {

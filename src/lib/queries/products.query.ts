@@ -19,6 +19,17 @@ export const GET_PRODUCTS = gql`
             target
             description
           }
+          plans {
+            name
+            plans {
+              benefits
+              button_text
+              description
+              period
+              price
+              type
+            }
+          }
           featuredImage {
             node {
               sourceUrl

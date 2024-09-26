@@ -7,25 +7,34 @@ import LazyImage from "@/components/ui/lazy-image";
 import { Skeleton } from "@/components/ui/skeleton";
 import client from "@/lib/apollo-client";
 import useStockData from "@/lib/hooks/use-stock-data";
+import { useApp } from "@/lib/provider/app-provider";
 import {
   GET_PRODUCT_CATEGORIES,
   GET_PRODUCTS,
 } from "@/lib/queries/products.query";
 import { PLAN, PRODUCTS_DETAIL } from "@/lib/routes";
-import { ProductsPageProps } from "@/lib/types/products";
+import { AppActionTypes } from "@/lib/types/app";
+import { ProductsPageProps } from "@/lib/types/common/products";
 import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { IoTriangle } from "react-icons/io5";
 
 const Products: NextPage<ProductsPageProps> = ({ products }) => {
   const router = useRouter();
+  const { appDispatch } = useApp();
   const SYMBOLS = useMemo(
     () => products.map((product) => product.stock.stockSymbol),
     [products]
   );
   const { stockData, loading } = useStockData(SYMBOLS);
+
+  useEffect(() => {
+    appDispatch({ type: AppActionTypes.ADD_PRODUCT, payload: products });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleBuyNowClick = (id: string) => {
     router.push(`${PLAN}/${id}`);
   };

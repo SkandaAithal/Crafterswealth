@@ -22,6 +22,7 @@ export interface ProductResponse {
 }
 
 export interface PlanPageProps {
+  loading: boolean;
   plans: Plan[];
-  checkIfPremium?: (v: boolean) => void;
+  checkIfPremium: (v: boolean) => void;
 }
