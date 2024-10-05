@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "stage.crafterswealth.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "**",
+      },
     ],
   },
   reactStrictMode: false,

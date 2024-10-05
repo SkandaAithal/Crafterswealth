@@ -6,7 +6,7 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
 import { Button } from "../ui/button";
-
+import { BiLogIn } from "react-icons/bi";
 import {
   Accordion,
   AccordionItem,
@@ -14,16 +14,36 @@ import {
   AccordionContent,
 } from "../ui/accordion";
 import { HEADER_ROUTES } from "@/lib/constants";
-import { HOME } from "@/lib/routes";
+import { HOME, LOGIN_PAGE } from "@/lib/routes";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { signOut, useSession } from "next-auth/react";
+import { getInitials } from "@/lib/utils";
+import ModalDrawer from "./ModalDrawer";
+import { SessionObject } from "@/lib/types/common/user";
+import UserProfile from "./UserProfile";
+import LazyImage from "../ui/lazy-image";
 
 const Header = () => {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const { data } = useSession();
+  const session = data as SessionObject;
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    await signOut({ redirect: false });
+    router.push(LOGIN_PAGE);
+    setIsLoggingOut(false);
+  };
 
   const closeSheet = () => {
     setIsSheetOpen(false);
@@ -72,7 +92,10 @@ const Header = () => {
 
         return (
           <div key={routeMap.name} className="relative">
-            <HoverCard openDelay={20}>
+            <HoverCard
+              openDelay={20}
+              onOpenChange={(open) => setIsHovered(open)}
+            >
               <HoverCardTrigger asChild>
                 <Button
                   variant="transparent"
@@ -82,6 +105,11 @@ const Header = () => {
                   )}
                 >
                   {routeMap.name}
+                  <MdKeyboardArrowDown
+                    className={`transform  translate-y-0.5 transition-transform duration-300 ${
+                      isHovered ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
                 </Button>
               </HoverCardTrigger>
               <HoverCardContent className="p-1 w-52">
@@ -137,21 +165,56 @@ const Header = () => {
           alt="logo"
           width={200}
           height={27}
+          className="w-40 md:w-52"
         />
-        <p className="text-base md:text-lg">We Analyse, You Profit!</p>
+        <p className="text-sm md:text-lg">We Analyse, You Profit!</p>
       </>
     </Link>
   );
 
+  const renderAvatar = () => {
+    return session?.user?.name ? (
+      <div onClick={() => setIsProfileOpen(true)}>
+        {session?.user?.image ? (
+          <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">
+            <LazyImage
+              src={session.user.image}
+              alt="User Avatar"
+              height={150}
+              width={150}
+              className="h-[50px] w-[50px] md:h-16 md:w-16 object-cover"
+            />
+          </div>
+        ) : (
+          <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary bg-primary-blue-80">
+            <p>{getInitials(session.user.name)}</p>
+          </div>
+        )}
+      </div>
+    ) : (
+      <Button
+        className=" !flex items-center justify-center gap-2 !py-2 !pr-5"
+        onClick={() => router.push(LOGIN_PAGE)}
+      >
+        <BiLogIn size={24} /> <p className="hidden md:block">Login</p>
+      </Button>
+    );
+  };
+
   return (
     <header
       id="header"
-      className="bg-background shadow-md md:pt-6 md:px-8 p-4 mx-auto flex justify-between items-center sticky top-0 w-full z-[50]"
+      className="bg-background shadow-md md:pt-6 md:px-8 p-4 mx-auto flex justify-between items-center sticky top-0 w-full z-[50] lg:h-[100px]"
     >
       {renderLogo()}
-      <nav className="hidden md:flex space-x-6">{renderRoutes()}</nav>
+      <nav className="hidden lg:flex items-center space-x-8">
+        {renderRoutes()}
+        {renderAvatar()}
+      </nav>
 
-      <section className="md:hidden">
+      <section className="lg:hidden flex justify-center items-center gap-4">
+        {renderAvatar()}
+
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
             <Button
@@ -171,6 +234,17 @@ const Header = () => {
           </SheetContent>
         </Sheet>
       </section>
+      <ModalDrawer
+        isModalOpen={isProfileOpen}
+        showModal={setIsProfileOpen}
+        modalTitle="Your profile"
+        closeBtnText="Logout"
+        modalDescription="View your purchases and account details. Logout anytime."
+        customModalElement={<UserProfile />}
+        dialogFooterClassName="w-60"
+        handleCloseModalAction={handleLogout}
+        isCloseBtnLoading={isLoggingOut}
+      />
     </header>
   );
 };

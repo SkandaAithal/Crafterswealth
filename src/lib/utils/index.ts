@@ -1,5 +1,10 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
+import { AppActionTypes, SendVerificationEmailArgs } from "../types/app";
+import client from "../apollo-client";
+import { SEND_VERIFY_EMAIL_MUTATION } from "../queries/users.query";
+import { toast } from "../hooks/use-toast";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,6 +30,13 @@ export function formatNumberInShort(number: number) {
     return number.toString();
   }
 }
+
+export const generateRandomOTP = () => {
+  const firstDigit = Math.floor(1 + Math.random() * 9);
+  const remainingDigits = Math.floor(100000 + Math.random() * 900000);
+  const otp = `${firstDigit}${remainingDigits.toString().slice(1)}`;
+  return otp;
+};
 
 export function getInitials(fullName: string): string {
   const nameParts = fullName.trim().split(/\s+/);
@@ -62,3 +74,217 @@ export function formatToIndianNumberingSystem(number: number) {
 
 export const getFirstIfArray = <T>(data: T[] | T): T =>
   Array.isArray(data) ? data[0] : data;
+
+export const signInFormSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "Invalid email address." })
+    .refine(
+      (value) =>
+        /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(value) &&
+        /.+\.[a-z]{2,}$/.test(value),
+      {
+        message:
+          "Email must be a valid email address with a proper domain and lowercase letters.",
+      }
+    )
+    .transform((val) => val.trim()),
+
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters." })
+    .refine((val) => /[a-z]/.test(val), {
+      message: "Password must contain at least one lowercase letter.",
+    })
+    .refine((val) => /[A-Z]/.test(val), {
+      message: "Password must contain at least one uppercase letter.",
+    })
+    .refine((val) => /[0-9]/.test(val), {
+      message: "Password must contain at least one number.",
+    })
+    .transform((val) => val.trim()),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "Invalid email address." })
+    .refine(
+      (value) =>
+        /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(value) &&
+        /.+\.[a-z]{2,}$/.test(value),
+      {
+        message:
+          "Email must be a valid email address with a proper domain and lowercase letters.",
+      }
+    )
+    .transform((val) => val.trim()),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters." })
+      .refine((val) => /[a-z]/.test(val), {
+        message: "Password must contain at least one lowercase letter.",
+      })
+      .refine((val) => /[A-Z]/.test(val), {
+        message: "Password must contain at least one uppercase letter.",
+      })
+      .refine((val) => /[0-9]/.test(val), {
+        message: "Password must contain at least one number.",
+      })
+      .transform((val) => val.trim()),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Confirm password must be at least 6 characters." })
+      .refine((val) => /[a-z]/.test(val), {
+        message: "Confirm password must contain at least one lowercase letter.",
+      })
+      .refine((val) => /[A-Z]/.test(val), {
+        message: "Confirm password must contain at least one uppercase letter.",
+      })
+      .refine((val) => /[0-9]/.test(val), {
+        message: "Confirm password must contain at least one number.",
+      })
+      .transform((val) => val.trim()),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match.",
+  });
+
+export const signUpFormSchema = z
+  .object({
+    firstName: z
+      .string()
+      .min(1, { message: "First name is required." })
+      .max(50, { message: "First name must be less than 50 characters." })
+      .transform((val) => val.trim()),
+
+    lastName: z
+      .string()
+      .min(1, { message: "Last name is required." })
+      .max(50, { message: "Last name must be less than 50 characters." })
+      .transform((val) => val.trim()),
+
+    phoneNumber: z
+      .string()
+      .regex(/^[6-9]\d{9}$/, {
+        message:
+          "Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.",
+      })
+      .transform((val) => Number(val)),
+
+    email: z
+      .string()
+      .email({ message: "Invalid email address." })
+      .refine(
+        (value) =>
+          /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(value) &&
+          /.+\.[a-z]{2,}$/.test(value),
+        {
+          message:
+            "Email must be a valid email address with a proper domain and lowercase letters.",
+        }
+      )
+      .transform((val) => val.trim()),
+
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters." })
+      .refine((val) => /[a-z]/.test(val), {
+        message: "Password must contain at least one lowercase letter.",
+      })
+      .refine((val) => /[A-Z]/.test(val), {
+        message: "Password must contain at least one uppercase letter.",
+      })
+      .refine((val) => /[0-9]/.test(val), {
+        message: "Password must contain at least one number.",
+      })
+      .transform((val) => val.trim()),
+
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Confirm password must be at least 6 characters." })
+      .refine((val) => /[a-z]/.test(val), {
+        message: "Confirm password must contain at least one lowercase letter.",
+      })
+      .refine((val) => /[A-Z]/.test(val), {
+        message: "Confirm password must contain at least one uppercase letter.",
+      })
+      .refine((val) => /[0-9]/.test(val), {
+        message: "Confirm password must contain at least one number.",
+      })
+      .transform((val) => val.trim()),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match.",
+  });
+
+export const handleSendVerificationEmail = async ({
+  appDispatch,
+  email,
+  expire,
+  setIsVerifyEmailLoading,
+}: SendVerificationEmailArgs) => {
+  if (Date.now() < expire) {
+    return;
+  }
+
+  const randomOtp = generateRandomOTP();
+
+  try {
+    setIsVerifyEmailLoading(true);
+    const response = await client.mutate({
+      mutation: SEND_VERIFY_EMAIL_MUTATION,
+      variables: {
+        input: {
+          body: `Your OTP is: <strong>${randomOtp}</strong>`,
+          from: "support@crafterswealth.com",
+          subject: "Verify Email",
+          to: email,
+        },
+      },
+    });
+
+    if (!response?.data?.sendEmail?.sent) {
+      toast({
+        title: "Failed to send email",
+        description:
+          "We were unable to send the verification email. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Email Sent",
+      description: `A verification email has been sent to ${email}. Please check your inbox.`,
+    });
+  } catch (error) {
+    toast({
+      title: "Error",
+      description:
+        "An error occurred while sending the verification email. Please try again later.",
+      variant: "destructive",
+    });
+    return;
+  } finally {
+    setIsVerifyEmailLoading(false);
+  }
+  const expirationTime = Date.now() + 120 * 1000;
+
+  appDispatch({
+    type: AppActionTypes.SEND_EMAIL,
+    payload: { verificationCode: randomOtp, expire: expirationTime, email },
+  });
+};
+
+export const formatTime = (timeInSeconds: number) => {
+  const minutes = Math.floor(timeInSeconds / 60);
+  const seconds = timeInSeconds % 60;
+  return `${minutes > 0 ? `${minutes}m ` : ""}${seconds}s`;
+};

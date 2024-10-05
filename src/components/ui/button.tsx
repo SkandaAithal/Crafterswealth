@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 import Loader from "./loader";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors  duration-300 disabled:pointer-events-none disabled:opacity-50 outline-none dark:border-none",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-all  duration-300 disabled:pointer-events-none disabled:opacity-50 outline-none dark:border-none",
   {
     variants: {
       variant: {
         default:
-          "bg-primary-blue text-primary hover:bg-primary-blue/60 rounded-full !h-auto",
+          "bg-primary-blue text-primary hover:bg-[#0077ff] rounded-full !h-auto btn-effect",
         destructive:
           "bg-[#ED4245] text-destructive-foreground hover:bg-[#ED4245]/90",
         outline:
@@ -62,7 +62,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(buttonVariants({ size, variant, className }), {
-          "opacity-50 pointer-events-none": disabled || loading,
+          "opacity-50 pointer-events-none ": disabled || loading,
         })}
         ref={ref}
         {...props}

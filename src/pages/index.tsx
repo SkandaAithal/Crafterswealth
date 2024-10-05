@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <main>
-      <section className="banner min-h-[90dvh] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid md:grid-cols-2 place-content-center text-center md:text-left ">
+      <section className="banner min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid md:grid-cols-2 place-content-center text-center md:text-left ">
         <div className="flex flex-col justify-center items-start md:gap-10  ">
           <div className="">
             <Title

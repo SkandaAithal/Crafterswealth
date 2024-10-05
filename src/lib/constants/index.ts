@@ -14,6 +14,7 @@ import { InvestmentType, TimePeriod } from "../types/components/stocks-chart";
 
 export const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY!;
 export const APP_INFO = "app-info";
+
 export const HEADER_ROUTES = [
   { name: "Home", route: HOME },
   { name: "Opportunity Dashboard", route: PRODUCTS },
@@ -36,6 +37,13 @@ export const FOOTER_ROUTES = [
   { name: "Terms and Conditions", route: TERMS_AND_CONDITION },
   { name: "About Us", route: ABOUT_US },
   { name: "Contact Us", route: CONTACT },
+];
+
+export const ICONS = [
+  "/icons/icon-1.png",
+  "/icons/icon-2.png",
+  "/icons/icon-3.png",
+  "/icons/icon-4.png",
 ];
 
 export const PRODUCTS_CAROUSEL_ITEMS = [

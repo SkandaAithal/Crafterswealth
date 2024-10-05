@@ -3,8 +3,14 @@ import Link from "next/link";
 import React from "react";
 import Title from "./Title";
 import { FaInstagram, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
+import { PAGES_TO_HIDE_FOOTER } from "@/lib/routes";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
+  const pathName = usePathname();
+
+  if (PAGES_TO_HIDE_FOOTER.includes(pathName)) return <></>;
+
   return (
     <section className="text-center grid place-content-center gap-4 py-10 px-4 bg-gradient-to-b from-primary-blue-80 to-primary-blue-100 text-primary">
       <Title text="CraftersWealth" className="text-primary" size="H2" />

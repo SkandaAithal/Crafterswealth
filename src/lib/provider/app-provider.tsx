@@ -1,4 +1,10 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from "react";
 import { AppContextProps } from "../types/app";
 import usePersistentReducer from "../hooks/use-persistent-reducer";
 import { appReducer, initialState } from "../utils/app";
@@ -15,9 +21,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     APP_INFO
   );
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <AppContext.Provider
-      value={{ appDispatch: dispatch, products: state.products }}
+      value={{
+        appDispatch: dispatch,
+        products: state.products,
+        verifyEmail: state.verifyEmail,
+        forgotPassword: state.forgotPassword,
+        isMounted,
+      }}
     >
       {children}
     </AppContext.Provider>

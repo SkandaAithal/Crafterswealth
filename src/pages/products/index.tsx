@@ -83,7 +83,7 @@ const Products: NextPage<ProductsPageProps> = ({ products }) => {
                           <p>Potential Left</p>
                           <div className="flex items-center justify-center gap-1 !my-5 text-4xl font-extrabold">
                             {loading ? (
-                              <Skeleton className="h-10 w-full " />
+                              <Skeleton className="h-10 w-3/5 " />
                             ) : (
                               <>
                                 <IoTriangle
