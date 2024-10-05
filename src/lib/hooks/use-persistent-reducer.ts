@@ -33,7 +33,8 @@ const usePersistentReducer = <R extends Reducer<any, any>>(
         if (!decryptedData) {
           throw new Error("Decryption failed");
         }
-        return deserialize(decryptedData);
+        const storedState = deserialize(decryptedData);
+        return { ...defaultState, ...storedState };
       } catch (error) {
         return typeof defaultState === "function"
           ? (defaultState as ReducerDefaultStateFunction<R>)()
