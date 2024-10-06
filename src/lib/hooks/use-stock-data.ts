@@ -52,12 +52,14 @@ const useStockData = (symbols: string[]) => {
     }
   };
 
+  // Market is open from 9 AM to 4 PM IST (3:30 AM - 10:30 AM UTC).
   const isMarketOpen = useMemo(() => {
     const currentTime = new Date();
     const currentHour = currentTime.getUTCHours();
     const currentMinute = currentTime.getUTCMinutes();
+    const currentDay = currentTime.getUTCDay(); // Sunday = 0, Saturday = 6
 
-    // Convert IST to UTC. IST is UTC +5:30, so 9:00 AM IST = 3:30 AM UTC, and 4:00 PM IST = 10:30 AM UTC.
+    // Convert IST to UTC: 9:00 AM IST = 3:30 AM UTC, 4:00 PM IST = 10:30 AM UTC
     const marketOpenTime = { hour: 3, minute: 30 }; // 9:00 AM IST in UTC
     const marketCloseTime = { hour: 10, minute: 30 }; // 4:00 PM IST in UTC
 
@@ -67,7 +69,11 @@ const useStockData = (symbols: string[]) => {
     const marketCloseTotalMinutes =
       marketCloseTime.hour * 60 + marketCloseTime.minute;
 
+    // Check if it's a weekend (Saturday or Sunday)
+    const isWeekend = currentDay === 0 || currentDay === 6;
+
     return (
+      !isWeekend &&
       currentTotalMinutes >= marketOpenTotalMinutes &&
       currentTotalMinutes <= marketCloseTotalMinutes
     );
@@ -92,7 +98,7 @@ const useStockData = (symbols: string[]) => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isMarketOpen, symbols]);
 
   return { stockData, loading, error };
 };
