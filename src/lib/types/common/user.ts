@@ -16,12 +16,12 @@ export interface UserDetails {
 
 export interface UserObject extends User {
   authToken: string;
-  userDetails: UserDetails;
+  userId: string;
 }
 
 export interface SessionObject extends Session {
   authToken: string;
-  userDetails: UserDetails;
+  userId: string;
 }
 
 export interface SignInFormData {
@@ -39,3 +39,32 @@ export interface SignUpFormData {
 }
 
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+export interface AuthState {
+  user: UserDetails | null;
+  isAuthLoading: boolean;
+}
+
+export enum AuthActionTypes {
+  IS_AUTH_LOADING = "IS_AUTH_LOADING",
+  SET_USER_DETAILS = "SET_USER_DETAILS",
+  CLEAR_USER_DETAILS = "CLEAR_USER_DETAILS",
+}
+
+export type AuthAction =
+  | {
+      type: AuthActionTypes.IS_AUTH_LOADING;
+      payload: boolean;
+    }
+  | {
+      type: AuthActionTypes.SET_USER_DETAILS;
+      payload: UserDetails;
+    }
+  | {
+      type: AuthActionTypes.CLEAR_USER_DETAILS;
+    };
+export interface AuthContextProps {
+  user: UserDetails | null;
+  authDispatch: React.Dispatch<AuthAction>;
+  isAuthLoading: boolean;
+}

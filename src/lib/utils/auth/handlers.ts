@@ -27,14 +27,13 @@ export const handleCredentialsSignIn = async (credentials: {
     throw new Error(response.message);
   }
 
-  const userDetails = await getUserDetails(authToken, userId);
   return {
     email: credentials?.email,
     id: userId,
     authToken,
-    name: `${userDetails.firstName} ${userDetails.lastName}`,
+    name: "",
     image: "",
-    userDetails,
+    userId,
   };
 };
 
@@ -55,11 +54,10 @@ export const handleGoogleSignIn = async (user: User) => {
   const userId = signInResult?.data?.googleSignIn?.userId;
 
   if (!authToken && !userId) return null;
-  const userDetails = await getUserDetails(authToken, userId);
 
   return {
     authToken,
-    userDetails,
+    userId,
   };
 };
 
@@ -67,6 +65,7 @@ export const getUserDetails = async (authToken: string, userId: string) => {
   const { data: userDetailsResult } = await client.query({
     query: USER_DETAILS_QUERY,
     variables: { id: userId },
+    fetchPolicy: "cache-first",
     context: {
       headers: {
         Authorization: `Bearer ${authToken}`,

@@ -3,15 +3,17 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import LazyImage from "../ui/lazy-image";
 import { SessionObject } from "@/lib/types/common/user";
+import { useAuth } from "@/lib/provider/auth-provider";
 
 const UserProfile = () => {
   const { data } = useSession();
   const session = data as SessionObject;
+  const { user } = useAuth();
   const [animatedPurchases, setAnimatedPurchases] = useState(0);
   const [animatedInvested, setAnimatedInvested] = useState(0);
 
-  const totalPurchases = session?.userDetails?.bought?.length || 0;
-  const totalInvested = session?.userDetails?.productsInvested?.length || 0;
+  const totalPurchases = user?.bought?.length || 0;
+  const totalInvested = user?.productsInvested?.length || 0;
 
   const animateValue = (
     start: number,
@@ -38,8 +40,8 @@ const UserProfile = () => {
 
   return (
     <div className="space-y-2 mb-6">
-      {session?.user?.name && (
-        <div>
+      {session && user && (
+        <>
           {session?.user?.image ? (
             <div className="h-24 w-24 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">
               <LazyImage
@@ -52,19 +54,23 @@ const UserProfile = () => {
             </div>
           ) : (
             <div className="h-24 w-24 text-3xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary bg-primary-blue-80">
-              <p>{getInitials(session.user.name)}</p>
+              <p>{getInitials(`${user.firstName} ${user.lastName}`)}</p>
             </div>
           )}
-        </div>
+          <div>
+            <h1 className="font-semibold">{`${user.firstName} ${user.lastName}`}</h1>
+            <p className="text-base text-slate-500">{user.email}</p>
+          </div>
+          <div className="mb-6 flex justify-center items-center gap-10">
+            <p className="text-2xl font-semibold">
+              Purchases: {animatedPurchases}
+            </p>
+            <p className="text-2xl font-semibold">
+              Invested: {animatedInvested}
+            </p>
+          </div>
+        </>
       )}
-      <div>
-        <h1 className="font-semibold">{session?.user?.name}</h1>
-        <p className="text-base text-slate-500">{session?.user?.email}</p>
-      </div>
-      <div className="mb-6 flex justify-center items-center gap-10">
-        <p className="text-2xl font-semibold">Purchases: {animatedPurchases}</p>
-        <p className="text-2xl font-semibold">Invested: {animatedInvested}</p>
-      </div>
     </div>
   );
 };

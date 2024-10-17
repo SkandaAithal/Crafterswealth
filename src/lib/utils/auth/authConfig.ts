@@ -2,11 +2,7 @@ import { NextAuthOptions, Session, User, Account } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
-import {
-  SessionObject,
-  UserDetails,
-  UserObject,
-} from "@/lib/types/common/user";
+import { SessionObject, UserObject } from "@/lib/types/common/user";
 import { handleGoogleSignIn, handleCredentialsSignIn } from "./handlers";
 
 export const authConfig: NextAuthOptions = {
@@ -36,25 +32,24 @@ export const authConfig: NextAuthOptions = {
         const googleSignInData = await handleGoogleSignIn(user);
         if (googleSignInData) {
           (user as UserObject).authToken = googleSignInData.authToken;
-          (user as UserObject).userDetails = googleSignInData.userDetails;
+          (user as UserObject).userId = googleSignInData.userId;
           return true;
         }
         return false;
       }
-
       return account?.provider === "credentials";
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {
       (session as SessionObject).authToken = token.authToken as string;
-      (session as SessionObject).userDetails = token.userDetails as UserDetails;
+      (session as SessionObject).userId = token.userId as string;
       return session;
     },
 
     async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
         token.authToken = (user as UserObject).authToken;
-        token.userDetails = (user as UserObject).userDetails;
+        token.userId = (user as UserObject).userId;
       }
       return token;
     },

@@ -9,6 +9,7 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/toaster";
 import VerifyEmail from "@/components/auth/VerifyEmail";
 import ProtectedRoute from "@/lib/provider/protected-route";
+import { AuthProvider } from "@/lib/provider/auth-provider";
 
 export default function App({
   Component,
@@ -17,15 +18,17 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <ApolloProvider client={client}>
-        <AppProvider>
-          <Header />
-          <ProtectedRoute>
-            <Component {...pageProps} />
-            <Footer />
-          </ProtectedRoute>
-          <VerifyEmail />
-          <Toaster />
-        </AppProvider>
+        <AuthProvider>
+          <AppProvider>
+            <Header />
+            <ProtectedRoute>
+              <Component {...pageProps} />
+              <Footer />
+            </ProtectedRoute>
+            <VerifyEmail />
+            <Toaster />
+          </AppProvider>
+        </AuthProvider>
       </ApolloProvider>
     </SessionProvider>
   );

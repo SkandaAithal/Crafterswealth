@@ -24,9 +24,11 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import { getInitials } from "@/lib/utils";
 import ModalDrawer from "./ModalDrawer";
-import { SessionObject } from "@/lib/types/common/user";
+import { AuthActionTypes, SessionObject } from "@/lib/types/common/user";
 import UserProfile from "./UserProfile";
 import LazyImage from "../ui/lazy-image";
+import { useAuth } from "@/lib/provider/auth-provider";
+import { TbLoader3 } from "react-icons/tb";
 
 const Header = () => {
   const router = useRouter();
@@ -35,12 +37,15 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const { data } = useSession();
+  const { data, status } = useSession();
   const session = data as SessionObject;
+  const { user, isAuthLoading, authDispatch } = useAuth();
+  const isLoading = status === "loading" || isAuthLoading;
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     await signOut({ redirect: false });
+    authDispatch({ type: AuthActionTypes.CLEAR_USER_DETAILS });
     router.push(LOGIN_PAGE);
     setIsLoggingOut(false);
   };
@@ -173,31 +178,37 @@ const Header = () => {
   );
 
   const renderAvatar = () => {
-    return session?.user?.name ? (
-      <div onClick={() => setIsProfileOpen(true)}>
-        {session?.user?.image ? (
-          <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">
-            <LazyImage
-              src={session.user.image}
-              alt="User Avatar"
-              height={150}
-              width={150}
-              className="h-[50px] w-[50px] md:h-16 md:w-16 object-cover"
-            />
+    return (
+      <div className="md:min-w-[100px]">
+        {isLoading ? (
+          <TbLoader3 size={40} className="animate-spin mx-auto" />
+        ) : session && user ? (
+          <div onClick={() => setIsProfileOpen(true)}>
+            {session?.user?.image ? (
+              <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">
+                <LazyImage
+                  src={session.user.image}
+                  alt="User Avatar"
+                  height={150}
+                  width={150}
+                  className="h-[50px] w-[50px] md:h-16 md:w-16 object-cover"
+                />
+              </div>
+            ) : (
+              <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary bg-primary-blue-80">
+                <p>{getInitials(`${user.firstName} ${user.lastName}`)}</p>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary bg-primary-blue-80">
-            <p>{getInitials(session.user.name)}</p>
-          </div>
+          <Button
+            className="!flex items-center justify-center gap-2 !py-2 !pr-5"
+            onClick={() => router.push(LOGIN_PAGE)}
+          >
+            <BiLogIn size={24} /> <p className="hidden md:block">Login</p>
+          </Button>
         )}
       </div>
-    ) : (
-      <Button
-        className=" !flex items-center justify-center gap-2 !py-2 !pr-5"
-        onClick={() => router.push(LOGIN_PAGE)}
-      >
-        <BiLogIn size={24} /> <p className="hidden md:block">Login</p>
-      </Button>
     );
   };
 
