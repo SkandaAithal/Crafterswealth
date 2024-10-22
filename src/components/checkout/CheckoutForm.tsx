@@ -80,7 +80,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     setLoadingStates(true);
     try {
       const response = await fetch(
-        `http://api.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=${GEO_NAMES_USER_NAME}`
+        `https://secure.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=${GEO_NAMES_USER_NAME}`
       );
       const data = await response.json();
       const fetchedStates = data.geonames.map((state: any) => ({
@@ -126,7 +126,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     setLoadingCities(true);
     try {
       const response = await fetch(
-        `http://api.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=${GEO_NAMES_USER_NAME}`
+        `https://secure.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=${GEO_NAMES_USER_NAME}`
       );
       const data = await response.json();
       const fetchedCities = data.geonames.map((city: any) => ({
