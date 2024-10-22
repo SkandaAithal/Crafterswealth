@@ -56,7 +56,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
   const handleAddToCart = async () => {
     setIsLoading(true);
     const session = await getSession();
-    if (!session || !user) {
+    if (!session || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

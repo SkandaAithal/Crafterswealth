@@ -42,15 +42,15 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-      phoneNumber: user?.phoneNumber || "",
-      address: user?.address || "",
-      city: user?.city || "",
-      state: user?.state || "",
-      country: user?.country || "",
-      postcode: user?.postcode || "",
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email || "",
+      phoneNumber: user.phoneNumber || "",
+      address: user.address || "",
+      city: user.city || "",
+      state: user.state || "",
+      country: user.country || "",
+      postcode: user.postcode || "",
     },
   });
 
@@ -101,9 +101,9 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   };
 
   useEffect(() => {
-    if (user?.country) {
+    if (user.country) {
       const geoNameId = countries.find(
-        (c) => c.code === user?.country
+        (c) => c.code === user.country
       )?.geoNameId;
 
       if (geoNameId) {
@@ -111,16 +111,16 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.country]);
+  }, [user.country]);
 
   useEffect(() => {
-    if (user?.state) {
+    if (user.state) {
       const selectedState = states.find((state) => state.value === user.state);
       if (selectedState) {
         fetchCities(selectedState.geoNameId);
       }
     }
-  }, [states, user?.state]);
+  }, [states, user.state]);
 
   const fetchCities = async (geoNameId: number) => {
     setLoadingCities(true);

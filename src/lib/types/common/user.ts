@@ -49,7 +49,7 @@ export interface SignUpFormData {
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export interface AuthState {
-  user: UserDetails | null;
+  user: UserDetails;
   isAuthLoading: boolean;
 }
 
@@ -72,7 +72,7 @@ export type AuthAction =
       type: AuthActionTypes.CLEAR_USER_DETAILS;
     };
 export interface AuthContextProps {
-  user: UserDetails | null;
+  user: UserDetails;
   authDispatch: React.Dispatch<AuthAction>;
   setRedirectTrigger: React.Dispatch<boolean>;
   isAuthLoading: boolean;

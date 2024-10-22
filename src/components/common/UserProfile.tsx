@@ -12,8 +12,8 @@ const UserProfile = () => {
   const [animatedPurchases, setAnimatedPurchases] = useState(0);
   const [animatedInvested, setAnimatedInvested] = useState(0);
 
-  const totalPurchases = user?.bought?.length || 0;
-  const totalInvested = user?.productsInvested?.length || 0;
+  const totalPurchases = user.bought.length || 0;
+  const totalInvested = user.productsInvested.length || 0;
 
   const animateValue = (
     start: number,

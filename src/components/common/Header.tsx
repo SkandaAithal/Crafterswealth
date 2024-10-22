@@ -184,7 +184,7 @@ const Header = () => {
       <div className="w-full lg:w-auto lg:min-w-[120px] flex gap-6 justify-end lg:justify-center items-center">
         {isLoading ? (
           <TbLoader3 size={40} className="animate-spin" />
-        ) : session && user ? (
+        ) : session && user.id ? (
           <>
             <Link href={CART}>
               <div className="relative">

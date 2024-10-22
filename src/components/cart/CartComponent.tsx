@@ -26,7 +26,7 @@ import { useRouter } from "next/router";
 const CartComponent = () => {
   const router = useRouter();
   const { user, authDispatch, redirectTrigger, setRedirectTrigger } = useAuth();
-  const cartArray = user?.cart as Cart[];
+  const cartArray = user.cart as Cart[];
   const { products } = useApp();
   const [loadingIndexes, setLoadingIndexes] = useState<number[]>([]);
 
@@ -70,7 +70,7 @@ const CartComponent = () => {
 
   const handleDeleteCart = async (index: number) => {
     const session = await getSession();
-    if (!session || !user) {
+    if (!session || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

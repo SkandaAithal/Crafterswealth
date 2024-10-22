@@ -4,7 +4,7 @@ import PageLoader from "../ui/page-loader";
 
 const AuthWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
-  if (!user) return <PageLoader />;
+  if (!user.id) return <PageLoader />;
 
   return <>{children}</>;
 };

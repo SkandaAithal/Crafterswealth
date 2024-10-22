@@ -4,8 +4,27 @@ import {
   AuthState,
 } from "@/lib/types/common/user";
 
+export const initialUser = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  isEmailVerified: false,
+  bought: [],
+  productsInvested: [],
+  productsViewed: [],
+  roles: { nodes: [] },
+  id: "",
+  cart: [],
+  phoneNumber: "",
+  city: "",
+  country: "",
+  address: "",
+  postcode: "",
+  state: "",
+};
+
 export const userInitialState: AuthState = {
-  user: null,
+  user: initialUser,
   isAuthLoading: false,
 };
 
@@ -28,7 +47,7 @@ export const authReducer = (
     case AuthActionTypes.CLEAR_USER_DETAILS:
       return {
         ...state,
-        user: null,
+        user: initialUser,
       };
     default:
       return state;
