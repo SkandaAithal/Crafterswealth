@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       }
     };
 
-    if (session && !state.user.id) {
+    if (session) {
       fetchUserDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
