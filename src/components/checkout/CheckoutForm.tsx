@@ -90,11 +90,9 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       }));
       setStates(fetchedStates);
     } catch (error) {
-      console.error(error);
-
       toast({
         title: "Couldn't get the states",
-        description: error.message,
+        description: (error as Error).message as string,
         variant: "destructive",
       });
     } finally {
