@@ -20,7 +20,7 @@ import {
   CheckoutFormData,
 } from "@/lib/types/common/checkout";
 import Select from "react-select";
-import { customDropDownStyles } from "@/lib/constants";
+import { customDropDownStyles, GEO_NAMES_USER_NAME } from "@/lib/constants";
 import { TbLoader3 } from "react-icons/tb";
 import { toast } from "@/lib/hooks/use-toast";
 import { useMutation } from "@apollo/client";
@@ -80,7 +80,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     setLoadingStates(true);
     try {
       const response = await fetch(
-        `http://api.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=skandaaithal`
+        `http://api.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=${GEO_NAMES_USER_NAME}`
       );
       const data = await response.json();
       const fetchedStates = data.geonames.map((state: any) => ({
@@ -126,7 +126,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     setLoadingCities(true);
     try {
       const response = await fetch(
-        `http://api.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=skandaaithal`
+        `http://api.geonames.org/childrenJSON?geonameId=${geoNameId.toString()}&username=${GEO_NAMES_USER_NAME}`
       );
       const data = await response.json();
       const fetchedCities = data.geonames.map((city: any) => ({
