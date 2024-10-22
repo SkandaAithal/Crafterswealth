@@ -316,7 +316,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                       styles={customDropDownStyles}
                       isSearchable
                       noOptionsMessage={() => (
-                        <NoOptionsMessage message="No options found." />
+                        <NoOptionsMessage message="No States found." />
                       )}
                     />
                   </FormControl>
@@ -357,7 +357,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                       styles={customDropDownStyles}
                       isSearchable
                       noOptionsMessage={() => (
-                        <NoOptionsMessage message="No options found." />
+                        <NoOptionsMessage message="No Cities found." />
                       )}
                     />
                   </FormControl>

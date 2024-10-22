@@ -13,7 +13,7 @@ import { CiWallet } from "react-icons/ci";
 import { InvestmentType, TimePeriod } from "../types/components/stocks-chart";
 
 export const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY!;
-export const GEO_NAMES_USER_NAME = process.env.NEXT_PUBLIC_GEO_NAME_USER_NAME!;
+export const GEO_NAMES_USER_NAME = "skandaaithal";
 export const APP_INFO = "app-info";
 export const USER_INFO = "user-info";
 
