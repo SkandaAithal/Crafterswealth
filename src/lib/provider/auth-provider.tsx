@@ -1,4 +1,10 @@
-import React, { createContext, useContext, ReactNode, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import usePersistentReducer from "../hooks/use-persistent-reducer";
 import {
   AuthActionTypes,
@@ -22,6 +28,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     userInitialState,
     USER_INFO
   );
+  const [redirectTrigger, setRedirectTrigger] = useState<boolean>(false);
 
   const { data } = useSession();
   const session = data as SessionObject;
@@ -61,6 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       value={{
         authDispatch: dispatch,
         ...state,
+        setRedirectTrigger,
+        redirectTrigger,
       }}
     >
       {children}

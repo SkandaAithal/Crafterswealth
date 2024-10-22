@@ -24,6 +24,7 @@ export const SIGN_IN_WITH_EMAIL_AND_PASSWORD_MUTATION = gql`
 export const USER_DETAILS_QUERY = gql`
   query userDetails($id: ID!) {
     user(id: $id) {
+      id
       firstName
       email
       isEmailVerified
@@ -31,13 +32,23 @@ export const USER_DETAILS_QUERY = gql`
       lastName
       productsInvested
       productsViewed
+      cart
+      phoneNumber
+      subscribedPlans {
+        period
+        productCategory
+      }
       roles {
         nodes {
           displayName
           name
         }
       }
-      id
+      city
+      country
+      address
+      postcode
+      state
     }
   }
 `;
@@ -59,14 +70,22 @@ export const SEND_VERIFY_EMAIL_MUTATION = gql`
   }
 `;
 
-export const UPDATE_USER_EMAIL_VERIFIED_OR_PASSWORD = gql`
-  mutation UpdateUserEmailVerifiedOrPassword(
-    $input: UpdateUserEmailVerifiedOrPasswordInput!
-  ) {
-    updateUserEmailVerifiedOrPassword(input: $input) {
+export const UPDATE_USER_META = gql`
+  mutation UpdateUserMeta($input: UpdateUserMetaInput!) {
+    updateUserMeta(input: $input) {
       message
       statusCode
       userId
+      data
+    }
+  }
+`;
+
+export const UPDATE_USER_CHECKOUT_DETAILS = gql`
+  mutation UpdateUserCheckoutDetails($input: UpdateUserCheckoutDetailsInput!) {
+    updateUserCheckoutDetails(input: $input) {
+      message
+      success
     }
   }
 `;

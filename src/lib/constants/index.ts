@@ -869,3 +869,47 @@ export const PAPERS = [
     target: 8800.0,
   },
 ];
+
+export const customDropDownStyles = {
+  control: (provided: any) => ({
+    ...provided,
+    border: "1px solid #ccc",
+    boxShadow: "none",
+    padding: "3px",
+    "&:hover": {
+      border: "1px solid #ccc",
+    },
+    marginBottom: "0",
+    borderRadius: "0.375rem",
+    fontSize: "14px",
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    zIndex: 9999,
+    marginTop: "0",
+  }),
+  option: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: state.isFocused ? "#f0f0f0" : "#fff",
+    color: "#333",
+    padding: "10px",
+    fontSize: "14px",
+  }),
+  dropdownIndicator: (provided: any) => ({
+    ...provided,
+    padding: "5px",
+  }),
+  indicatorSeparator: () => ({
+    display: "none",
+  }),
+  placeholder: (provided: any) => ({
+    ...provided,
+    color: "#7a7a7a",
+    fontSize: "14px",
+    fontWeight: "normal",
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    fontSize: "14px",
+  }),
+};

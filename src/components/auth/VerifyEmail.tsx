@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { toast } from "@/lib/hooks/use-toast";
 import { formatTime, handleSendVerificationEmail } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
-import { UPDATE_USER_EMAIL_VERIFIED_OR_PASSWORD } from "@/lib/queries/users.query";
+import { UPDATE_USER_META } from "@/lib/queries/users.query";
 import { verifyEmailInitialState } from "@/lib/utils/app";
 import { useRouter } from "next/router";
 import { LOGIN_PAGE } from "@/lib/routes";
@@ -30,40 +30,37 @@ const VerifyEmail: React.FC = () => {
   const [isVerifyEmailLoading, setIsVerifyEmailLoading] = useState(false);
   const [remainingTime, setRemainingTime] = useState<number>(0);
 
-  const [updateEmailVerified, { loading }] = useMutation(
-    UPDATE_USER_EMAIL_VERIFIED_OR_PASSWORD,
-    {
-      onCompleted: (data) => {
-        const status = data?.updateUserEmailVerifiedOrPassword?.statusCode;
-        const message = data?.updateUserEmailVerifiedOrPassword?.message;
+  const [updateEmailVerified, { loading }] = useMutation(UPDATE_USER_META, {
+    onCompleted: (data) => {
+      const status = data?.updateUserMeta?.statusCode;
+      const message = data?.updateUserMeta?.message;
 
-        if (status === 200) {
-          toast({
-            title: "Verification successful",
-            description: message,
-          });
-          appDispatch({
-            type: AppActionTypes.SET_TO_DEFAULT,
-            payload: verifyEmailInitialState,
-          });
-          router.push(loginUrl);
-        } else {
-          toast({
-            title: "Error",
-            description: message,
-            variant: "destructive",
-          });
-        }
-      },
-      onError: () => {
+      if (status === 200) {
+        toast({
+          title: "Verification successful",
+          description: message,
+        });
+        appDispatch({
+          type: AppActionTypes.SET_TO_DEFAULT,
+          payload: verifyEmailInitialState,
+        });
+        router.push(loginUrl);
+      } else {
         toast({
           title: "Error",
-          description: "Failed to update email verification status",
+          description: message,
           variant: "destructive",
         });
-      },
-    }
-  );
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update email verification status",
+        variant: "destructive",
+      });
+    },
+  });
 
   useEffect(() => {
     if (isModalOpen) setOtp("");

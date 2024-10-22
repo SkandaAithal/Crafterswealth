@@ -3,8 +3,11 @@ export interface PlanDetail {
   button_text: string;
   description: string;
   period: string;
-  price: number;
+  most_popular: boolean;
   type: string;
+  regular_price: number;
+  sale_price: number;
+  access: string[];
 }
 
 export interface Plan {

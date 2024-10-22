@@ -26,8 +26,11 @@ export const GET_PRODUCTS = gql`
               button_text
               description
               period
-              price
+              most_popular
+              regular_price
+              sale_price
               type
+              access
             }
           }
           featuredImage {
@@ -62,8 +65,11 @@ export const GET_PRODUCT_PLANS = gql`
           button_text
           description
           period
-          price
+          most_popular
+          regular_price
+          sale_price
           type
+          access
         }
       }
     }

@@ -12,6 +12,8 @@ export const MY_PAPERS = `${PRODUCTS}/my-papers`;
 export const LOGIN_PAGE = "/login";
 export const SINGN_UP_PAGE = "/signup";
 export const FORGOT_PASSWORD_PAGE = "/forgot-password";
+export const CART = "/cart";
+export const CHECKOUT = "/checkout";
 export const PAGES_TO_HIDE_FOOTER = [
   LOGIN_PAGE,
   SINGN_UP_PAGE,
@@ -22,4 +24,4 @@ export const PAGES_TO_HIDE_FOOTER = [
 export const GET_STOCKS_API = "/api/stocks";
 
 //protected routes
-export const PROTECTED_ROUTES = [MY_PAPERS, PLAN];
+export const PROTECTED_ROUTES = [MY_PAPERS, PLAN, CART, CHECKOUT];

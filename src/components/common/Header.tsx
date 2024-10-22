@@ -2,7 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "../ui/sheet";
-import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -14,7 +14,7 @@ import {
   AccordionContent,
 } from "../ui/accordion";
 import { HEADER_ROUTES } from "@/lib/constants";
-import { HOME, LOGIN_PAGE } from "@/lib/routes";
+import { CART, HOME, LOGIN_PAGE } from "@/lib/routes";
 import {
   HoverCard,
   HoverCardContent,
@@ -29,7 +29,7 @@ import UserProfile from "./UserProfile";
 import LazyImage from "../ui/lazy-image";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { TbLoader3 } from "react-icons/tb";
-
+import { RiShoppingCartLine } from "react-icons/ri";
 const Header = () => {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -162,44 +162,57 @@ const Header = () => {
     });
   };
 
-  const renderLogo = () => (
-    <Link href={HOME}>
-      <>
-        <Image
-          src="/crafterswealth-logo.png"
-          alt="logo"
-          width={200}
-          height={27}
-          className="w-40 md:w-52"
-        />
-        <p className="text-sm md:text-lg">We Analyse, You Profit!</p>
-      </>
-    </Link>
+  const renderLogo = (hideInMobile = false) => (
+    <div className={twMerge(hideInMobile ? "hidden lg:block" : "")}>
+      <Link href={HOME}>
+        <>
+          <Image
+            src="/crafterswealth-logo.png"
+            alt="logo"
+            width={200}
+            height={27}
+            className="w-40 md:w-52"
+          />
+          <p className="text-sm md:text-lg">We Analyse, You Profit!</p>
+        </>
+      </Link>
+    </div>
   );
 
   const renderAvatar = () => {
     return (
-      <div className="md:min-w-[100px]">
+      <div className="w-full lg:w-auto lg:min-w-[120px] flex gap-6 justify-end lg:justify-center items-center">
         {isLoading ? (
-          <TbLoader3 size={40} className="animate-spin mx-auto" />
+          <TbLoader3 size={40} className="animate-spin" />
         ) : session && user ? (
-          <div onClick={() => setIsProfileOpen(true)}>
-            {session?.user?.image ? (
-              <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">
-                <LazyImage
-                  src={session.user.image}
-                  alt="User Avatar"
-                  height={150}
-                  width={150}
-                  className="h-[50px] w-[50px] md:h-16 md:w-16 object-cover"
-                />
+          <>
+            <Link href={CART}>
+              <div className="relative">
+                <RiShoppingCartLine size={26} />
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {user.cart.length}
+                </span>
               </div>
-            ) : (
-              <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary bg-primary-blue-80">
-                <p>{getInitials(`${user.firstName} ${user.lastName}`)}</p>
-              </div>
-            )}
-          </div>
+            </Link>
+
+            <div onClick={() => setIsProfileOpen(true)}>
+              {session?.user?.image ? (
+                <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">
+                  <LazyImage
+                    src={session.user.image}
+                    alt="User Avatar"
+                    height={150}
+                    width={150}
+                    className="h-[50px] w-[50px] md:h-16 md:w-16 object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="h-[50px] w-[50px] md:h-16 md:w-16 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary bg-primary-blue-80">
+                  <p>{getInitials(`${user.firstName} ${user.lastName}`)}</p>
+                </div>
+              )}
+            </div>
+          </>
         ) : (
           <Button
             className="!flex items-center justify-center gap-2 !py-2 !pr-5"
@@ -217,15 +230,13 @@ const Header = () => {
       id="header"
       className="bg-background shadow-md md:pt-6 md:px-8 p-4 mx-auto flex justify-between items-center sticky top-0 w-full z-[50] lg:h-[100px]"
     >
-      {renderLogo()}
+      {renderLogo(true)}
       <nav className="hidden lg:flex items-center space-x-8">
         {renderRoutes()}
         {renderAvatar()}
       </nav>
 
-      <section className="lg:hidden flex justify-center items-center gap-4">
-        {renderAvatar()}
-
+      <section className="lg:hidden w-full flex justify-center items-center gap-4">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
             <Button
@@ -233,7 +244,7 @@ const Header = () => {
               variant="transparent"
               onClick={() => setIsSheetOpen(true)}
             >
-              <HiOutlineMenuAlt3 size={24} />
+              <HiOutlineMenuAlt2 size={26} />
             </Button>
           </SheetTrigger>
 
@@ -244,6 +255,7 @@ const Header = () => {
             </Accordion>
           </SheetContent>
         </Sheet>
+        {renderAvatar()}
       </section>
       <ModalDrawer
         isModalOpen={isProfileOpen}

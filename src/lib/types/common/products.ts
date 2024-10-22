@@ -40,3 +40,16 @@ export interface ProductsData {
 export interface ProductsPageProps {
   products: ProductNode[];
 }
+
+export interface Cart {
+  productId: string;
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  period: string;
+  access: string[];
+  regularPlanPrice: number;
+  description: string;
+  plan: string;
+}

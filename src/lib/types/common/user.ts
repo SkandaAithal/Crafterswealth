@@ -1,17 +1,25 @@
 import { forgotPasswordSchema } from "@/lib/utils";
 import { Session, User } from "next-auth";
 import { z } from "zod";
+import { Cart } from "./products";
 
 export interface UserDetails {
   firstName: string;
   email: string;
   isEmailVerified: boolean;
-  bought: number[];
+  bought: string[];
   lastName: string;
-  productsInvested: number[];
-  productsViewed: number[];
+  productsInvested: string[];
+  productsViewed: string[];
   roles: { nodes: { displayName: string; name: string }[] };
   id: string;
+  cart: Cart[];
+  phoneNumber: string;
+  city: string;
+  country: string;
+  address: string;
+  postcode: string;
+  state: string;
 }
 
 export interface UserObject extends User {
@@ -66,5 +74,7 @@ export type AuthAction =
 export interface AuthContextProps {
   user: UserDetails | null;
   authDispatch: React.Dispatch<AuthAction>;
+  setRedirectTrigger: React.Dispatch<boolean>;
   isAuthLoading: boolean;
+  redirectTrigger: boolean;
 }

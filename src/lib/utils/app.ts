@@ -22,7 +22,7 @@ export const initialState: AppState = {
 export const appReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {
     case AppActionTypes.ADD_PRODUCT:
-      return { ...state, products: [...state.products, ...action.payload] };
+      return { ...state, products: action.payload };
 
     case AppActionTypes.TOGGLE_VERIFY_EMAIL_MODAL:
       return {

@@ -22,7 +22,7 @@ import {
 import { useMutation } from "@apollo/client";
 import {
   SEND_VERIFY_EMAIL_MUTATION,
-  UPDATE_USER_EMAIL_VERIFIED_OR_PASSWORD,
+  UPDATE_USER_META,
 } from "@/lib/queries/users.query";
 import { useApp } from "@/lib/provider/app-provider";
 import { AppActionTypes } from "@/lib/types/app";
@@ -71,55 +71,52 @@ const ForgotPassword = () => {
     return () => clearInterval(interval);
   }, [expire]);
 
-  const [updateEmailVerified, { loading }] = useMutation(
-    UPDATE_USER_EMAIL_VERIFIED_OR_PASSWORD,
-    {
-      onCompleted: async (data) => {
-        const status = data?.updateUserEmailVerifiedOrPassword?.statusCode;
-        const message = data?.updateUserEmailVerifiedOrPassword?.message;
+  const [updateEmailVerified, { loading }] = useMutation(UPDATE_USER_META, {
+    onCompleted: async (data) => {
+      const status = data?.updateUserMeta?.statusCode;
+      const message = data?.updateUserMeta?.message;
 
-        if (status === 200) {
-          toast({
-            title: "User Verification successful",
-            description: message,
-          });
-        } else if (status === 202) {
-          await handleSendEmailForForgotPasswordOTP(form.getValues("email"));
-          appDispatch({
-            type: AppActionTypes.FORGOT_PASSWORD_STEP_1,
-            payload: form.getValues("email"),
-          });
-        } else if (status === 205) {
-          appDispatch({
-            type: AppActionTypes.FORGOT_PASSWORD_STEP_3,
-          });
-          toast({
-            title: message,
-            description: "Please login with new credentials",
-          });
-        } else if (status === 404) {
-          toast({
-            title: "User not found!",
-            description: message,
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: message,
-            variant: "destructive",
-          });
-        }
-      },
-      onError: () => {
+      if (status === 200) {
         toast({
-          title: "Opps! Something went wrong",
-          description: "Please try again",
+          title: "User Verification successful",
+          description: message,
+        });
+      } else if (status === 202) {
+        await handleSendEmailForForgotPasswordOTP(form.getValues("email"));
+        appDispatch({
+          type: AppActionTypes.FORGOT_PASSWORD_STEP_1,
+          payload: form.getValues("email"),
+        });
+      } else if (status === 205) {
+        appDispatch({
+          type: AppActionTypes.FORGOT_PASSWORD_STEP_3,
+        });
+        toast({
+          title: message,
+          description: "Please login with new credentials",
+        });
+      } else if (status === 404) {
+        toast({
+          title: "User not found!",
+          description: message,
           variant: "destructive",
         });
-      },
-    }
-  );
+      } else {
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        });
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Oops! Something went wrong",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleOtpChange = (value: string) => {
     setOtp(value);

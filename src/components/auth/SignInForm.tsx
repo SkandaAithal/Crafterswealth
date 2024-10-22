@@ -127,7 +127,7 @@ function SignInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSignInWithCredentials)}
-          className="space-y-2 w-[340px]"
+          className="space-y-4 w-[340px]"
         >
           <FormField
             control={form.control}

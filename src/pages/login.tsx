@@ -7,8 +7,15 @@ import { getServerSession } from "next-auth";
 import { GetServerSideProps } from "next";
 import { authConfig } from "@/lib/utils/auth/authConfig";
 import { HOME } from "@/lib/routes";
+import { useSession } from "next-auth/react";
+import PageLoader from "@/components/ui/page-loader";
 
 const Login = () => {
+  const { status } = useSession();
+  if (status === "authenticated") {
+    return <PageLoader />;
+  }
+
   return (
     <main className="lg:grid flex flex-col gap-6 lg:gap-0 lg:grid-cols-2 min-h-[calc(100vh-100px)]">
       <AuthBanner />

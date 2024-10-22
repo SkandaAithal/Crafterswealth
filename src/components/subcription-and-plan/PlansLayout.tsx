@@ -31,7 +31,7 @@ const PlansLayout: React.FC<PlanPageProps> = ({ plans, checkIfPremium }) => {
 
   return (
     <div className="md:px-6">
-      <div className="flex items-center gap-4 text-xl font-semibold mb-6 justify-center">
+      <div className="flex items-center gap-4 text-xl font-semibold mb-10 justify-center">
         <h1>{plan1}</h1>
         <Switch checked={selectedPlan === plan2} onClick={toggleSwitch} />
         <h1>{plan2}</h1>

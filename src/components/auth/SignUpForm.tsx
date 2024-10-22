@@ -21,6 +21,7 @@ import { CREATE_USER_SIGNUP } from "@/lib/queries/users.query";
 import { toast } from "@/lib/hooks/use-toast";
 import { useApp } from "@/lib/provider/app-provider";
 import { AppActionTypes } from "@/lib/types/app";
+import { twMerge } from "tailwind-merge";
 
 function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -119,7 +120,7 @@ function SignUpForm() {
   return (
     <>
       <Form {...form}>
-        <form className="space-y-2" onSubmit={form.handleSubmit(handleSignUp)}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(handleSignUp)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -130,7 +131,12 @@ function SignUpForm() {
                   <FormControl>
                     <Input
                       placeholder="First Name"
-                      className="md:w-60"
+                      className={twMerge(
+                        "md:w-60",
+                        form.formState.errors.firstName
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
                       {...field}
                     />
                   </FormControl>
@@ -149,7 +155,12 @@ function SignUpForm() {
                   <FormControl>
                     <Input
                       placeholder="Last Name"
-                      className="md:w-60"
+                      className={twMerge(
+                        "md:w-60",
+                        form.formState.errors.lastName
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
                       {...field}
                     />
                   </FormControl>
@@ -172,7 +183,12 @@ function SignUpForm() {
                     type="number"
                     placeholder="Phone Number"
                     {...field}
-                    className="w-[340px]"
+                    className={twMerge(
+                      "w-[340px]",
+                      form.formState.errors.phoneNumber
+                        ? "border-2 border-destructive"
+                        : ""
+                    )}
                     onWheel={(e) => e.preventDefault()}
                   />
                 </FormControl>
@@ -191,7 +207,12 @@ function SignUpForm() {
                 <FormControl>
                   <Input
                     placeholder="Your email"
-                    className="w-[340px]"
+                    className={twMerge(
+                      "w-[340px]",
+                      form.formState.errors.email
+                        ? "border-2 border-destructive"
+                        : ""
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -213,6 +234,12 @@ function SignUpForm() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
+                      className={twMerge(
+                        "w-[340px]",
+                        form.formState.errors.password
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
                       {...field}
                     />
                     <div
@@ -245,6 +272,12 @@ function SignUpForm() {
                     <Input
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Confirm Password"
+                      className={twMerge(
+                        "w-[340px]",
+                        form.formState.errors.confirmPassword
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
                       {...field}
                     />
                     <div

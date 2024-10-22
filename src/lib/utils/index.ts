@@ -175,7 +175,10 @@ export const signUpFormSchema = z
         message:
           "Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.",
       })
-      .transform((val) => Number(val)),
+      .transform((val) => Number(val))
+      .refine((val) => val > 0, {
+        message: "Phone number cannot be negative",
+      }),
 
     email: z
       .string()
@@ -223,6 +226,21 @@ export const signUpFormSchema = z
     path: ["confirmPassword"],
     message: "Passwords do not match.",
   });
+
+export const checkoutFormSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z.string().regex(/^[6-9]\d{9}$/, {
+    message:
+      "Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.",
+  }),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  country: z.string().min(1, "Country is required"),
+  postcode: z.string().min(1, "Postcode is required"),
+});
 
 export const handleSendVerificationEmail = async ({
   appDispatch,
@@ -287,4 +305,46 @@ export const formatTime = (timeInSeconds: number) => {
   const minutes = Math.floor(timeInSeconds / 60);
   const seconds = timeInSeconds % 60;
   return `${minutes > 0 ? `${minutes}m ` : ""}${seconds}s`;
+};
+
+export function decodeNumericId(encodedId: string): string {
+  const decodedId = atob(encodedId);
+  return decodedId.split(":")[1];
+}
+
+export function convertToDaysOrHours(input: string): string {
+  const upperInput = input.toUpperCase();
+  const timeUnit = upperInput.slice(-1);
+  const value = parseInt(upperInput.slice(0, -1));
+
+  if (isNaN(value)) {
+    return "0";
+  }
+
+  switch (timeUnit) {
+    case "M":
+      return `${value * 30} days`;
+    case "Y":
+      return `${value * 365} days`;
+    case "D":
+      return `${value} days`;
+    case "H":
+      return `${value} hours`;
+    default:
+      return "0";
+  }
+}
+
+export const hasChanges = <T extends object>(
+  original: T,
+  updated: T
+): boolean => {
+  for (const key in original) {
+    if (Object.prototype.hasOwnProperty.call(original, key)) {
+      if (key in updated && original[key] !== updated[key]) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
