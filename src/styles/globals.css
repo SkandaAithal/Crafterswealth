@@ -386,5 +386,40 @@ body,
     inset 3px 3px 5px rgba(0, 0, 0, 0.096),
     inset -3px -3px 10px rgba(21, 21, 21, 0.179),
     0 2px 16px rgba(0, 0, 0, 0.107);
-  transform: scale(0.92);
+  transform: scale(0.95);
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.key {
+  font-size: 16px;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+@keyframes pressDown {
+  30%,
+  40%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(10px);
+  }
+}
+
+.key {
+  animation: pressDown 2s infinite;
+}
+
+.key:nth-child(odd) {
+  animation-duration: 2s;
+}
+.key:nth-child(even) {
+  animation-duration: 3s;
 }

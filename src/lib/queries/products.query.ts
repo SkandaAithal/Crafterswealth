@@ -75,3 +75,26 @@ export const GET_PRODUCT_PLANS = gql`
     }
   }
 `;
+
+export const CREATE_ORDER_MUTATION = gql`
+  mutation CreateOrder($input: CreateOrderInput!) {
+    createOrder(input: $input) {
+      orderId
+      order {
+        total(format: RAW)
+        orderNumber
+        status
+      }
+    }
+  }
+`;
+
+export const UPDATE_ORDER_MUTATION = gql`
+  mutation UpdateOrder($input: UpdateOrderInput!) {
+    updateOrder(input: $input) {
+      order {
+        status
+      }
+    }
+  }
+`;

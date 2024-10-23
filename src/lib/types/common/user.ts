@@ -3,6 +3,13 @@ import { Session, User } from "next-auth";
 import { z } from "zod";
 import { Cart } from "./products";
 
+export interface Subscription {
+  plan: string;
+  price: number;
+  access: string[];
+  purchasedOn: string;
+  period: Date;
+}
 export interface UserDetails {
   firstName: string;
   email: string;
@@ -20,6 +27,7 @@ export interface UserDetails {
   address: string;
   postcode: string;
   state: string;
+  subscription: Subscription[];
 }
 
 export interface UserObject extends User {
@@ -50,20 +58,14 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export interface AuthState {
   user: UserDetails;
-  isAuthLoading: boolean;
 }
 
 export enum AuthActionTypes {
-  IS_AUTH_LOADING = "IS_AUTH_LOADING",
   SET_USER_DETAILS = "SET_USER_DETAILS",
   CLEAR_USER_DETAILS = "CLEAR_USER_DETAILS",
 }
 
 export type AuthAction =
-  | {
-      type: AuthActionTypes.IS_AUTH_LOADING;
-      payload: boolean;
-    }
   | {
       type: AuthActionTypes.SET_USER_DETAILS;
       payload: UserDetails;

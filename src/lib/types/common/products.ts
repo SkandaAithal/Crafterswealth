@@ -42,7 +42,7 @@ export interface ProductsPageProps {
 }
 
 export interface Cart {
-  productId: string;
+  productId: number;
   id: string;
   name: string;
   category: string;

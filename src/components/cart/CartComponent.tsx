@@ -109,7 +109,7 @@ const CartComponent = () => {
           </div>
         </Link>
       </div>
-      <section className="grid grid-cols-1 xl:grid-cols-3 layout !py-10 gap-y-10 xl:gap-10">
+      <section className="grid grid-cols-1 xl:grid-cols-3 layout !pt-10 gap-y-10 xl:gap-10 pb-40">
         <div className="flex flex-col col-span-2 justify-start gap-6 cursor-default">
           {cartArray?.map((cart, index) => {
             const isBundlePlan = !!cart.access.length;
@@ -140,8 +140,8 @@ const CartComponent = () => {
                   >
                     <div className="relative w-60 h-20 flex justify-center items-center">
                       {accessArray.map((item, index) => {
-                        const offset =
-                          (index - Math.floor(accessArray.length / 2)) * 50;
+                        const middleIndex = (accessArray.length - 1) / 2;
+                        const offset = (index - middleIndex) * 50;
 
                         return (
                           <div
@@ -175,7 +175,7 @@ const CartComponent = () => {
                       <div className="flex gap-6 justify-center">
                         <div className="flex flex-col justify-start items-center gap-2 text-center h-full">
                           <h3 className="font-bold text-lg">Period</h3>
-                          <p className="text-lg flex font-bold whitespace-nowrap">
+                          <p className="text-lg min-w-28 font-bold whitespace-nowrap">
                             {cart.period}
                             {cart.period !== "0" ? (
                               <p>&nbsp;({convertToDaysOrHours(cart.period)})</p>
@@ -186,7 +186,7 @@ const CartComponent = () => {
                         </div>
                         <div className="flex flex-col justify-start items-center gap-2 text-center h-full">
                           <h3 className="font-bold text-lg">Price</h3>
-                          <div className="grid">
+                          <div className="grid  min-w-20">
                             <p className="text-lg font-bold">₹{cart.price}</p>
                             <span className="line-through text-gray-400 text-sm">
                               ₹{cart.regularPlanPrice}
@@ -231,7 +231,7 @@ const CartComponent = () => {
         alt="empty cart"
         className="w-60 h-60 md:w-80 md:h-80 mx-auto"
       />
-      <div className="">
+      <div>
         <h1 className="font-bold text-3xl">Your Cart is empty!</h1>
         <p>Looks like you haven&apos;t made your choice yet..</p>
       </div>

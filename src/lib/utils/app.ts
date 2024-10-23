@@ -13,10 +13,16 @@ export const forgotPasswordInitialState = {
   step3: { completed: false },
 };
 
+export const paymentInitialState = {
+  orderId: 0,
+  transactionId: "",
+};
+
 export const initialState: AppState = {
   products: [],
   verifyEmail: verifyEmailInitialState,
   forgotPassword: forgotPasswordInitialState,
+  payment: paymentInitialState,
 };
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
@@ -109,6 +115,18 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
       return {
         ...state,
         forgotPassword: forgotPasswordInitialState,
+      };
+
+    case AppActionTypes.INITIATE_PAYMENT:
+      return {
+        ...state,
+        payment: action.payload,
+      };
+
+    case AppActionTypes.CLEAR_PAYMENT:
+      return {
+        ...state,
+        payment: paymentInitialState,
       };
     default:
       return state;

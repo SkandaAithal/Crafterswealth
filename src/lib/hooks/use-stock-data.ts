@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import CryptoJS from "crypto-js";
 import { ENCRYPTION_KEY } from "../constants";
 import { GET_STOCKS_API } from "../routes";
+import axios from "axios";
 
 interface StockData {
   symbol: string;
@@ -22,19 +23,19 @@ const useStockData = (symbols: string[]) => {
         ENCRYPTION_KEY
       ).toString();
 
-      const response = await fetch(GET_STOCKS_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await axios.post(
+        GET_STOCKS_API,
+        {
+          payload: encryptedPayload,
         },
-        body: JSON.stringify({ payload: encryptedPayload }),
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch stock data");
-      }
-
-      const { data: encryptedResponse } = await response.json();
+      const { data: encryptedResponse } = response.data;
 
       const decryptedBytes = CryptoJS.AES.decrypt(
         encryptedResponse,

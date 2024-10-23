@@ -2,9 +2,10 @@ import {
   AuthAction,
   AuthActionTypes,
   AuthState,
+  UserDetails,
 } from "@/lib/types/common/user";
 
-export const initialUser = {
+export const initialUser: UserDetails = {
   firstName: "",
   lastName: "",
   email: "",
@@ -21,11 +22,11 @@ export const initialUser = {
   address: "",
   postcode: "",
   state: "",
+  subscription: [],
 };
 
 export const userInitialState: AuthState = {
   user: initialUser,
-  isAuthLoading: false,
 };
 
 export const authReducer = (
@@ -33,12 +34,6 @@ export const authReducer = (
   action: AuthAction
 ): AuthState => {
   switch (action.type) {
-    case AuthActionTypes.IS_AUTH_LOADING:
-      return {
-        ...state,
-        isAuthLoading: action.payload,
-      };
-
     case AuthActionTypes.SET_USER_DETAILS:
       return {
         ...state,

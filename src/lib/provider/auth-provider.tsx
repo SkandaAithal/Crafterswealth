@@ -29,13 +29,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     USER_INFO
   );
   const [redirectTrigger, setRedirectTrigger] = useState<boolean>(false);
-
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const { data } = useSession();
   const session = data as SessionObject;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      dispatch({ type: AuthActionTypes.IS_AUTH_LOADING, payload: true });
       try {
         const userDetails: UserDetails = await getUserDetails(
           session.authToken,
@@ -53,7 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           variant: "destructive",
         });
       } finally {
-        dispatch({ type: AuthActionTypes.IS_AUTH_LOADING, payload: false });
+        setIsAuthLoading(false);
       }
     };
 
@@ -70,6 +69,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         ...state,
         setRedirectTrigger,
         redirectTrigger,
+        isAuthLoading,
       }}
     >
       {children}

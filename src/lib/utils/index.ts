@@ -5,6 +5,7 @@ import { AppActionTypes, SendVerificationEmailArgs } from "../types/app";
 import client from "../apollo-client";
 import { SEND_VERIFY_EMAIL_MUTATION } from "../queries/users.query";
 import { toast } from "../hooks/use-toast";
+import { Cart } from "../types/common/products";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -307,9 +308,9 @@ export const formatTime = (timeInSeconds: number) => {
   return `${minutes > 0 ? `${minutes}m ` : ""}${seconds}s`;
 };
 
-export function decodeNumericId(encodedId: string): string {
+export function decodeNumericId(encodedId: string): number {
   const decodedId = atob(encodedId);
-  return decodedId.split(":")[1];
+  return Number(decodedId.split(":")[1]);
 }
 
 export function convertToDaysOrHours(input: string): string {
@@ -347,4 +348,71 @@ export const hasChanges = <T extends object>(
     }
   }
   return false;
+};
+
+export const calculateSubtotal = (cartArray: Cart[]): number => {
+  return cartArray.reduce((total: number, item: Cart) => total + item.price, 0);
+};
+
+export const calculateTax = (
+  subtotal: number,
+  state: string
+): { sgst: number; cgst: number; igst: number } => {
+  let sgst = 0,
+    cgst = 0,
+    igst = 0;
+
+  const taxRate = 0.18;
+  if (state === "Karnataka") {
+    const totalTax = subtotal * taxRate;
+    sgst = totalTax / 2;
+    cgst = totalTax / 2;
+  } else {
+    igst = subtotal * taxRate;
+  }
+
+  return { sgst, cgst, igst };
+};
+
+export const calculateTotal = (
+  subtotal: number,
+  sgst: number,
+  cgst: number,
+  igst: number
+): number => {
+  return Math.round(subtotal + sgst + cgst + igst);
+};
+
+export const getCurrentDate = (): string => {
+  const date = new Date();
+  const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(date);
+  const month = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
+    date
+  );
+  const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
+    date
+  );
+  return `${day} ${month} ${year}`;
+};
+
+export const addDurationToDate = (duration: string): Date => {
+  const value = parseInt(duration.slice(0, -1), 10);
+  const unit = duration.slice(-1).toUpperCase();
+
+  const now = new Date();
+
+  switch (unit) {
+    case "D":
+      return new Date(now.setDate(now.getDate() + value));
+    case "W":
+      return new Date(now.setDate(now.getDate() + value * 7));
+    case "M":
+      return new Date(now.setMonth(now.getMonth() + value));
+    case "Y":
+      return new Date(now.setFullYear(now.getFullYear() + value));
+    case "H":
+      return new Date(now.setHours(now.getHours() + value));
+    default:
+      throw new Error("Invalid duration format");
+  }
 };

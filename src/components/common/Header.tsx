@@ -14,7 +14,7 @@ import {
   AccordionContent,
 } from "../ui/accordion";
 import { HEADER_ROUTES } from "@/lib/constants";
-import { CART, HOME, LOGIN_PAGE } from "@/lib/routes";
+import { CART, HOME, LOGIN_PAGE, PAGES_TO_HIDE_HEADER } from "@/lib/routes";
 import {
   HoverCard,
   HoverCardContent,
@@ -30,8 +30,10 @@ import LazyImage from "../ui/lazy-image";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { TbLoader3 } from "react-icons/tb";
 import { RiShoppingCartLine } from "react-icons/ri";
+import { usePathname } from "next/navigation";
 const Header = () => {
   const router = useRouter();
+  const pathName = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -224,6 +226,8 @@ const Header = () => {
       </div>
     );
   };
+
+  if (PAGES_TO_HIDE_HEADER.includes(pathName)) return <></>;
 
   return (
     <header

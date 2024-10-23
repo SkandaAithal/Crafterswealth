@@ -35,6 +35,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         verifyEmail: state.verifyEmail,
         forgotPassword: state.forgotPassword,
         isMounted,
+        payment: state.payment,
       }}
     >
       {children}

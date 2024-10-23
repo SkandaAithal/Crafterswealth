@@ -34,10 +34,7 @@ export const USER_DETAILS_QUERY = gql`
       productsViewed
       cart
       phoneNumber
-      subscribedPlans {
-        period
-        productCategory
-      }
+      subscription
       roles {
         nodes {
           displayName

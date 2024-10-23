@@ -6,42 +6,37 @@ import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { useRouter } from "next/router";
 import { CHECKOUT } from "@/lib/routes";
+import { calculateSubtotal, calculateTax, calculateTotal } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
 
-const OrderSummary = ({ isCheckout = false }: { isCheckout?: boolean }) => {
+const OrderSummary = ({
+  isCheckout = false,
+  stateProp = "",
+}: {
+  isCheckout?: boolean;
+  stateProp?: string;
+}) => {
   const router = useRouter();
   const { user } = useAuth();
-  const { cart } = user as UserDetails;
+  const { cart, state } = user as UserDetails;
 
-  const calculateSubtotal = (): number => {
-    return cart.reduce((total: number, item: Cart) => total + item.price, 0);
-  };
-
-  const calculateTax = (subtotal: number): { sgst: number; cgst: number } => {
-    const taxRate = 0.18;
-    const totalTax = subtotal * taxRate;
-    const sgst = totalTax / 2;
-    const cgst = totalTax / 2;
-    return { sgst, cgst };
-  };
-
-  const calculateTotal = (
-    subtotal: number,
-    sgst: number,
-    cgst: number
-  ): number => {
-    return Math.round(subtotal + sgst + cgst);
-  };
-
+  const stateArg = stateProp ? stateProp : state;
   const handleBtnClick = () => {
     router.push(CHECKOUT);
   };
-  const subtotal: number = calculateSubtotal();
-  const { sgst, cgst } = calculateTax(subtotal);
-  const total: number = calculateTotal(subtotal, sgst, cgst);
-  const roundOff: number = total - (subtotal + sgst + cgst);
+
+  const subtotal: number = calculateSubtotal(cart);
+  const { sgst, cgst, igst } = calculateTax(subtotal, stateArg);
+  const total: number = calculateTotal(subtotal, sgst, cgst, igst);
+  const roundOff: number = total - (subtotal + sgst + cgst + igst);
 
   return (
-    <div className="p-5 border rounded-md w-full h-fit">
+    <div
+      className={twMerge(
+        isCheckout ? "" : "border rounded-md p-5 ",
+        "w-full h-fit"
+      )}
+    >
       <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
       <div className="flex justify-between mb-2 text-lg">
         <span className="font-bold">Product</span>
@@ -60,18 +55,31 @@ const OrderSummary = ({ isCheckout = false }: { isCheckout?: boolean }) => {
           <span className="font-semibold">Subtotal</span>
           <span>₹{subtotal.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="font-semibold">SGST</span>
-          <span>₹{sgst.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold">CGST</span>
-          <span>₹{cgst.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold">Round Off</span>
-          <span>₹{roundOff.toFixed(2)}</span>
-        </div>
+        {stateArg === "Karnataka" ? (
+          <>
+            <div className="flex justify-between">
+              <span className="font-semibold">SGST</span>
+              <span>₹{sgst.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">CGST</span>
+              <span>₹{cgst.toFixed(2)}</span>
+            </div>
+          </>
+        ) : (
+          <div className="flex justify-between">
+            <span className="font-semibold">IGST</span>
+            <span>₹{igst.toFixed(2)}</span>
+          </div>
+        )}
+        {roundOff ? (
+          <div className="flex justify-between">
+            <span className="font-semibold">Round Off</span>
+            <span>₹{roundOff.toFixed(2)}</span>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
 
       <Separator className="!h-[0.5px]" />
@@ -86,9 +94,7 @@ const OrderSummary = ({ isCheckout = false }: { isCheckout?: boolean }) => {
             Checkout Now
           </Button>
         </div>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   );
 };

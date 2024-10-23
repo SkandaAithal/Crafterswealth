@@ -6,6 +6,7 @@ export interface AppContextProps {
   verifyEmail: VerifyEmail;
   isMounted: boolean;
   forgotPassword: ForgotPasswordContext;
+  payment: PaymentContext;
 }
 
 export interface VerifyEmail {
@@ -29,10 +30,16 @@ export interface ForgotPasswordContext {
   step2: Step2;
   step3: Omit<Step1, "email">;
 }
+
+export interface PaymentContext {
+  orderId: number;
+  transactionId: string;
+}
 export interface AppState {
   products: ProductNode[];
   verifyEmail: VerifyEmail;
   forgotPassword: ForgotPasswordContext;
+  payment: PaymentContext;
 }
 export enum AppActionTypes {
   ADD_PRODUCT = "ADD_PRODUCT",
@@ -45,6 +52,8 @@ export enum AppActionTypes {
   FORGOT_PASSWORD_STEP_2_COMPLETE = "FORGOT_PASSWORD_STEP_2_COMPLETE",
   FORGOT_PASSWORD_STEP_3 = "FORGOT_PASSWORD_STEP_3",
   SET_FORGOT_PASSWORD_DEFAULT = "SET_FORGOT_PASSWORD_DEFAULT",
+  INITIATE_PAYMENT = "INITIATE_PAYMENT",
+  CLEAR_PAYMENT = "CLEAR_PAYMENT",
 }
 export type AppAction =
   | {
@@ -83,6 +92,13 @@ export type AppAction =
   | {
       type: AppActionTypes.ADD_PRODUCT;
       payload: ProductNode[];
+    }
+  | {
+      type: AppActionTypes.INITIATE_PAYMENT;
+      payload: PaymentContext;
+    }
+  | {
+      type: AppActionTypes.CLEAR_PAYMENT;
     };
 
 export interface SendVerificationEmailArgs {
