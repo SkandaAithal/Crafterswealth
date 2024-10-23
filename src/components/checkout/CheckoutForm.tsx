@@ -139,7 +139,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
         });
       }
 
-      const transactId = "Tr-" + uuidv4().toString().slice(-6);
+      const transactId = "Tr-" + uuidv4().toString().slice(-3);
 
       const inputPayload = {
         customerId: decodeNumericId(user.id),
