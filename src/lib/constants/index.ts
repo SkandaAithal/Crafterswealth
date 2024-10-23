@@ -16,7 +16,6 @@ export const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY!;
 export const GEO_NAMES_USER_NAME = process.env.NEXT_PUBLIC_GEO_NAME_USER_NAME!;
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
 export const APP_INFO = "app-info";
-export const USER_INFO = "user-info";
 
 export const HEADER_ROUTES = [
   { name: "Home", route: HOME },

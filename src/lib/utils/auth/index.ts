@@ -4,6 +4,7 @@ import {
   AuthState,
   UserDetails,
 } from "@/lib/types/common/user";
+import { produce } from "immer";
 
 export const initialUser: UserDetails = {
   firstName: "",
@@ -22,7 +23,7 @@ export const initialUser: UserDetails = {
   address: "",
   postcode: "",
   state: "",
-  subscription: [],
+  subscription: {},
 };
 
 export const userInitialState: AuthState = {
@@ -33,18 +34,16 @@ export const authReducer = (
   state: AuthState,
   action: AuthAction
 ): AuthState => {
-  switch (action.type) {
-    case AuthActionTypes.SET_USER_DETAILS:
-      return {
-        ...state,
-        user: action.payload,
-      };
-    case AuthActionTypes.CLEAR_USER_DETAILS:
-      return {
-        ...state,
-        user: initialUser,
-      };
-    default:
-      return state;
-  }
+  return produce(state, (draft: { user: UserDetails }) => {
+    switch (action.type) {
+      case AuthActionTypes.SET_USER_DETAILS:
+        draft.user = action.payload;
+        break;
+      case AuthActionTypes.CLEAR_USER_DETAILS:
+        draft.user = initialUser;
+        break;
+      default:
+        return state;
+    }
+  });
 };

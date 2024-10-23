@@ -47,6 +47,7 @@ import { getSession } from "next-auth/react";
 import client from "@/lib/apollo-client";
 import { CREATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { AppActionTypes } from "@/lib/types/app";
+import { produce } from "immer";
 
 const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const router = useRouter();
@@ -112,6 +113,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   }, [user.cart, products]);
 
   const handleSubmit = async (data: CheckoutFormData) => {
+    if (!user.cart.length) return;
     const session = await getSession();
     if (!session || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
@@ -133,9 +135,18 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
             },
           },
         });
+        const updatedUser = produce(user, (draft) => {
+          draft.address = data.address;
+          draft.city = data.city;
+          draft.country = data.country;
+          draft.phoneNumber = data.phoneNumber;
+          draft.postcode = data.postcode;
+          draft.state = data.state;
+        });
+
         authDispatch({
           type: AuthActionTypes.SET_USER_DETAILS,
-          payload: { ...user, ...data } as UserDetails,
+          payload: updatedUser,
         });
       }
 

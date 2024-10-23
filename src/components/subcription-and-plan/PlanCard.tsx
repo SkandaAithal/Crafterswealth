@@ -9,16 +9,13 @@ import { useParams } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { getSession } from "next-auth/react";
-import {
-  AuthActionTypes,
-  SessionObject,
-  UserDetails,
-} from "@/lib/types/common/user";
+import { AuthActionTypes, SessionObject } from "@/lib/types/common/user";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
 import { Cart } from "@/lib/types/common/products";
 import { toast } from "@/lib/hooks/use-toast";
 import { useRouter } from "next/router";
 import { CART } from "@/lib/routes";
+import { produce } from "immer";
 
 interface PlanCardProps {
   plan: PlanDetail | null;
@@ -36,9 +33,13 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
   const [updateUserMeta, { loading }] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
       const cartData = data?.updateUserMeta?.data;
+      const updatedUser = produce(user, (draft) => {
+        draft.cart = cartData;
+      });
+
       authDispatch({
         type: AuthActionTypes.SET_USER_DETAILS,
-        payload: { ...user, cart: cartData } as UserDetails,
+        payload: updatedUser,
       });
       router.push(CART);
     },
@@ -53,7 +54,9 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
 
   const product = products.find((p) => p.id === slug);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
     setIsLoading(true);
     const session = await getSession();
     if (!session || !user.id) {

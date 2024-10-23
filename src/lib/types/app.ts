@@ -70,7 +70,6 @@ export type AppAction =
     }
   | {
       type: AppActionTypes.SET_TO_DEFAULT;
-      payload: VerifyEmail;
     }
   | {
       type: AppActionTypes.FORGOT_PASSWORD_STEP_1;

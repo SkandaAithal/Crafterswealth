@@ -3,13 +3,7 @@ import { Session, User } from "next-auth";
 import { z } from "zod";
 import { Cart } from "./products";
 
-export interface Subscription {
-  plan: string;
-  price: number;
-  access: string[];
-  purchasedOn: string;
-  period: Date;
-}
+export type Subscription = Record<string, { plan: string; period: string }>;
 export interface UserDetails {
   firstName: string;
   email: string;
@@ -27,7 +21,7 @@ export interface UserDetails {
   address: string;
   postcode: string;
   state: string;
-  subscription: Subscription[];
+  subscription: Subscription;
 }
 
 export interface UserObject extends User {

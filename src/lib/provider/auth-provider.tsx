@@ -4,15 +4,14 @@ import React, {
   ReactNode,
   useEffect,
   useState,
+  useReducer,
 } from "react";
-import usePersistentReducer from "../hooks/use-persistent-reducer";
 import {
   AuthActionTypes,
   AuthContextProps,
   SessionObject,
   UserDetails,
 } from "../types/common/user";
-import { USER_INFO } from "../constants";
 import { authReducer, userInitialState } from "../utils/auth";
 import { useSession } from "next-auth/react";
 import { getUserDetails } from "../utils/auth/handlers";
@@ -23,11 +22,7 @@ const AuthContext = createContext<AuthContextProps | null>(null);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [state, dispatch] = usePersistentReducer(
-    authReducer,
-    userInitialState,
-    USER_INFO
-  );
+  const [state, dispatch] = useReducer(authReducer, userInitialState);
   const [redirectTrigger, setRedirectTrigger] = useState<boolean>(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const { data } = useSession();

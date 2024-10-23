@@ -4,13 +4,12 @@ import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import { useApp } from "@/lib/provider/app-provider";
 import { AppActionTypes } from "@/lib/types/app";
-import { verifyEmailInitialState } from "@/lib/utils/app";
+
 const SocialLogins = () => {
   const { appDispatch } = useApp();
   const handleGoogleSignIn = () => {
     appDispatch({
       type: AppActionTypes.SET_TO_DEFAULT,
-      payload: verifyEmailInitialState,
     });
     signIn("google");
   };

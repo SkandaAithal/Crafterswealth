@@ -13,7 +13,6 @@ import { toast } from "@/lib/hooks/use-toast";
 import { formatTime, handleSendVerificationEmail } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
-import { verifyEmailInitialState } from "@/lib/utils/app";
 import { useRouter } from "next/router";
 import { LOGIN_PAGE } from "@/lib/routes";
 
@@ -42,7 +41,6 @@ const VerifyEmail: React.FC = () => {
         });
         appDispatch({
           type: AppActionTypes.SET_TO_DEFAULT,
-          payload: verifyEmailInitialState,
         });
         router.push(loginUrl);
       } else {

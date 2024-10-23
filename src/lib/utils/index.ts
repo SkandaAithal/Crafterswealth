@@ -383,18 +383,6 @@ export const calculateTotal = (
   return Math.round(subtotal + sgst + cgst + igst);
 };
 
-export const getCurrentDate = (): string => {
-  const date = new Date();
-  const day = new Intl.DateTimeFormat("en-US", { day: "2-digit" }).format(date);
-  const month = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
-    date
-  );
-  const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
-    date
-  );
-  return `${day} ${month} ${year}`;
-};
-
 export const addDurationToDate = (duration: string): Date => {
   const value = parseInt(duration.slice(0, -1), 10);
   const unit = duration.slice(-1).toUpperCase();
@@ -415,4 +403,13 @@ export const addDurationToDate = (duration: string): Date => {
     default:
       throw new Error("Invalid duration format");
   }
+};
+
+export const isSubscriptionValid = (period: string): boolean => {
+  if (!period) return false;
+
+  const expiryDate = new Date(period);
+  const currentDate = new Date();
+
+  return currentDate <= expiryDate;
 };

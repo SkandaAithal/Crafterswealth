@@ -9,14 +9,10 @@ import {
   AuthActionTypes,
   SessionObject,
   Subscription,
-  UserDetails,
 } from "@/lib/types/common/user";
-import {
-  addDurationToDate,
-  decodeNumericId,
-  getCurrentDate,
-} from "@/lib/utils";
+import { addDurationToDate, decodeNumericId } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
+import { produce } from "immer";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -34,24 +30,41 @@ const SuccessPage = () => {
   const gotToPaymentFailurePage = () => {
     router.push(PAYMENT_FAILURE);
   };
+
   const subscription = useMemo(() => {
-    return user.cart.reduce((acc, item) => {
+    const subscriptionMap: Subscription = {
+      ...user.subscription,
+    };
+
+    user.cart.forEach((item) => {
       if (item.period !== "0" && item.period) {
         const access = item.access.length ? item.access : [item.category];
-        acc.push({
-          plan: item.plan,
-          price: item.price,
-          access,
-          purchasedOn: getCurrentDate(),
-          period: addDurationToDate(item.period),
+        const newPeriod = addDurationToDate(item.period);
+
+        access.forEach((category) => {
+          if (!subscriptionMap[category]) {
+            subscriptionMap[category] = {
+              plan: item.plan,
+              period: newPeriod.toISOString(),
+            };
+          } else {
+            const existingPeriod = new Date(subscriptionMap[category].period);
+            if (newPeriod > existingPeriod) {
+              subscriptionMap[category] = {
+                plan: item.plan,
+                period: newPeriod.toISOString(),
+              };
+            }
+          }
         });
       }
-      return acc;
-    }, [] as Subscription[]);
-  }, [user.cart]);
+    });
+
+    return subscriptionMap;
+  }, [user.cart, user.subscription]);
 
   const bought = useMemo(() => {
-    const boughtArray = new Set<string>();
+    const boughtSet = new Set<string>();
 
     user.cart.forEach((item) => {
       if (item.access.length) {
@@ -62,25 +75,31 @@ const SuccessPage = () => {
 
           if (product) {
             const productId = decodeNumericId(product.id).toString();
-            boughtArray.add(productId);
+            boughtSet.add(productId);
           }
         });
       } else {
-        boughtArray.add(item.productId.toString());
+        boughtSet.add(item.productId.toString());
       }
     });
 
-    return Array.from(boughtArray);
-  }, [user.cart, products]);
+    return Array.from(new Set([...user.bought, ...Array.from(boughtSet)]));
+  }, [user.cart, products, user.bought]);
 
   const [updateUserMeta] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
       setTextMessage("Order confirmed!");
       const status = data?.updateUserMeta?.statusCode;
       if (status === 200) {
+        const updatedUser = produce(user, (draft) => {
+          draft.cart = [];
+          draft.bought = bought;
+          draft.subscription = subscription;
+        });
+
         authDispatch({
           type: AuthActionTypes.SET_USER_DETAILS,
-          payload: { ...user, cart: [], bought, subscription } as UserDetails,
+          payload: updatedUser,
         });
         setTimeout(() => {
           router.push(MY_PAPERS);

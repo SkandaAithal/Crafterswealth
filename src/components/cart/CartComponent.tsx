@@ -8,11 +8,7 @@ import { Button } from "../ui/button";
 import { convertToDaysOrHours } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
-import {
-  AuthActionTypes,
-  SessionObject,
-  UserDetails,
-} from "@/lib/types/common/user";
+import { AuthActionTypes, SessionObject } from "@/lib/types/common/user";
 import { toast } from "@/lib/hooks/use-toast";
 import { getSession } from "next-auth/react";
 import { TbLoader3 } from "react-icons/tb";
@@ -22,6 +18,7 @@ import { IoArrowBack } from "react-icons/io5";
 import OrderSummary from "./OrderSummary";
 import AnimateOnce from "../common/AnimateOnce";
 import { useRouter } from "next/router";
+import { produce } from "immer";
 
 const CartComponent = () => {
   const router = useRouter();
@@ -33,9 +30,13 @@ const CartComponent = () => {
   const [updateUserMeta, { loading }] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
       const cartData = data?.updateUserMeta?.data;
+      const updatedUser = produce(user, (draft) => {
+        draft.cart = cartData;
+      });
+
       authDispatch({
         type: AuthActionTypes.SET_USER_DETAILS,
-        payload: { ...user, cart: cartData } as UserDetails,
+        payload: updatedUser,
       });
     },
     onError: () => {
@@ -102,12 +103,14 @@ const CartComponent = () => {
   return cartArray.length ? (
     <>
       <div className="layout !pt-5">
-        <Link href={PRODUCTS}>
-          <div className="flex gap-1 items-center font-bold">
-            <IoArrowBack size={24} />
-            Continue Exploring
-          </div>
-        </Link>
+        <div className=" font-bold w-fit">
+          <Link href={PRODUCTS}>
+            <div className="flex gap-1 items-center">
+              <IoArrowBack size={24} />
+              Continue Exploring
+            </div>
+          </Link>
+        </div>
       </div>
       <section className="grid grid-cols-1 xl:grid-cols-3 layout !pt-10 gap-y-10 xl:gap-10 pb-40">
         <div className="flex flex-col col-span-2 justify-start gap-6 cursor-default">
@@ -172,10 +175,10 @@ const CartComponent = () => {
                         <h3 className="text-lg">{cart.plan}</h3>
                         <p className="text-sm">{cart.description}</p>
                       </div>
-                      <div className="flex gap-6 justify-center">
+                      <div className="grid grid-cols-3 gap-6 place-content-center md:min-w-72">
                         <div className="flex flex-col justify-start items-center gap-2 text-center h-full">
                           <h3 className="font-bold text-lg">Period</h3>
-                          <p className="text-lg min-w-28 font-bold whitespace-nowrap">
+                          <p className="text-lg font-bold whitespace-nowrap">
                             {cart.period}
                             {cart.period !== "0" ? (
                               <p>&nbsp;({convertToDaysOrHours(cart.period)})</p>
@@ -186,17 +189,20 @@ const CartComponent = () => {
                         </div>
                         <div className="flex flex-col justify-start items-center gap-2 text-center h-full">
                           <h3 className="font-bold text-lg">Price</h3>
-                          <div className="grid  min-w-20">
+                          <div className="grid ">
                             <p className="text-lg font-bold">₹{cart.price}</p>
                             <span className="line-through text-gray-400 text-sm">
                               ₹{cart.regularPlanPrice}
                             </span>
                           </div>
                         </div>
-                        <div className="flex justify-end items-center w-16">
+                        <div className="flex justify-center md:justify-end items-center">
                           <Button
                             variant="transparent"
-                            onClick={() => handleDeleteCart(index)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDeleteCart(index);
+                            }}
                             className="flex justify-center text-red-600 hover:scale-110 transition-all duration-300"
                             disabled={loading}
                           >

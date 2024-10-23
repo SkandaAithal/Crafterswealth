@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import { AppAction, AppActionTypes, AppState } from "../types/app";
 
 export const verifyEmailInitialState = {
@@ -26,109 +27,65 @@ export const initialState: AppState = {
 };
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
-  switch (action.type) {
-    case AppActionTypes.ADD_PRODUCT:
-      return { ...state, products: action.payload };
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case AppActionTypes.ADD_PRODUCT:
+        draft.products = action.payload;
+        break;
 
-    case AppActionTypes.TOGGLE_VERIFY_EMAIL_MODAL:
-      return {
-        ...state,
-        verifyEmail: {
-          ...state.verifyEmail,
-          isModalOpen: action.payload,
-        },
-      };
+      case AppActionTypes.TOGGLE_VERIFY_EMAIL_MODAL:
+        draft.verifyEmail.isModalOpen = action.payload;
+        break;
 
-    case AppActionTypes.SEND_EMAIL:
-      return {
-        ...state,
-        verifyEmail: {
-          ...state.verifyEmail,
-          ...action.payload,
-        },
-      };
+      case AppActionTypes.SEND_EMAIL:
+        Object.assign(draft.verifyEmail, action.payload);
+        break;
 
-    case AppActionTypes.SET_EMAIL:
-      return {
-        ...state,
-        verifyEmail: {
-          ...state.verifyEmail,
+      case AppActionTypes.SET_EMAIL:
+        draft.verifyEmail.email = action.payload;
+        break;
+
+      case AppActionTypes.SET_TO_DEFAULT:
+        draft.verifyEmail = verifyEmailInitialState;
+        break;
+
+      case AppActionTypes.FORGOT_PASSWORD_STEP_1:
+        draft.forgotPassword.step1 = {
           email: action.payload,
-        },
-      };
+          completed: true,
+        };
+        break;
 
-    case AppActionTypes.SET_TO_DEFAULT:
-      return {
-        ...state,
-        verifyEmail: {
-          ...action.payload,
-        },
-      };
+      case AppActionTypes.FORGOT_PASSWORD_STEP_2:
+        Object.assign(draft.forgotPassword.step2, action.payload);
+        break;
 
-    case AppActionTypes.FORGOT_PASSWORD_STEP_1:
-      return {
-        ...state,
-        forgotPassword: {
-          ...state.forgotPassword,
-          step1: {
-            email: action.payload,
-            completed: true,
-          },
-        },
-      };
+      case AppActionTypes.FORGOT_PASSWORD_STEP_2_COMPLETE:
+        draft.forgotPassword.step2 = {
+          completed: true,
+          expire: 0,
+          verificationCode: "",
+        };
+        break;
 
-    case AppActionTypes.FORGOT_PASSWORD_STEP_2:
-      return {
-        ...state,
-        forgotPassword: {
-          ...state.forgotPassword,
-          step2: {
-            ...state.forgotPassword.step2,
-            ...action.payload,
-          },
-        },
-      };
+      case AppActionTypes.FORGOT_PASSWORD_STEP_3:
+        draft.forgotPassword.step3.completed = true;
+        break;
 
-    case AppActionTypes.FORGOT_PASSWORD_STEP_2_COMPLETE:
-      return {
-        ...state,
-        forgotPassword: {
-          ...state.forgotPassword,
-          step2: {
-            completed: true,
-            expire: 0,
-            verificationCode: "",
-          },
-        },
-      };
-    case AppActionTypes.FORGOT_PASSWORD_STEP_3:
-      return {
-        ...state,
-        forgotPassword: {
-          ...state.forgotPassword,
-          step3: {
-            completed: true,
-          },
-        },
-      };
-    case AppActionTypes.SET_FORGOT_PASSWORD_DEFAULT:
-      return {
-        ...state,
-        forgotPassword: forgotPasswordInitialState,
-      };
+      case AppActionTypes.SET_FORGOT_PASSWORD_DEFAULT:
+        draft.forgotPassword = forgotPasswordInitialState;
+        break;
 
-    case AppActionTypes.INITIATE_PAYMENT:
-      return {
-        ...state,
-        payment: action.payload,
-      };
+      case AppActionTypes.INITIATE_PAYMENT:
+        draft.payment = action.payload;
+        break;
 
-    case AppActionTypes.CLEAR_PAYMENT:
-      return {
-        ...state,
-        payment: paymentInitialState,
-      };
-    default:
-      return state;
-  }
+      case AppActionTypes.CLEAR_PAYMENT:
+        draft.payment = paymentInitialState;
+        break;
+
+      default:
+        break;
+    }
+  });
 };
