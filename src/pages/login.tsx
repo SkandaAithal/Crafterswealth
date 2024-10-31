@@ -6,10 +6,12 @@ import Title from "@/components/common/Title";
 
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/ui/page-loader";
+import { useAuth } from "@/lib/provider/auth-provider";
 
 const Login = () => {
   const { status } = useSession();
-  if (status === "authenticated") {
+  const { user } = useAuth();
+  if (status === "authenticated" && user.id) {
     return <PageLoader />;
   }
 
