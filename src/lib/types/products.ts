@@ -1,7 +1,6 @@
 import { Plan } from "./plan";
 
 export interface ProductCategory {
-  id: string;
   name: string;
   slug: string;
 }
@@ -52,4 +51,12 @@ export interface Cart {
   regularPlanPrice: number;
   description: string;
   plan: string;
+}
+
+export interface CategoryProductIds {
+  [category: string]: string[];
+}
+
+export interface GetProductIdsByCategoryData {
+  allProductIdsByCategory: CategoryProductIds;
 }

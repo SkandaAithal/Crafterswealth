@@ -18,6 +18,7 @@ const useStockData = (symbols: string[]) => {
   const fetchStockPrices = async () => {
     setError(null);
     try {
+      if (!symbols.length) return;
       const encryptedPayload = CryptoJS.AES.encrypt(
         JSON.stringify({ symbols }),
         ENCRYPTION_KEY
@@ -87,12 +88,14 @@ const useStockData = (symbols: string[]) => {
       await fetchStockPrices();
 
       if (isMarketOpen && isMounted) {
-        setTimeout(fetchInInterval, 4000);
+        setTimeout(fetchInInterval, 10000);
       }
     };
 
     if (symbols.length > 0) {
       fetchInInterval();
+    } else {
+      setLoading(false);
     }
 
     return () => {

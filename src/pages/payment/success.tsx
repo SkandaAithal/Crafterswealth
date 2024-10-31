@@ -1,10 +1,13 @@
 import PageLoader from "@/components/ui/page-loader";
+import useProcessOrder from "@/lib/hooks/use-order-payload";
 
 import { useApp } from "@/lib/provider/app-provider";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { UPDATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
 import { MY_PAPERS, PAYMENT_FAILURE } from "@/lib/routes";
+import { AppActionTypes } from "@/lib/types/common/app";
+import { OrderStatus } from "@/lib/types/checkout";
 import {
   AuthActionTypes,
   SessionObject,
@@ -13,20 +16,22 @@ import {
 import { addDurationToDate, decodeNumericId } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
 import { produce } from "immer";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
+import { isTokenExpired } from "@/lib/utils/auth";
 
 const SuccessPage = () => {
   const router = useRouter();
   const { query } = router;
 
   const transactId = query.id;
-  const { payment, products } = useApp();
-  const { user, authDispatch } = useAuth();
+  const { payment, products, appDispatch, allProducts } = useApp();
+  const { user, authDispatch, redirectTrigger, setRedirectTrigger } = useAuth();
   const { data: session } = useSession();
-
+  const { getSuccessOrderPayload } = useProcessOrder();
   const [textMessage, setTextMessage] = useState("Processing Order...");
+
   const gotToPaymentFailurePage = () => {
     router.push(PAYMENT_FAILURE);
   };
@@ -76,15 +81,25 @@ const SuccessPage = () => {
           if (product) {
             const productId = decodeNumericId(product.id).toString();
             boughtSet.add(productId);
+            const pIndex =
+              allProducts[category].findIndex((pid) => pid === productId) + 1;
+            const archives = allProducts[category].slice(pIndex, pIndex + 10);
+            archives.forEach((item) => boughtSet.add(item));
           }
         });
       } else {
+        const pIndex =
+          allProducts[item.category].findIndex(
+            (pid) => pid === item.productId.toString()
+          ) + 1;
         boughtSet.add(item.productId.toString());
+        const archives = allProducts[item.category].slice(pIndex, pIndex + 10);
+        archives.forEach((item) => boughtSet.add(item));
       }
     });
 
     return Array.from(new Set([...user.bought, ...Array.from(boughtSet)]));
-  }, [user.cart, products, user.bought]);
+  }, [user.cart, products, user.bought, allProducts]);
 
   const [updateUserMeta] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
@@ -101,6 +116,9 @@ const SuccessPage = () => {
           type: AuthActionTypes.SET_USER_DETAILS,
           payload: updatedUser,
         });
+
+        appDispatch({ type: AppActionTypes.CLEAR_PAYMENT });
+
         setTimeout(() => {
           router.push(MY_PAPERS);
         }, 3000);
@@ -114,8 +132,12 @@ const SuccessPage = () => {
 
   const [updateOrder] = useMutation(UPDATE_ORDER_MUTATION, {
     onCompleted: async (data) => {
-      if (data?.updateOrder?.order?.status === "COMPLETED") {
+      if (data?.updateOrder?.order?.status === OrderStatus.COMPLETED) {
         setTextMessage("Placing your order...");
+        const session = await getSession();
+        if (isTokenExpired(session?.expires) || !user.id) {
+          return setRedirectTrigger(!redirectTrigger);
+        }
         const variables = {
           input: {
             email: user.email,
@@ -141,25 +163,11 @@ const SuccessPage = () => {
   });
 
   const processOrder = async () => {
-    const inputPayload = {
-      customerId: decodeNumericId(user.id),
-      billing: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phoneNumber,
-        address1: user.address,
-        city: user.city,
-        postcode: user.postcode,
-        country: user.country,
-        state: user.state,
-      },
-      paymentMethod: "phonepe",
-      transactionId: payment.transactionId,
-      status: "COMPLETED",
-      isPaid: true,
-      orderId: payment.orderId,
-    };
+    const sess = await getSession();
+    if (isTokenExpired(sess?.expires) || !user.id) {
+      return setRedirectTrigger(!redirectTrigger);
+    }
+    const inputPayload = getSuccessOrderPayload();
 
     await updateOrder({
       variables: {
@@ -172,9 +180,10 @@ const SuccessPage = () => {
       },
     });
   };
+
   useEffect(() => {
     if (
-      session &&
+      !isTokenExpired(session?.expires) &&
       user.id &&
       payment.orderId &&
       payment.transactionId === transactId

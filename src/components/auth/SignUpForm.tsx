@@ -20,7 +20,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_USER_SIGNUP } from "@/lib/queries/users.query";
 import { toast } from "@/lib/hooks/use-toast";
 import { useApp } from "@/lib/provider/app-provider";
-import { AppActionTypes } from "@/lib/types/app";
+import { AppActionTypes } from "@/lib/types/common/app";
 import { twMerge } from "tailwind-merge";
 
 function SignUpForm() {

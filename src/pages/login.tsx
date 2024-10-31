@@ -9,10 +9,11 @@ import { authConfig } from "@/lib/utils/auth/authConfig";
 import { HOME } from "@/lib/routes";
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/ui/page-loader";
+import { isTokenExpired } from "@/lib/utils/auth";
 
 const Login = () => {
-  const { status } = useSession();
-  if (status === "authenticated") {
+  const { status, data } = useSession();
+  if (status === "authenticated" && !isTokenExpired(data?.expires)) {
     return <PageLoader />;
   }
 
@@ -47,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { query } = context;
   const redirectUrl = query.redirect || HOME;
 
-  if (session) {
+  if (!isTokenExpired(session?.expires)) {
     return {
       redirect: {
         destination: redirectUrl as string,

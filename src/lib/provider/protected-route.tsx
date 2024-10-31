@@ -6,6 +6,7 @@ import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useAuth } from "./auth-provider";
 import { toast } from "../hooks/use-toast";
+import { isTokenExpired } from "../utils/auth";
 
 const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
   const pathName = usePathname();
@@ -20,13 +21,13 @@ const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const handleSessionRedirect = async (showToast = false) => {
     const sess = await getSession();
-    if (!sess && isProtected) {
+    if (isTokenExpired(sess?.expires) && isProtected) {
       const loginUrl = `${LOGIN_PAGE}?redirect=${encodeURIComponent(pathName)}`;
       router.push(loginUrl);
       if (showToast) {
         toast({
           title: "Your session has timed out",
-          description: "Please log in again to access this page",
+          description: "Please login again!",
           variant: "destructive",
         });
       }

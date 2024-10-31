@@ -47,3 +47,12 @@ export const authReducer = (
     }
   });
 };
+
+export const isTokenExpired = (expires: string | undefined): boolean => {
+  if (!expires) {
+    return true;
+  }
+  const expirationDate = new Date(expires);
+  const currentDate = new Date();
+  return currentDate > expirationDate;
+};

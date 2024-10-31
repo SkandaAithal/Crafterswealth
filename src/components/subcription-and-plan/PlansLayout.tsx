@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PlanCard from "./PlanCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Switch } from "../ui/switch";
-import { PlanPageProps } from "@/lib/types/common/plan";
+import { PlanPageProps } from "@/lib/types/plan";
 
 const PlansLayout: React.FC<PlanPageProps> = ({ plans, checkIfPremium }) => {
   const plan1 = plans[0].name;

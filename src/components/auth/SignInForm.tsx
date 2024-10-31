@@ -19,7 +19,7 @@ import Link from "next/link";
 import { FORGOT_PASSWORD_PAGE, HOME, SINGN_UP_PAGE } from "@/lib/routes";
 import { toast } from "@/lib/hooks/use-toast";
 import { useApp } from "@/lib/provider/app-provider";
-import { AppActionTypes } from "@/lib/types/app";
+import { AppActionTypes } from "@/lib/types/common/app";
 import { useRouter } from "next/router";
 
 function SignInForm() {

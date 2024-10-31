@@ -1,5 +1,4 @@
 import { useAuth } from "@/lib/provider/auth-provider";
-import { Cart } from "@/lib/types/common/products";
 import { UserDetails } from "@/lib/types/common/user";
 import React from "react";
 import { Separator } from "../ui/separator";
@@ -8,6 +7,7 @@ import { useRouter } from "next/router";
 import { CHECKOUT } from "@/lib/routes";
 import { calculateSubtotal, calculateTax, calculateTotal } from "@/lib/utils";
 import { twMerge } from "tailwind-merge";
+import { Cart } from "@/lib/types/products";
 
 const OrderSummary = ({
   isCheckout = false,

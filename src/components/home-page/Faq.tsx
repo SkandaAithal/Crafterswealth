@@ -11,9 +11,9 @@ import { AiFillSignal } from "react-icons/ai";
 import { SwiperSlide } from "swiper/react";
 import SwiperComponent from "../common/SwiperComponent";
 import { getFirstIfArray } from "@/lib/utils";
-
+import { Swiper as SwiperType } from "swiper/types";
 const FAQ = () => {
-  const swiperRef = useRef<any>(null);
+  const swiperRef = useRef<SwiperType>(null);
 
   const faqCategories = useMemo(
     () => Object.keys(FAQ_DATA) as (keyof typeof FAQ_DATA)[],
@@ -57,13 +57,13 @@ const FAQ = () => {
             const selectedIndex = swiper.realIndex;
             setSelectedCategory(faqCategories[selectedIndex]);
           }}
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          onSwiper={(swiper) => ((swiperRef.current as SwiperType) = swiper)}
           initialSlide={faqCategories.indexOf(selectedCategory)}
         >
           {faqCategories.map((category, index) => (
             <SwiperSlide key={category}>
               <div
-                className={`capitalize cursor-pointer text-center p-3 rounded-md transition-all shadow-inner duration-300 ${
+                className={`capitalize cursor-pointer text-center text-sm p-3 rounded-md transition-all shadow-inner duration-300 ${
                   selectedCategory === category
                     ? "font-bold bg-primary-blue-100 text-primary"
                     : "bg-accent"
@@ -71,7 +71,7 @@ const FAQ = () => {
                 onClick={() => {
                   setSelectedCategory(category);
 
-                  swiperRef.current.slideToLoop(index);
+                  (swiperRef.current as SwiperType).slideToLoop(index);
                 }}
               >
                 {category}

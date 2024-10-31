@@ -5,7 +5,10 @@ function Skeleton({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("skeleton-loader rounded-md", className)} {...props} />
+    <div
+      className={cn("skeleton-loader w-full rounded-md", className)}
+      {...props}
+    />
   );
 }
 

@@ -12,7 +12,7 @@ import {
   SessionObject,
   UserDetails,
 } from "../types/common/user";
-import { authReducer, userInitialState } from "../utils/auth";
+import { authReducer, isTokenExpired, userInitialState } from "../utils/auth";
 import { useSession } from "next-auth/react";
 import { getUserDetails } from "../utils/auth/handlers";
 import { toast } from "../hooks/use-toast";
@@ -23,13 +23,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(authReducer, userInitialState);
+
   const [redirectTrigger, setRedirectTrigger] = useState<boolean>(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
-  const { data } = useSession();
+  const { data, status } = useSession();
   const session = data as SessionObject;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
+      setIsAuthLoading(true);
+
       try {
         const userDetails: UserDetails = await getUserDetails(
           session.authToken,
@@ -50,12 +53,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setIsAuthLoading(false);
       }
     };
-
-    if (session) {
+    if (!isTokenExpired(session?.expires)) {
       fetchUserDetails();
+    } else if (!(status === "loading")) {
+      setIsAuthLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [session, status]);
 
   return (
     <AuthContext.Provider

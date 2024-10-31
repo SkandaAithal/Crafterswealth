@@ -1,11 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
-import { AppActionTypes, SendVerificationEmailArgs } from "../types/app";
+import { AppActionTypes, SendVerificationEmailArgs } from "../types/common/app";
 import client from "../apollo-client";
 import { SEND_VERIFY_EMAIL_MUTATION } from "../queries/users.query";
 import { toast } from "../hooks/use-toast";
-import { Cart } from "../types/common/products";
+import { Cart } from "../types/products";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

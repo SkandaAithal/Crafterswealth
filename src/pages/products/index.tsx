@@ -13,8 +13,8 @@ import {
   GET_PRODUCTS,
 } from "@/lib/queries/products.query";
 import { PLAN, PRODUCTS_DETAIL } from "@/lib/routes";
-import { AppActionTypes } from "@/lib/types/app";
-import { ProductsPageProps } from "@/lib/types/common/products";
+import { AppActionTypes } from "@/lib/types/common/app";
+import { ProductsPageProps } from "@/lib/types/products";
 import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo } from "react";
@@ -68,7 +68,7 @@ const Products: NextPage<ProductsPageProps> = ({ products }) => {
                   />
                 </div>
 
-                <div className="relative text-center space-y-4 bg-accent rounded-xl shadow-lg px-8 pt-12 pb-10 overflow-hidden">
+                <div className="relative text-center space-y-4 bg-accent rounded-xl shadow-lg px-6 pt-12 pb-10 overflow-hidden">
                   <div className="absolute inset-0 z-0 opacity-0 bg-[#353faf] transition-opacity duration-300 group-hover:opacity-100 bg-product-bg-img bg-cover bg-top"></div>
                   <div className="absolute opacity-0 transition-opacity duration-300 group-hover:opacity-100 inset-0 z-10 bg-gradient-to-t from-primary-blue-100 via-primary-blue-80 via-50% via-[#2244a1] via-65% to-transparent"></div>
 
@@ -77,7 +77,7 @@ const Products: NextPage<ProductsPageProps> = ({ products }) => {
                       {(productCategories?.nodes ?? []).map((a) => a.name)}
                     </h1>
                     <div className="space-y-4">
-                      <h2 className="text-2xl font-semibold">{name}</h2>
+                      <h2 className="text-xl font-semibold">{name}</h2>
                       <div className="space-y-3">
                         <div className="space-y-2">
                           <p>Potential Left</p>

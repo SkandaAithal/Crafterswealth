@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import { useApp } from "@/lib/provider/app-provider";
-import { AppActionTypes } from "@/lib/types/app";
+import { AppActionTypes } from "@/lib/types/common/app";
 
 const SocialLogins = () => {
   const { appDispatch } = useApp();

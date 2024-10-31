@@ -1,6 +1,5 @@
 import { useApp } from "@/lib/provider/app-provider";
 import { useAuth } from "@/lib/provider/auth-provider";
-import { Cart } from "@/lib/types/common/products";
 import React, { useState } from "react";
 import LazyImage from "../ui/lazy-image";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -19,6 +18,8 @@ import OrderSummary from "./OrderSummary";
 import AnimateOnce from "../common/AnimateOnce";
 import { useRouter } from "next/router";
 import { produce } from "immer";
+import { Cart } from "@/lib/types/products";
+import { isTokenExpired } from "@/lib/utils/auth";
 
 const CartComponent = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const CartComponent = () => {
   const [updateUserMeta, { loading }] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
       const cartData = data?.updateUserMeta?.data;
+
       const updatedUser = produce(user, (draft) => {
         draft.cart = cartData;
       });
@@ -71,7 +73,7 @@ const CartComponent = () => {
 
   const handleDeleteCart = async (index: number) => {
     const session = await getSession();
-    if (!session || !user.id) {
+    if (isTokenExpired(session?.expires) || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

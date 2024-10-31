@@ -1,10 +1,6 @@
 import React from "react";
 import Select from "react-select";
-import {
-  CheckoutFormData,
-  Country,
-  CountryOption,
-} from "@/lib/types/common/checkout";
+import { CheckoutFormData, Country, CountryOption } from "@/lib/types/checkout";
 import { FormItem, FormLabel, FormMessage } from "../ui/form";
 import Image from "next/image";
 import { customDropDownStyles } from "@/lib/constants";

@@ -1,4 +1,4 @@
-import { ProductNode } from "./common/products";
+import { ProductCategory, ProductNode } from "../products";
 
 export interface AppContextProps {
   appDispatch: React.Dispatch<AppAction>;
@@ -7,6 +7,10 @@ export interface AppContextProps {
   isMounted: boolean;
   forgotPassword: ForgotPasswordContext;
   payment: PaymentContext;
+  isAppLoading: boolean;
+  categories: ProductCategory[];
+  boughtObject: Record<string, string[]>;
+  allProducts: Record<string, string[]>;
 }
 
 export interface VerifyEmail {

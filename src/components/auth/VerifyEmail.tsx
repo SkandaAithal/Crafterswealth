@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ModalDrawer from "../common/ModalDrawer";
 import { useApp } from "@/lib/provider/app-provider";
-import { AppActionTypes } from "@/lib/types/app";
+import { AppActionTypes } from "@/lib/types/common/app";
 import {
   InputOTP,
   InputOTPGroup,

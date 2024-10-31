@@ -1,7 +1,7 @@
 import { forgotPasswordSchema } from "@/lib/utils";
 import { Session, User } from "next-auth";
 import { z } from "zod";
-import { Cart } from "./products";
+import { Cart } from "../products";
 
 export type Subscription = Record<string, { plan: string; period: string }>;
 export interface UserDetails {

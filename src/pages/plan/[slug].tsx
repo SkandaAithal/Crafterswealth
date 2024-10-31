@@ -6,7 +6,7 @@ import { useWindowWidth } from "@/lib/hooks/use-window-width";
 import { useApp } from "@/lib/provider/app-provider";
 import { GET_PRODUCT_PLANS } from "@/lib/queries/products.query";
 import { PRODUCTS } from "@/lib/routes";
-import { Plan, ProductResponse } from "@/lib/types/common/plan";
+import { Plan, ProductResponse } from "@/lib/types/plan";
 import { isEmpty } from "@/lib/utils";
 import { useLazyQuery } from "@apollo/client";
 import Link from "next/link";
@@ -40,7 +40,7 @@ const PlansPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, products]);
 
-  const windowWidth = useWindowWidth();
+  const { windowWidth } = useWindowWidth();
 
   let skeletonCount = 3;
   if (windowWidth && windowWidth < 768) {
@@ -55,8 +55,8 @@ const PlansPage = () => {
       className={twMerge(
         "transition-colors duration-500 min-h-screen",
         isPremium
-          ? "bg-gradient-to-b from-[#c8ecfc] to-primary"
-          : "bg-gradient-to-b from-accent to-primary"
+          ? "bg-gradient-to-b from-[#e1e8ff] to-primary"
+          : "bg-gradient-to-b from-[#c8ecfc] to-primary"
       )}
     >
       <div className="relative text-center layout h-40">

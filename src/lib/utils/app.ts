@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { AppAction, AppActionTypes, AppState } from "../types/app";
+import { AppAction, AppActionTypes, AppState } from "../types/common/app";
 
 export const verifyEmailInitialState = {
   isModalOpen: false,

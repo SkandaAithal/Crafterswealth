@@ -1,9 +1,9 @@
-import { addDurationToDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { MdTimer } from "react-icons/md";
 
 const SubscriptionTimer: React.FC<{ duration: string }> = ({ duration }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const subscriptionEndDate = addDurationToDate(duration);
+  const subscriptionEndDate = new Date(duration);
 
   useEffect(() => {
     const updateTimer = () => {
@@ -16,7 +16,8 @@ const SubscriptionTimer: React.FC<{ duration: string }> = ({ duration }) => {
     const intervalId = setInterval(updateTimer, 1000);
 
     return () => clearInterval(intervalId);
-  }, [subscriptionEndDate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formatTime = (milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -29,9 +30,13 @@ const SubscriptionTimer: React.FC<{ duration: string }> = ({ duration }) => {
   };
 
   return (
-    <div>
+    <div className="text-base font-bold">
       {timeRemaining > 0 ? (
-        <h2>Time Remaining: {formatTime(timeRemaining)}</h2>
+        <h2 className="flex gap-2 items-center">
+          <MdTimer size={24} />
+
+          {formatTime(timeRemaining)}
+        </h2>
       ) : (
         <h2>Subscription Expired</h2>
       )}

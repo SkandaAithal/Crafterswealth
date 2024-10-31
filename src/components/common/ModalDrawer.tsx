@@ -36,8 +36,7 @@ const ModalDrawer: React.FC<ModalDrawerProps> = ({
   dialogWrapperClassName = "",
   dialogFooterClassName = "",
 }) => {
-  const windowWidth = useWindowWidth();
-  const isMobile = windowWidth !== null && windowWidth <= 768;
+  const { isMobile } = useWindowWidth();
 
   const handlePrimaryBtnClick = () => {
     if (handlePrimaryAction) {

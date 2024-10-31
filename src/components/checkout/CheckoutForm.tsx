@@ -18,7 +18,7 @@ import {
   StateOption,
   CityOption,
   CheckoutFormData,
-} from "@/lib/types/common/checkout";
+} from "@/lib/types/checkout";
 import Select from "react-select";
 import {
   BASE_URL,
@@ -46,8 +46,9 @@ import { useApp } from "@/lib/provider/app-provider";
 import { getSession } from "next-auth/react";
 import client from "@/lib/apollo-client";
 import { CREATE_ORDER_MUTATION } from "@/lib/queries/products.query";
-import { AppActionTypes } from "@/lib/types/app";
+import { AppActionTypes } from "@/lib/types/common/app";
 import { produce } from "immer";
+import { isTokenExpired } from "@/lib/utils/auth";
 
 const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const router = useRouter();
@@ -115,7 +116,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const handleSubmit = async (data: CheckoutFormData) => {
     if (!user.cart.length) return;
     const session = await getSession();
-    if (!session || !user.id) {
+    if (isTokenExpired(session?.expires) || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 
@@ -150,7 +151,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
         });
       }
 
-      const transactId = "Tr-" + uuidv4().toString().slice(-3);
+      const transactId = "Tr-" + uuidv4().toString().slice(-6);
 
       const inputPayload = {
         customerId: decodeNumericId(user.id),

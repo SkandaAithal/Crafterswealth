@@ -37,3 +37,8 @@ export interface CheckoutFormData {
   country: string;
   postcode: string;
 }
+
+export enum OrderStatus {
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}

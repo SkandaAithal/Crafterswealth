@@ -126,6 +126,25 @@ body,
     padding-inline: 8rem;
   }
 }
+.layout-sm {
+  margin: auto;
+  padding-top: 3rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 768px) {
+  .layout-sm {
+    padding-top: 4rem;
+    padding-inline: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-sm {
+    padding-top: 4rem;
+    padding-inline: 4rem;
+  }
+}
 
 .banner {
   background: linear-gradient(

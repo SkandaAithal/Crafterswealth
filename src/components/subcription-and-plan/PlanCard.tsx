@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { twMerge } from "tailwind-merge";
-import { PlanDetail } from "@/lib/types/common/plan";
+import { PlanDetail } from "@/lib/types/plan";
 import { FaCheck } from "react-icons/fa";
 import { decodeNumericId, formatToIndianNumberingSystem } from "@/lib/utils";
 import { useApp } from "@/lib/provider/app-provider";
@@ -11,11 +11,12 @@ import { useAuth } from "@/lib/provider/auth-provider";
 import { getSession } from "next-auth/react";
 import { AuthActionTypes, SessionObject } from "@/lib/types/common/user";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
-import { Cart } from "@/lib/types/common/products";
 import { toast } from "@/lib/hooks/use-toast";
 import { useRouter } from "next/router";
 import { CART } from "@/lib/routes";
 import { produce } from "immer";
+import { Cart } from "@/lib/types/products";
+import { isTokenExpired } from "@/lib/utils/auth";
 
 interface PlanCardProps {
   plan: PlanDetail | null;
@@ -59,7 +60,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
 
     setIsLoading(true);
     const session = await getSession();
-    if (!session || !user.id) {
+    if (isTokenExpired(session?.expires) || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

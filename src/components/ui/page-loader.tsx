@@ -24,7 +24,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({
   return (
     <div
       className={twMerge(
-        "w-screen  grid place-content-center gap-6",
+        "w-screen  grid place-content-center gap-6 bg-primary",
         isHeaderHidden ? "h-screen" : "h-full min-h-[calc(100vh-100px)]",
         className
       )}

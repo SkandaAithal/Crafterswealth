@@ -6,7 +6,7 @@ import LazyImage from "@/components/ui/lazy-image";
 
 const Articles: React.FC = () => {
   return (
-    <main className="bg-gradient-to-b from-[#D3DDFF] to-white layout space-y-6 pb-16">
+    <main className="bg-gradient-to-b from-[#e1e8ff] to-white layout space-y-6 pb-16">
       <div>
         <Title text="Market Blogs" className="text-center" />
         <Typewriter

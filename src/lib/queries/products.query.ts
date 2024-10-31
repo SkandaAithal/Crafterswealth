@@ -50,6 +50,7 @@ export const GET_PRODUCT_CATEGORIES = gql`
     productCategories {
       nodes {
         name
+        slug
       }
     }
   }
@@ -96,5 +97,26 @@ export const UPDATE_ORDER_MUTATION = gql`
         status
       }
     }
+  }
+`;
+
+export const GET_PRODUCTS_BY_IDS = gql`
+  query GetProductsByIds($payload: [ID!]) {
+    productsByIds(payload: $payload) {
+      id
+      buyPrice
+      name
+      stockName
+      stockSymbol
+      target
+      file
+      categorySlug
+    }
+  }
+`;
+
+export const GET_ALL_PRODUCT_IDS_BY_CATEGORY = gql`
+  query GetProductIdsByCategory {
+    allProductIdsByCategory
   }
 `;
