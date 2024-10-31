@@ -7,14 +7,26 @@ import Title from "@/components/common/Title";
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/ui/page-loader";
 import { useAuth } from "@/lib/provider/auth-provider";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { HOME } from "@/lib/routes";
 
 const Login = () => {
+  const router = useRouter();
+  const redirect = router.query?.redirect as string;
   const { status } = useSession();
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (status === "authenticated" && user.id) {
+      router.push(redirect ? redirect : HOME);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
   if (status === "authenticated" && user.id) {
     return <PageLoader />;
   }
-
   return (
     <main className="lg:grid flex flex-col gap-6 lg:gap-0 lg:grid-cols-2 min-h-[calc(100vh-100px)]">
       <AuthBanner />
