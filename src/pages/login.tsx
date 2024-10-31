@@ -6,11 +6,10 @@ import Title from "@/components/common/Title";
 
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/ui/page-loader";
-import { isTokenExpired } from "@/lib/utils/auth";
 
 const Login = () => {
-  const { status, data } = useSession();
-  if (status === "authenticated" && !isTokenExpired(data?.expires)) {
+  const { status } = useSession();
+  if (status === "authenticated") {
     return <PageLoader />;
   }
 
