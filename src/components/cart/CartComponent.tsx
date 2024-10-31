@@ -19,11 +19,16 @@ import AnimateOnce from "../common/AnimateOnce";
 import { useRouter } from "next/router";
 import { produce } from "immer";
 import { Cart } from "@/lib/types/products";
-import { isTokenExpired } from "@/lib/utils/auth";
 
 const CartComponent = () => {
   const router = useRouter();
-  const { user, authDispatch, redirectTrigger, setRedirectTrigger } = useAuth();
+  const {
+    user,
+    authDispatch,
+    redirectTrigger,
+    setRedirectTrigger,
+    isAuthenticated,
+  } = useAuth();
   const cartArray = user.cart as Cart[];
   const { products } = useApp();
   const [loadingIndexes, setLoadingIndexes] = useState<number[]>([]);
@@ -73,7 +78,7 @@ const CartComponent = () => {
 
   const handleDeleteCart = async (index: number) => {
     const session = await getSession();
-    if (isTokenExpired(session?.expires) || !user.id) {
+    if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

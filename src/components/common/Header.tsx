@@ -31,7 +31,6 @@ import { useAuth } from "@/lib/provider/auth-provider";
 import { TbLoader3 } from "react-icons/tb";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { usePathname } from "next/navigation";
-import { isTokenExpired } from "@/lib/utils/auth";
 const Header = () => {
   const router = useRouter();
   const pathName = usePathname();
@@ -42,7 +41,7 @@ const Header = () => {
 
   const { data, status } = useSession();
   const session = data as SessionObject;
-  const { user, isAuthLoading, authDispatch } = useAuth();
+  const { user, isAuthLoading, authDispatch, isAuthenticated } = useAuth();
   const isLoading = status === "loading" || isAuthLoading;
 
   const handleLogout = async () => {
@@ -187,7 +186,7 @@ const Header = () => {
       <div className="w-full lg:w-auto lg:min-w-[120px] flex gap-6 justify-end lg:justify-center items-center">
         {isLoading ? (
           <TbLoader3 size={40} className="animate-spin" />
-        ) : !isTokenExpired(session?.expires) && user.id ? (
+        ) : isAuthenticated() && user.id ? (
           <>
             <Link href={CART}>
               <div className="relative">

@@ -16,10 +16,9 @@ import {
 import { addDurationToDate, decodeNumericId } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
 import { produce } from "immer";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
-import { isTokenExpired } from "@/lib/utils/auth";
 
 const SuccessPage = () => {
   const router = useRouter();
@@ -27,7 +26,13 @@ const SuccessPage = () => {
 
   const transactId = query.id;
   const { payment, products, appDispatch, allProducts } = useApp();
-  const { user, authDispatch, redirectTrigger, setRedirectTrigger } = useAuth();
+  const {
+    user,
+    authDispatch,
+    redirectTrigger,
+    setRedirectTrigger,
+    isAuthenticated,
+  } = useAuth();
   const { data: session } = useSession();
   const { getSuccessOrderPayload } = useProcessOrder();
   const [textMessage, setTextMessage] = useState("Processing Order...");
@@ -134,8 +139,7 @@ const SuccessPage = () => {
     onCompleted: async (data) => {
       if (data?.updateOrder?.order?.status === OrderStatus.COMPLETED) {
         setTextMessage("Placing your order...");
-        const session = await getSession();
-        if (isTokenExpired(session?.expires) || !user.id) {
+        if (!isAuthenticated() || !user.id) {
           return setRedirectTrigger(!redirectTrigger);
         }
         const variables = {
@@ -163,8 +167,7 @@ const SuccessPage = () => {
   });
 
   const processOrder = async () => {
-    const sess = await getSession();
-    if (isTokenExpired(sess?.expires) || !user.id) {
+    if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
     const inputPayload = getSuccessOrderPayload();
@@ -183,7 +186,7 @@ const SuccessPage = () => {
 
   useEffect(() => {
     if (
-      !isTokenExpired(session?.expires) &&
+      isAuthenticated() &&
       user.id &&
       payment.orderId &&
       payment.transactionId === transactId

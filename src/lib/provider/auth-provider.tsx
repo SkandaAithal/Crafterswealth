@@ -12,7 +12,7 @@ import {
   SessionObject,
   UserDetails,
 } from "../types/common/user";
-import { authReducer, isTokenExpired, userInitialState } from "../utils/auth";
+import { authReducer, userInitialState } from "../utils/auth";
 import { useSession } from "next-auth/react";
 import { getUserDetails } from "../utils/auth/handlers";
 import { toast } from "../hooks/use-toast";
@@ -29,6 +29,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const { data, status } = useSession();
   const session = data as SessionObject;
 
+  const isAuthenticated = () => {
+    const isLoad = status === "loading";
+    return status === "authenticated" || isLoad;
+  };
   useEffect(() => {
     const fetchUserDetails = async () => {
       setIsAuthLoading(true);
@@ -53,7 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setIsAuthLoading(false);
       }
     };
-    if (!isTokenExpired(session?.expires)) {
+    if (isAuthenticated() && !(status === "loading")) {
       fetchUserDetails();
     } else if (!(status === "loading")) {
       setIsAuthLoading(false);
@@ -69,6 +73,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setRedirectTrigger,
         redirectTrigger,
         isAuthLoading,
+        isAuthenticated,
       }}
     >
       {children}

@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import { CART } from "@/lib/routes";
 import { produce } from "immer";
 import { Cart } from "@/lib/types/products";
-import { isTokenExpired } from "@/lib/utils/auth";
+import {} from "@/lib/utils/auth";
 
 interface PlanCardProps {
   plan: PlanDetail | null;
@@ -26,7 +26,13 @@ interface PlanCardProps {
 const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
   const router = useRouter();
   const { products } = useApp();
-  const { user, setRedirectTrigger, redirectTrigger, authDispatch } = useAuth();
+  const {
+    user,
+    setRedirectTrigger,
+    redirectTrigger,
+    authDispatch,
+    isAuthenticated,
+  } = useAuth();
   const param = useParams();
   const slug = param?.slug ?? "";
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +66,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
 
     setIsLoading(true);
     const session = await getSession();
-    if (isTokenExpired(session?.expires) || !user.id) {
+    if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

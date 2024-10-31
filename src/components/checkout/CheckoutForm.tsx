@@ -48,11 +48,16 @@ import client from "@/lib/apollo-client";
 import { CREATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { AppActionTypes } from "@/lib/types/common/app";
 import { produce } from "immer";
-import { isTokenExpired } from "@/lib/utils/auth";
 
 const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const router = useRouter();
-  const { user, authDispatch, redirectTrigger, setRedirectTrigger } = useAuth();
+  const {
+    user,
+    authDispatch,
+    redirectTrigger,
+    setRedirectTrigger,
+    isAuthenticated,
+  } = useAuth();
   const { products, appDispatch } = useApp();
 
   const [states, setStates] = useState<StateOption[]>([]);
@@ -116,7 +121,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const handleSubmit = async (data: CheckoutFormData) => {
     if (!user.cart.length) return;
     const session = await getSession();
-    if (isTokenExpired(session?.expires) || !user.id) {
+    if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 

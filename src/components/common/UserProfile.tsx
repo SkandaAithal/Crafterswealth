@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import LazyImage from "../ui/lazy-image";
 import { SessionObject } from "@/lib/types/common/user";
 import { useAuth } from "@/lib/provider/auth-provider";
-import { isTokenExpired } from "@/lib/utils/auth";
 
 const UserProfile = () => {
   const { data } = useSession();
   const session = data as SessionObject;
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [animatedPurchases, setAnimatedPurchases] = useState(0);
   const [animatedInvested, setAnimatedInvested] = useState(0);
 
@@ -41,7 +40,7 @@ const UserProfile = () => {
 
   return (
     <div className="space-y-2 mb-6">
-      {!isTokenExpired(session?.expires) && user.id && (
+      {isAuthenticated() && user.id && (
         <>
           {session?.user?.image ? (
             <div className="h-24 w-24 text-xl mx-auto grid place-content-center overflow-hidden text-center rounded-full cursor-pointer text-primary skeleton-loader">

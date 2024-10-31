@@ -18,35 +18,36 @@ const useStockData = (symbols: string[]) => {
   const fetchStockPrices = async () => {
     setError(null);
     try {
-      if (!symbols.length) return;
-      const encryptedPayload = CryptoJS.AES.encrypt(
-        JSON.stringify({ symbols }),
-        ENCRYPTION_KEY
-      ).toString();
+      if (symbols.length) {
+        const encryptedPayload = CryptoJS.AES.encrypt(
+          JSON.stringify({ symbols }),
+          ENCRYPTION_KEY
+        ).toString();
 
-      const response = await axios.post(
-        GET_STOCKS_API,
-        {
-          payload: encryptedPayload,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+        const response = await axios.post(
+          GET_STOCKS_API,
+          {
+            payload: encryptedPayload,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-      const { data: encryptedResponse } = response.data;
+        const { data: encryptedResponse } = response.data;
 
-      const decryptedBytes = CryptoJS.AES.decrypt(
-        encryptedResponse,
-        ENCRYPTION_KEY
-      );
-      const decryptedData = JSON.parse(
-        decryptedBytes.toString(CryptoJS.enc.Utf8)
-      );
+        const decryptedBytes = CryptoJS.AES.decrypt(
+          encryptedResponse,
+          ENCRYPTION_KEY
+        );
+        const decryptedData = JSON.parse(
+          decryptedBytes.toString(CryptoJS.enc.Utf8)
+        );
 
-      setStockData(decryptedData);
+        setStockData(decryptedData);
+      }
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -94,10 +95,7 @@ const useStockData = (symbols: string[]) => {
 
     if (symbols.length > 0) {
       fetchInInterval();
-    } else {
-      setLoading(false);
     }
-
     return () => {
       isMounted = false;
     };

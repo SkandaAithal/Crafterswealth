@@ -23,7 +23,6 @@ import { useAuth } from "./auth-provider";
 import { SessionObject } from "../types/common/user";
 import { UPDATE_USER_META } from "../queries/users.query";
 import { toast } from "../hooks/use-toast";
-import { isTokenExpired } from "../utils/auth";
 import { getSession } from "next-auth/react";
 
 const AppContext = createContext<AppContextProps | null>(null);
@@ -37,7 +36,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     APP_INFO
   );
   const [isMounted, setIsMounted] = useState(false);
-  const { user, redirectTrigger, setRedirectTrigger } = useAuth();
+  const { user, redirectTrigger, setRedirectTrigger, isAuthenticated } =
+    useAuth();
   const { subscription, bought } = user;
   const { data, loading: isCategoriesLoading } = useQuery(
     GET_PRODUCT_CATEGORIES,
@@ -103,7 +103,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const updateUserBoughtPapers = async () => {
     if (allUniqueItems.length > 0 && user.bought.length > 0) {
       const session = await getSession();
-      if (isTokenExpired(session?.expires) || !user.id) {
+      if (!isAuthenticated() || !user.id) {
         return setRedirectTrigger(!redirectTrigger);
       }
 

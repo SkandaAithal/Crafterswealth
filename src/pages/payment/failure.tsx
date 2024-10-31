@@ -10,15 +10,15 @@ import { AppActionTypes } from "@/lib/types/common/app";
 import { OrderStatus } from "@/lib/types/checkout";
 import { SessionObject } from "@/lib/types/common/user";
 import { useMutation } from "@apollo/client";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { isTokenExpired } from "@/lib/utils/auth";
 
 const FailurePage = () => {
   const router = useRouter();
   const { payment, appDispatch } = useApp();
-  const { user, setRedirectTrigger, redirectTrigger } = useAuth();
+  const { user, setRedirectTrigger, redirectTrigger, isAuthenticated } =
+    useAuth();
   const { data: session } = useSession();
   const { getFailureOrderPayload } = useProcessOrder();
   const [isLoading, setIsloading] = useState(true);
@@ -30,8 +30,7 @@ const FailurePage = () => {
     },
   });
   const processOrder = async () => {
-    const sess = await getSession();
-    if (isTokenExpired(sess?.expires) || !user.id) {
+    if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
     const payload = getFailureOrderPayload();
@@ -50,7 +49,7 @@ const FailurePage = () => {
   };
 
   useEffect(() => {
-    if (!isTokenExpired(session?.expires) && user.id && payment.orderId) {
+    if (isAuthenticated() && user.id && payment.orderId) {
       processOrder();
     } else {
       setIsloading(false);

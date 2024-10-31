@@ -73,4 +73,5 @@ export interface AuthContextProps {
   setRedirectTrigger: React.Dispatch<boolean>;
   isAuthLoading: boolean;
   redirectTrigger: boolean;
+  isAuthenticated: () => boolean;
 }

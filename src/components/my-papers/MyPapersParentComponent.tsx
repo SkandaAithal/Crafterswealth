@@ -18,7 +18,6 @@ import { UPDATE_USER_META } from "@/lib/queries/users.query";
 import { SessionObject } from "@/lib/types/common/user";
 import { getSession } from "next-auth/react";
 import { Skeleton } from "../ui/skeleton";
-import { isTokenExpired } from "@/lib/utils/auth";
 import { useRouter } from "next/router";
 import { PLAN } from "@/lib/routes";
 
@@ -29,7 +28,8 @@ const MyPapersParentComponent = () => {
     InvestmentStatus.HIGHEST_POTENTIAL
   );
   const [boughtProducts, setBoughtProducts] = useState<BoughtProduct[]>([]);
-  const { user, redirectTrigger, setRedirectTrigger } = useAuth();
+  const { user, redirectTrigger, setRedirectTrigger, isAuthenticated } =
+    useAuth();
   const { boughtObject, categories, products } = useApp();
   const categoryName =
     categories.find((c) => c.slug === selectedCategory)?.name ?? "";
@@ -83,7 +83,7 @@ const MyPapersParentComponent = () => {
     index: number
   ) => {
     const session = await getSession();
-    if (isTokenExpired(session?.expires) || !user.id) {
+    if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
 
@@ -229,7 +229,6 @@ const MyPapersParentComponent = () => {
           user.productsInvested.includes(p.id)
         )
       : productsWithMarketPrice;
-
   return (
     <div className="space-y-5 md:space-y-8">
       <AnimateOnce>
