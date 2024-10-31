@@ -3,10 +3,7 @@ import SocialLogins from "@/components/auth/SocialLogins";
 import AnimateOnce from "@/components/common/AnimateOnce";
 import AuthBanner from "@/components/common/AuthBanner";
 import Title from "@/components/common/Title";
-import { getServerSession } from "next-auth";
-import { GetServerSideProps } from "next";
-import { authConfig } from "@/lib/utils/auth/authConfig";
-import { HOME } from "@/lib/routes";
+
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/ui/page-loader";
 import { isTokenExpired } from "@/lib/utils/auth";
@@ -41,25 +38,6 @@ const Login = () => {
       </section>
     </main>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authConfig);
-  const { query } = context;
-  const redirectUrl = query.redirect || HOME;
-
-  if (!isTokenExpired(session?.expires)) {
-    return {
-      redirect: {
-        destination: redirectUrl as string,
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
 };
 
 export default Login;

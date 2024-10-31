@@ -3,11 +3,6 @@ import SocialLogins from "@/components/auth/SocialLogins";
 import AnimateOnce from "@/components/common/AnimateOnce";
 import AuthBanner from "@/components/common/AuthBanner";
 import Title from "@/components/common/Title";
-import { HOME } from "@/lib/routes";
-import { isTokenExpired } from "@/lib/utils/auth";
-import { authConfig } from "@/lib/utils/auth/authConfig";
-import { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth";
 import React from "react";
 
 const Signup = () => {
@@ -35,19 +30,4 @@ const Signup = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authConfig);
-  if (!isTokenExpired(session?.expires)) {
-    return {
-      redirect: {
-        destination: HOME,
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
 export default Signup;
