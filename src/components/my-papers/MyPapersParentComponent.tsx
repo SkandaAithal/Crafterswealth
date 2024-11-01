@@ -168,12 +168,12 @@ const MyPapersParentComponent = () => {
         (product) => !user.productsViewed.includes(product.id)
       );
     } else if (selectedStatus === InvestmentStatus.INVESTED) {
-      return filteredProductsByCategory.filter((product) =>
-        user.productsInvested.includes(product.id)
-      );
-    } else if (selectedStatus === InvestmentStatus.NOT_INVESTED) {
       return filteredProductsByCategory.filter(
         (product) => !user.productsInvested.includes(product.id)
+      );
+    } else if (selectedStatus === InvestmentStatus.NOT_INVESTED) {
+      return filteredProductsByCategory.filter((product) =>
+        user.productsInvested.includes(product.id)
       );
     } else {
       return [];
@@ -223,12 +223,10 @@ const MyPapersParentComponent = () => {
   };
 
   const latestProduct = filteredProductsByCategory[0];
-  const portfolioProducts =
-    user.productsInvested.length > 0
-      ? productsWithMarketPrice.filter((p) =>
-          user.productsInvested.includes(p.id)
-        )
-      : productsWithMarketPrice;
+  const portfolioProducts = productsWithMarketPrice.filter(
+    (p) => !user.productsInvested.includes(p.id)
+  );
+
   return (
     <div className="space-y-5 md:space-y-8">
       <AnimateOnce>

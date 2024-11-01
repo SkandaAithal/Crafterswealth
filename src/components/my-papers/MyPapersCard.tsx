@@ -39,7 +39,7 @@ const MyPapersCard: React.FC<MyPapersCardsProps> = ({
   const productsViewdKey = "productsViewed";
   const productsInvestedKey = "productsInvested";
   const isPaperViewed = user.productsViewed.includes(id);
-  const isPaperInvested = user.productsInvested.includes(id);
+  const isPaperInvested = !user.productsInvested.includes(id);
 
   useEffect(() => {
     if (isPaperInvested) {
@@ -74,7 +74,7 @@ const MyPapersCard: React.FC<MyPapersCardsProps> = ({
     if (isUpdating) return;
 
     setIsChecked(checked);
-    if (!isPaperInvested) {
+    if (isPaperInvested) {
       const payload: string[] = [...user.productsInvested, id];
 
       await handleUpdateUserMetaData(productsInvestedKey, payload, index!);
