@@ -36,7 +36,7 @@ export interface ProductsData {
   };
 }
 
-export interface ProductsPageProps {
+export interface ProductsProps {
   products: ProductNode[];
 }
 

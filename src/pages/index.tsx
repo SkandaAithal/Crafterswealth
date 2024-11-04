@@ -10,20 +10,26 @@ import StocksBarChart from "@/components/products/StocksBarChart";
 import TargetsReached from "@/components/products/TargetsReached";
 import { Button } from "@/components/ui/button";
 import LazyImage from "@/components/ui/lazy-image";
+import client from "@/lib/apollo-client";
 import { INDIAN_STOCKS, SYMBOLS_DATA } from "@/lib/constants";
+import {
+  GET_PRODUCT_CATEGORIES,
+  GET_PRODUCTS,
+} from "@/lib/queries/products.query";
 import { PRODUCTS } from "@/lib/routes";
+import { ProductsProps } from "@/lib/types/products";
+import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
 
-export default function Home() {
+const Home: NextPage<ProductsProps> = ({ products }) => {
   const router = useRouter();
-
   const handleredirectToProductsPage = () => router.push(PRODUCTS);
 
   return (
     <main>
       <section className="banner min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid md:grid-cols-2 place-content-center text-center md:text-left ">
         <div className="flex flex-col justify-center items-start md:gap-10  ">
-          <div className="">
+          <div>
             <Title
               text="Investment Made Easy with"
               className="!text-wrap lg:text-6xl"
@@ -61,11 +67,11 @@ export default function Home() {
 
       <TradingViewTicker symbols={SYMBOLS_DATA} />
 
-      <section className="bg-gradient-to-b from-accent to-white pt-16 px-0 md:px-20 xl:px-[144px] text-center mx-auto space-y-12 ">
+      <section className="bg-gradient-to-b from-accent to-white pt-16 px-0 md:px-[64px] xl:px-[96px] text-center mx-auto space-y-12 ">
         <Title text="Today’s Must Buy" />
         <div className=" md:grid grid-cols-1 lg:grid-cols-3 place-content-center gap-6">
           <div className="md:col-span-2 mask my-auto">
-            <ProductsSwiper />
+            <ProductsSwiper products={products} />
           </div>
           <div className="flex justify-center xl:justify-end items-center px-4 md:px-0">
             <StocksBarChart />
@@ -98,4 +104,33 @@ export default function Home() {
       </section>
     </main>
   );
-}
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const { data: categoriesData } = await client.query({
+    query: GET_PRODUCT_CATEGORIES,
+  });
+
+  const categories = categoriesData?.productCategories?.nodes ?? [];
+
+  const products = (
+    await Promise.all(
+      categories.map(async ({ name }: { name: string }) => {
+        const { data } = await client.query({
+          query: GET_PRODUCTS,
+          variables: { categories: name },
+        });
+        return data?.products?.nodes ?? [];
+      })
+    )
+  ).flat();
+
+  return {
+    props: {
+      products,
+    },
+    revalidate: 60,
+  };
+};
+
+export default Home;

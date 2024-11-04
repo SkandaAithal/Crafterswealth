@@ -41,7 +41,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
                 target="_blank"
                 className=" rounded-xl overflow-hidden m-4 h-56 w-60 shadow-lg"
               >
-                <div className="p-5 bg-[rgba(204,235,255,0.75)]  h-full flex flex-col justify-between">
+                <div className="p-5 bg-[#e1e8ff] hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
                   <h1 className="text-xl font-bold text-center mb-4">
                     {item.stock}
                   </h1>

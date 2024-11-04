@@ -4,7 +4,6 @@ import { Slider } from "../ui/slider";
 import { TimePeriod } from "@/lib/types/components/stocks-chart";
 import { barChartGraphData } from "@/lib/constants";
 import { Button } from "../ui/button";
-import AnimateOnce from "../common/AnimateOnce";
 import { formatNumberInShort } from "@/lib/utils";
 
 const StocksBarChart = () => {
@@ -17,46 +16,42 @@ const StocksBarChart = () => {
     setTimePeriod(value);
   };
 
-  const renderBar = (gainLoss: number) => {
+  const renderBar = (gainLoss: number, minGainLoss: number) => {
     const gainLossAmount = investedAmount * Math.abs(gainLoss);
-    const gainLossHeight = (gainLossAmount / MAX_VALUE) * 100;
+    const adjustedGainLossAmount = Math.max(
+      gainLossAmount - Math.abs(minGainLoss),
+      0
+    );
+
+    const gainLossHeight =
+      (adjustedGainLossAmount / (MAX_VALUE - Math.abs(minGainLoss))) * 100 + 30;
+    const clampedHeight = Math.min(gainLossHeight, 100);
 
     return (
-      <div className="flex flex-col items-center space-y-2 ">
-        <AnimateOnce>
-          <div
-            className={twMerge(
-              "w-16 relative transition-all duration-500",
-              timePeriod === TimePeriod.ThreeMonths
-                ? "h-32"
-                : timePeriod === TimePeriod.SixMonths
-                  ? "h-36"
-                  : "h-28"
+      <div className="flex flex-col h-full items-center relative">
+        <div
+          className={twMerge(
+            "w-16 h-full text-sm absolute font-semibold text-center transition-all duration-500",
+            gainLoss >= 0 ? "bg-green-400" : "bg-red-500"
+          )}
+          style={{
+            height: `${clampedHeight}%`,
+            bottom: 0,
+          }}
+        >
+          <p className="-translate-y-6">
+            ₹
+            {formatNumberInShort(
+              investedAmount + investedAmount * Math.abs(gainLoss)
             )}
-          >
-            <div
-              className={twMerge(
-                "w-full absolute text-sm font-semibold text-center transition-all duration-500",
-                gainLoss >= 0 ? "bg-green-400" : "bg-red-500"
-              )}
-              style={{
-                height: `${gainLossHeight}%`,
-                bottom: gainLoss >= 0 ? "100%" : "auto",
-              }}
-            >
-              <p className="-translate-y-6">
-                ₹
-                {formatNumberInShort(
-                  investedAmount + investedAmount * Math.abs(gainLoss)
-                )}
-              </p>
-            </div>
-            <div className="bg-accent h-full transition-all duration-500" />
-          </div>
-        </AnimateOnce>
+          </p>
+        </div>
       </div>
     );
   };
+
+  const gainLossValues = Object.values(barChartGraphData[timePeriod]);
+  const minGainLoss = Math.min(...gainLossValues);
 
   return (
     <div className="py-8 px-4 relative bg-white min-w-full md:min-w-[360px] md:max-w-96 space-y-16 rounded-lg shadow-md mt-6">
@@ -95,15 +90,16 @@ const StocksBarChart = () => {
         </div>
       </div>
 
-      <div className="h-[280px] flex flex-col justify-end">
+      <div className="h-[280px] flex flex-col justify-end ">
         <div className="space-y-4">
-          <div className="flex justify-around mt-8 border-b-[1px] border-gray-300">
+          <div className="flex justify-around mt-8 border-b-[1px] border-gray-300 h-[260px]">
             {Object.keys(barChartGraphData[timePeriod]).map((key) => (
               <Fragment key={key}>
                 {renderBar(
                   barChartGraphData[timePeriod][
                     key as keyof (typeof barChartGraphData)[TimePeriod]
-                  ]
+                  ],
+                  minGainLoss
                 )}
               </Fragment>
             ))}
