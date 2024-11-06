@@ -11,6 +11,14 @@ import {
 } from "../routes";
 import { CiWallet } from "react-icons/ci";
 import { InvestmentType, TimePeriod } from "../types/components/stocks-chart";
+import {
+  FaChartLine,
+  FaSearchDollar,
+  FaShieldAlt,
+  FaRocket,
+  FaBalanceScale,
+  FaUniversity,
+} from "react-icons/fa";
 
 export const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY!;
 export const GEO_NAMES_USER_NAME = process.env.NEXT_PUBLIC_GEO_NAME_USER_NAME!;
@@ -311,7 +319,7 @@ export const TARGETS_REACHED_ITEMS = [
   },
 ];
 
-export const barChartGraphData = {
+export const MarketBarChartGraphData = {
   [TimePeriod.OneMonth]: {
     [InvestmentType.Crafterswealth]: 0.105,
     [InvestmentType.Nifty50]: 0.04,
@@ -326,6 +334,24 @@ export const barChartGraphData = {
     [InvestmentType.Crafterswealth]: 0.55,
     [InvestmentType.Nifty50]: 0.12,
     [InvestmentType.MutualFund]: 0.25,
+  },
+};
+
+export const MarketCapBarChartGraphData = {
+  [TimePeriod.OneMonth]: {
+    [InvestmentType.SmallCap]: 0.115,
+    [InvestmentType.MidCap]: 0.08,
+    [InvestmentType.LargeCap]: 0.04,
+  },
+  [TimePeriod.ThreeMonths]: {
+    [InvestmentType.SmallCap]: 0.14,
+    [InvestmentType.MidCap]: 0.12,
+    [InvestmentType.LargeCap]: 0.15,
+  },
+  [TimePeriod.SixMonths]: {
+    [InvestmentType.SmallCap]: 0.31,
+    [InvestmentType.MidCap]: 0.23,
+    [InvestmentType.LargeCap]: 0.35,
   },
 };
 
@@ -468,39 +494,6 @@ export const FAQ_DATA = {
   ],
 };
 
-export const INDIAN_STOCKS = [
-  "RELIANCE",
-  "TCS",
-  "HDFCBANK",
-  "INFY",
-  "HUL",
-  "ICICIBANK",
-  "SBI",
-  "BHARTIARTL",
-  "HDFC",
-  "KOTAKBANK",
-  "LT",
-  "AXISBANK",
-  "ITC",
-  "BAJAJFINANCE",
-  "WIPRO",
-  "TATAMOTORS",
-  "MARUTI",
-  "SUNPHARMA",
-  "DRREDDY",
-  "NTPC",
-  "ONGC",
-  "POWERGRID",
-  "MAHINDRA",
-  "SBILIFE",
-  "UPL",
-  "TECHM",
-  "EICHERMOT",
-  "ADANIENT",
-  "ADANIGREEN",
-  "JSWSTEEL",
-];
-
 export const TESTIMONIALS = [
   {
     id: 1,
@@ -547,90 +540,139 @@ export const SYMBOLS_DATA = [
 export const STOCK_RESEARCH_CONFIG = {
   "small-cap": {
     title: "Small Cap Stock Research",
-    type: "Small Cap Stock",
+    subtitle: "Unlock Explosive Growth with High-Potential Small Caps 📈",
+    type: InvestmentType.SmallCap,
     aboutStock:
       "Small cap stocks represent companies with smaller market capitalization, typically ranging from ₹100 crore to ₹5,000 crore. These stocks are more volatile but have greater potential for substantial growth, often outperforming larger stocks during bull markets.",
 
-    whyReliable: [
-      "Our research team specializes in identifying under-the-radar small cap stocks with high growth potential.",
-      "We provide in-depth technical and fundamental analysis, including insider buying patterns and institutional interest.",
-      "Our reports are data-driven, with real-time market insights to give you a competitive advantage.",
-    ],
-
-    marketSentiment:
-      "Small cap stocks tend to perform well during periods of economic expansion but can be more vulnerable to market corrections and downturns. However, strategic investments can yield higher returns if timed well.",
-
-    reasonToBuy: [
-      "Higher growth potential compared to large cap stocks.",
-      "Opportunity to invest in companies in their early growth stages.",
-      "Small cap stocks can generate substantial returns over time.",
-      "Diversification into emerging industries and technologies.",
-    ],
-
-    investorProfile: [
-      "Aggressive investors looking for high growth potential.",
-      "Investors who are willing to tolerate higher volatility.",
-      "People interested in long-term growth and diversification.",
+    features: [
+      {
+        title: "High Growth Potential",
+        description:
+          "Focuses on identifying small cap stocks with high potential for substantial growth.",
+        icon: FaRocket,
+      },
+      {
+        title: "In-Depth Analysis",
+        description:
+          "Comprehensive technical and fundamental analysis, including insider and institutional data.",
+        icon: FaSearchDollar,
+      },
+      {
+        title: "Real-Time Insights",
+        description:
+          "Provides timely market insights and data to keep you competitive.",
+        icon: FaChartLine,
+      },
+      {
+        title: "Emerging Sectors",
+        description:
+          "Gain exposure to companies in emerging industries and technologies.",
+        icon: FaBalanceScale,
+      },
+      {
+        title: "Diversified Opportunities",
+        description:
+          "Investment in early-stage companies with diversified growth opportunities.",
+        icon: FaUniversity,
+      },
+      {
+        title: "Aggressive Returns",
+        description:
+          "Ideal for aggressive investors looking for high growth potential.",
+        icon: FaShieldAlt,
+      },
     ],
   },
 
   "mid-cap": {
     title: "Mid Cap Stock Research",
-    type: "Mid Cap Stock",
-
+    subtitle: "Seize the Sweet Spot: Balanced Growth with Mid Caps 🏆",
+    type: InvestmentType.MidCap,
     aboutStock:
       "Mid cap stocks represent companies with a market capitalization between ₹5,000 crore and ₹20,000 crore. These companies offer a balance between growth potential and stability, often considered a 'sweet spot' for risk and reward in the stock market.",
 
-    whyReliable: [
-      "We focus on stable mid cap companies with proven track records, yet untapped potential for significant growth.",
-      "Our research incorporates comprehensive sectoral analysis and peer comparisons to offer actionable insights.",
-      "We have access to proprietary data and predictive models to help guide investment decisions.",
-    ],
-
-    marketSentiment:
-      "Mid cap stocks generally perform well during stable economic periods. They are often more resilient than small caps during downturns and can benefit from mergers, acquisitions, and industry growth.",
-
-    reasonToBuy: [
-      "Balanced risk and return compared to small and large caps.",
-      "Companies with solid growth potential but lower risk than small caps.",
-      "Mid caps often outperform during periods of economic expansion.",
-      "Opportunity to invest in companies poised to become large caps.",
-    ],
-
-    investorProfile: [
-      "Moderate-risk investors seeking a balance between stability and growth.",
-      "People looking for companies with both growth potential and proven stability.",
-      "Investors interested in well-established sectors like manufacturing, retail, and healthcare.",
+    features: [
+      {
+        title: "Balanced Growth",
+        description:
+          "Offers a mix of growth potential and stability, ideal for moderate-risk investors.",
+        icon: FaBalanceScale,
+      },
+      {
+        title: "Proven Stability",
+        description:
+          "Focuses on companies with proven track records and stable growth.",
+        icon: FaShieldAlt,
+      },
+      {
+        title: "Sectoral Analysis",
+        description:
+          "Includes in-depth sectoral and peer comparisons to guide investment.",
+        icon: FaUniversity,
+      },
+      {
+        title: "Economic Expansion",
+        description:
+          "Mid caps tend to outperform in periods of economic growth.",
+        icon: FaChartLine,
+      },
+      {
+        title: "Predictive Models",
+        description:
+          "Access to predictive data models for making informed decisions.",
+        icon: FaSearchDollar,
+      },
+      {
+        title: "Growth Potential",
+        description:
+          "Invest in companies with the potential to become future large caps.",
+        icon: FaRocket,
+      },
     ],
   },
 
   "large-cap": {
     title: "Large Cap Stock Research",
-    type: "Large Cap Stock",
-
+    subtitle: "Stability Meets Growth: Your Secure Investment in Large Caps 💼",
+    type: InvestmentType.LargeCap,
     aboutStock:
       "Large cap stocks are shares of companies with a market capitalization above ₹20,000 crore. These companies are typically well-established, financially stable, and provide a lower-risk investment option.",
 
-    whyReliable: [
-      "Our large cap research includes detailed macroeconomic analysis to provide context for market movements and trends.",
-      "We monitor global market conditions, industry shifts, and company fundamentals to create actionable recommendations.",
-      "Our papers focus on long-term strategies, dividend yields, and potential for steady growth.",
-    ],
-
-    marketSentiment:
-      "Large cap stocks are considered safer investments and are often favored during periods of economic uncertainty or volatility. They tend to provide steady returns through dividends and moderate price appreciation.",
-
-    reasonToBuy: [
-      "Lower risk due to company size and financial stability.",
-      "Consistent dividends and reliable long-term growth.",
-      "Less volatile, making them a safer choice during market downturns.",
-      "Often the foundation of long-term portfolios with a focus on wealth preservation.",
-    ],
-
-    investorProfile: [
-      "Conservative investors focused on stability and long-term growth.",
-      "Dividend-focused investors looking for steady income.",
-      "People seeking lower volatility and safer returns.",
+    features: [
+      {
+        title: "Lower Risk",
+        description:
+          "Large caps are less volatile and provide a safer investment option.",
+        icon: FaShieldAlt,
+      },
+      {
+        title: "Dividend Income",
+        description: "Stable companies offering reliable dividend yields.",
+        icon: FaUniversity,
+      },
+      {
+        title: "Long-Term Stability",
+        description:
+          "Ideal for conservative investors focused on wealth preservation.",
+        icon: FaBalanceScale,
+      },
+      {
+        title: "Macro Analysis",
+        description: "Includes macroeconomic insights and trend analysis.",
+        icon: FaChartLine,
+      },
+      {
+        title: "Global Market Trends",
+        description:
+          "Monitors global conditions to optimize large cap strategies.",
+        icon: FaSearchDollar,
+      },
+      {
+        title: "Wealth Preservation",
+        description: "Focus on long-term growth with minimal risk.",
+        icon: FaShieldAlt,
+      },
     ],
   },
 };
@@ -755,119 +797,6 @@ export const BLOGS_DATA = [
       "Trading stocks is as much about psychology as it is about strategy. Learn how to manage emotions when making trades.",
     image: "/product-details.jpeg",
     postedAt: "22 Apr 2024",
-  },
-];
-
-export const PAPERS = [
-  {
-    id: 1,
-    name: "Stock Paper (RP0010)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Adani Enterprises Limited",
-    stockSymbol: "ADANIENT.NS",
-    buyPrice: 3105.1,
-    target: 3430.0,
-  },
-  {
-    id: 2,
-    name: "Stock Paper (RP0011)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Reliance Industries Limited",
-    stockSymbol: "RELIANCE.NS",
-    buyPrice: 2400.5,
-    target: 2700.0,
-  },
-  {
-    id: 3,
-    name: "Stock Paper (RP0012)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Tata Consultancy Services",
-    stockSymbol: "TCS.NS",
-    buyPrice: 3800.0,
-    target: 4200.0,
-  },
-  {
-    id: 4,
-    name: "Stock Paper (RP0013)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "HDFC Bank Limited",
-    stockSymbol: "HDFCBANK.NS",
-    buyPrice: 1400.0,
-    target: 1550.0,
-  },
-  {
-    id: 5,
-    name: "Stock Paper (RP0014)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Infosys Limited",
-    stockSymbol: "INFY.NS",
-    buyPrice: 1500.0,
-    target: 1650.0,
-  },
-  {
-    id: 6,
-    name: "Stock Paper (RP0015)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "State Bank of India",
-    stockSymbol: "SBIN.NS",
-    buyPrice: 600.0,
-    target: 670.0,
-  },
-  {
-    id: 7,
-    name: "Stock Paper (RP0016)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Hindustan Unilever Limited",
-    stockSymbol: "HINDUNILVR.NS",
-    buyPrice: 2600.0,
-    target: 2900.0,
-  },
-  {
-    id: 8,
-    name: "Stock Paper (RP0017)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Bharti Airtel Limited",
-    stockSymbol: "BHARTIARTL.NS",
-    buyPrice: 700.0,
-    target: 780.0,
-  },
-  {
-    id: 9,
-    name: "Stock Paper (RP0018)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "ICICI Bank Limited",
-    stockSymbol: "ICICIBANK.NS",
-    buyPrice: 800.0,
-    target: 850.0,
-  },
-  {
-    id: 10,
-    name: "Stock Paper (RP0019)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Larsen & Toubro Limited",
-    stockSymbol: "LT.NS",
-    buyPrice: 2200.0,
-    target: 2500.0,
-  },
-  {
-    id: 11,
-    name: "Stock Paper (RP0020)",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-    stockName: "Maruti Suzuki India Limited",
-    stockSymbol: "MARUTI.NS",
-    buyPrice: 8000.0,
-    target: 8800.0,
   },
 ];
 

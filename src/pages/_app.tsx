@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import VerifyEmail from "@/components/auth/VerifyEmail";
 import ProtectedRoute from "@/lib/provider/protected-route";
 import { AuthProvider } from "@/lib/provider/auth-provider";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 
 export default function App({
   Component,
@@ -27,6 +28,7 @@ export default function App({
             </ProtectedRoute>
             <VerifyEmail />
             <Toaster />
+            <Sonner />
           </AppProvider>
         </AuthProvider>
       </ApolloProvider>

@@ -11,6 +11,7 @@ export interface AppContextProps {
   categories: ProductCategory[];
   boughtObject: Record<string, string[]>;
   allProducts: Record<string, string[]>;
+  countries: CountriesTypes[];
 }
 
 export interface VerifyEmail {
@@ -39,11 +40,18 @@ export interface PaymentContext {
   orderId: number;
   transactionId: string;
 }
+
+export interface CountriesTypes {
+  name: string;
+  code: string;
+  flag: string;
+}
 export interface AppState {
   products: ProductNode[];
   verifyEmail: VerifyEmail;
   forgotPassword: ForgotPasswordContext;
   payment: PaymentContext;
+  countries: CountriesTypes[];
 }
 export enum AppActionTypes {
   ADD_PRODUCT = "ADD_PRODUCT",
@@ -58,6 +66,7 @@ export enum AppActionTypes {
   SET_FORGOT_PASSWORD_DEFAULT = "SET_FORGOT_PASSWORD_DEFAULT",
   INITIATE_PAYMENT = "INITIATE_PAYMENT",
   CLEAR_PAYMENT = "CLEAR_PAYMENT",
+  SET_COUNTRIES = "SET_COUNTRIES",
 }
 export type AppAction =
   | {
@@ -97,6 +106,10 @@ export type AppAction =
       payload: ProductNode[];
     }
   | {
+      type: AppActionTypes.SET_COUNTRIES;
+      payload: CountriesTypes[];
+    }
+  | {
       type: AppActionTypes.INITIATE_PAYMENT;
       payload: PaymentContext;
     }
@@ -109,4 +122,8 @@ export interface SendVerificationEmailArgs {
   email: string;
   expire: number;
   setIsVerifyEmailLoading: React.Dispatch<boolean>;
+}
+
+export interface SubscribeToNewsLetterFormData {
+  email: string;
 }

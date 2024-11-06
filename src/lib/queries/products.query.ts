@@ -120,3 +120,20 @@ export const GET_ALL_PRODUCT_IDS_BY_CATEGORY = gql`
     allProductIdsByCategory
   }
 `;
+
+export const GET_PUBLIC_ORDERS = gql`
+  query MyQuery {
+    publicOrders {
+      country
+      datePaid
+      firstName
+      lastName
+      state
+      city
+      items {
+        imageUrl
+        name
+      }
+    }
+  }
+`;

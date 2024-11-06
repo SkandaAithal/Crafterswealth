@@ -1,8 +1,8 @@
 import AnimateOnce from "@/components/common/AnimateOnce";
-import Scroller from "@/components/common/Scroller";
 import Title from "@/components/common/Title";
 import Typewriter from "@/components/common/TypeWriter";
 import FAQ from "@/components/home-page/Faq";
+import OrdersNotification from "@/components/home-page/OrdersNotification";
 import Testimonials from "@/components/home-page/Testimonials";
 import TradingViewTicker from "@/components/home-page/TradingViewTicker";
 import ProductsSwiper from "@/components/products/ProductsSwiper";
@@ -11,12 +11,13 @@ import TargetsReached from "@/components/products/TargetsReached";
 import { Button } from "@/components/ui/button";
 import LazyImage from "@/components/ui/lazy-image";
 import client from "@/lib/apollo-client";
-import { INDIAN_STOCKS, SYMBOLS_DATA } from "@/lib/constants";
+import { MarketBarChartGraphData, SYMBOLS_DATA } from "@/lib/constants";
 import {
   GET_PRODUCT_CATEGORIES,
   GET_PRODUCTS,
 } from "@/lib/queries/products.query";
 import { PRODUCTS } from "@/lib/routes";
+import { InvestmentType } from "@/lib/types/components/stocks-chart";
 import { ProductsProps } from "@/lib/types/products";
 import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
@@ -74,7 +75,10 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
             <ProductsSwiper products={products} />
           </div>
           <div className="flex justify-center xl:justify-end items-center px-4 md:px-0">
-            <StocksBarChart />
+            <StocksBarChart
+              barChartGraphData={MarketBarChartGraphData}
+              primaryInvestMent={InvestmentType.Crafterswealth}
+            />
           </div>
         </div>
         <div className="grid gap-6">
@@ -87,21 +91,11 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
           <FAQ />
         </AnimateOnce>
 
-        <Scroller>
-          {INDIAN_STOCKS.map((stock) => (
-            <div
-              className="m-2 px-2 text-base py-1 border border-gray-500 rounded-lg"
-              key={stock}
-            >
-              {stock}
-            </div>
-          ))}
-        </Scroller>
-
         <AnimateOnce>
           <Testimonials />
         </AnimateOnce>
       </section>
+      <OrdersNotification />
     </main>
   );
 };

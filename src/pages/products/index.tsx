@@ -5,6 +5,7 @@ import StocksBarChart from "@/components/products/StocksBarChart";
 import TargetsReached from "@/components/products/TargetsReached";
 
 import client from "@/lib/apollo-client";
+import { MarketBarChartGraphData } from "@/lib/constants";
 import useStockData from "@/lib/hooks/use-stock-data";
 import { useApp } from "@/lib/provider/app-provider";
 import {
@@ -12,6 +13,7 @@ import {
   GET_PRODUCTS,
 } from "@/lib/queries/products.query";
 import { AppActionTypes } from "@/lib/types/common/app";
+import { InvestmentType } from "@/lib/types/components/stocks-chart";
 import { ProductsProps } from "@/lib/types/products";
 import { GetStaticProps, NextPage } from "next";
 import React, { useEffect, useMemo } from "react";
@@ -88,7 +90,10 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
           </div>
           <TargetsReached onlyTargets />
         </div>
-        <StocksBarChart />
+        <StocksBarChart
+          barChartGraphData={MarketBarChartGraphData}
+          primaryInvestMent={InvestmentType.Crafterswealth}
+        />
       </section>
     </main>
   );

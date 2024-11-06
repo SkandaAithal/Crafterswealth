@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { AppContextProps } from "../types/common/app";
+import { AppActionTypes, AppContextProps } from "../types/common/app";
 import usePersistentReducer from "../hooks/use-persistent-reducer";
 import { appReducer, initialState } from "../utils/app";
 import { APP_INFO } from "../constants";
@@ -24,6 +24,7 @@ import { SessionObject } from "../types/common/user";
 import { UPDATE_USER_META } from "../queries/users.query";
 import { toast } from "../hooks/use-toast";
 import { getSession } from "next-auth/react";
+import axios from "axios";
 
 const AppContext = createContext<AppContextProps | null>(null);
 
@@ -130,10 +131,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
       }
     }
   };
+
   useEffect(() => {
     updateUserBoughtPapers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boughtArray]);
+
+  const fetchCountries = async () => {
+    if (!state.countries.length) {
+      const restCountriesResponse = await axios.get(
+        process.env.NEXT_PUBLIC_REST_COUNTRIES_API!
+      );
+      const restCountriesData = restCountriesResponse.data;
+
+      const restCountries = restCountriesData.map((country: any) => ({
+        name: country.name.common,
+        code: country.cca2,
+        flag: country.flags.svg,
+      }));
+      dispatch({ type: AppActionTypes.SET_COUNTRIES, payload: restCountries });
+    }
+  };
+
+  useEffect(() => {
+    fetchCountries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.countries]);
+
   return (
     <AppContext.Provider
       value={{
@@ -147,6 +171,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         categories,
         boughtObject,
         allProducts,
+        countries: state.countries,
       }}
     >
       {children}

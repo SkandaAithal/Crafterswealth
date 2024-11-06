@@ -24,6 +24,7 @@ export const initialState: AppState = {
   verifyEmail: verifyEmailInitialState,
   forgotPassword: forgotPasswordInitialState,
   payment: paymentInitialState,
+  countries: [],
 };
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
@@ -31,6 +32,10 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {
       case AppActionTypes.ADD_PRODUCT:
         draft.products = action.payload;
+        break;
+
+      case AppActionTypes.SET_COUNTRIES:
+        draft.countries = action.payload;
         break;
 
       case AppActionTypes.TOGGLE_VERIFY_EMAIL_MODAL:

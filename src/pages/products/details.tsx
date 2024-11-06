@@ -1,14 +1,20 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { STOCK_RESEARCH_CONFIG } from "@/lib/constants";
+import {
+  MarketCapBarChartGraphData,
+  STOCK_RESEARCH_CONFIG,
+} from "@/lib/constants";
 import Title from "@/components/common/Title";
 import { Button } from "@/components/ui/button";
-import { IoArrowBack } from "react-icons/io5";
+import { IoArrowBack, IoStatsChartOutline } from "react-icons/io5";
 import { HOME, PLAN, PRODUCTS, PRODUCTS_DETAIL } from "@/lib/routes";
 import AnimateOnce from "@/components/common/AnimateOnce";
 import BreadCrumbsComponent from "@/components/common/BreadCrumbsComponent";
 import dynamic from "next/dynamic";
-import LazyImage from "@/components/ui/lazy-image";
+import StocksBarChart from "@/components/products/StocksBarChart";
+import { RiStockFill } from "react-icons/ri";
+import { IconType } from "react-icons/lib";
+import { twMerge } from "tailwind-merge";
 
 const TargetsReachedTable = dynamic(
   () => import("@/components/products/TargetsReachedTable"),
@@ -67,33 +73,51 @@ const StockDetailsPage = () => {
       <AnimateOnce>
         <div className="banner-2 pb-16">
           <BreadCrumbsComponent routes={pageRoutes} />
-          <section className="grid md:grid-cols-2 gap-10 layout min-h-[75dvh]">
-            <LazyImage
-              src="/product-details.jpeg"
-              alt="product-details"
-              height={300}
-              width={300}
-              isLazyLoad
-              className="h-full w-full rounded object-cover m-auto order-1 md:order-2"
-            />
+          <section className="flex flex-col-reverse md:flex-row justify-center gap-10 layout min-h-[75dvh]">
+            <div className="h-full w-full flex flex-col justify-start items-center">
+              <StocksBarChart
+                barChartGraphData={MarketCapBarChartGraphData}
+                primaryInvestMent={productDetails.type}
+              />
+            </div>
 
             <div className="space-y-9 order-2 md:order-1">
               <div>
-                <Title text={productDetails.title} size="H2" />
-                <p className="text-lg">{productDetails.aboutStock}</p>
+                <Title
+                  text={productDetails.title}
+                  size="H2"
+                  className="!mb-2"
+                  noAnimate
+                />
+                <p className="text-xl font-semibold ">
+                  {productDetails.subtitle}
+                </p>
+                <p className="text-lg mt-6">{productDetails.aboutStock}</p>
               </div>
-              <div className="mt-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                  Market Sentiment
-                </h3>
-                <p className="text-lg">{productDetails.marketSentiment}</p>
+              <div className="mt-8 flex justify-start items-center gap-6 text-center">
+                <div className="bg-primary p-6 shadow-lg rounded-xl w-60">
+                  <div className="p-4 border border-gray-200 rounded-2xl shadow-xl mb-5 w-fit mx-auto">
+                    <RiStockFill size={30} />
+                  </div>
+                  <p className="mx-auto text-base font-semibold">
+                    SEBI Registered analyst
+                  </p>
+                </div>
+                <div className="bg-primary p-6 shadow-lg rounded-xl w-60">
+                  <div className="p-4 border border-gray-200 rounded-2xl shadow-xl mb-5 w-fit mx-auto">
+                    <IoStatsChartOutline size={30} />
+                  </div>
+                  <p className="mx-auto text-base font-semibold">
+                    96% success rate
+                  </p>
+                </div>
               </div>
               <div className="text-center md:text-start">
                 <Button
                   onClick={handleBuyNow}
                   className="w-fit mt-5 text-2xl font-bold !px-10 md:!py-3"
                 >
-                  Buy Now
+                  Go to {productDetails.type} Plans
                 </Button>
               </div>
             </div>
@@ -102,45 +126,35 @@ const StockDetailsPage = () => {
       </AnimateOnce>
       <section className="bg-gradient-to-t from-accent to-white layout pb-16">
         <AnimateOnce>
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 md:p-6">
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8 transition-transform transform hover:scale-105">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                Why Our Research Is Reliable
-              </h3>
-              <ul className="list-disc list-inside text-gray-600 text-base pl-5">
-                {productDetails.whyReliable.map((point, index) => (
-                  <li key={index} className="mb-2">
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8 transition-transform transform hover:scale-105">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                Reasons to Invest
-              </h3>
-              <ul className="list-disc list-inside text-gray-600 text-base pl-5">
-                {productDetails.reasonToBuy.map((reason, index) => (
-                  <li key={index} className="mb-2">
-                    {reason}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8 transition-transform transform hover:scale-105">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                Investor Profile
-              </h3>
-              <ul className="list-disc list-inside text-gray-600 text-base pl-5">
-                {productDetails.investorProfile.map((profile, index) => (
-                  <li key={index} className="mb-2">
-                    {profile}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <section className="grid pb-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 md:gap-14">
+            {productDetails.features.map((feature, index) => {
+              const Icon = feature.icon as IconType;
+              const isEven = index % 2 === 0;
+              return (
+                <div
+                  key={index}
+                  className={twMerge(
+                    "bg-primary shadow-lg rounded-2xl cursor-default p-8 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300",
+                    isEven
+                      ? " bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
+                      : ""
+                  )}
+                >
+                  <div className="p-6 rounded-full bg-primary-blue">
+                    <Icon className="text-3xl text-primary" />
+                  </div>
+                  <h3 className="text-2xl  font-bold">{feature.title}</h3>
+                  <p
+                    className={twMerge(
+                      "text-base",
+                      isEven ? "text-primary" : "text-gray-600"
+                    )}
+                  >
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
           </section>
         </AnimateOnce>
 

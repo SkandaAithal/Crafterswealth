@@ -1,13 +1,28 @@
 import React, { Fragment, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Slider } from "../ui/slider";
-import { TimePeriod } from "@/lib/types/components/stocks-chart";
-import { barChartGraphData } from "@/lib/constants";
+import {
+  TimePeriod,
+  InvestmentType,
+} from "@/lib/types/components/stocks-chart";
 import { Button } from "../ui/button";
 import { formatNumberInShort } from "@/lib/utils";
 
-const StocksBarChart = () => {
-  const MAX_VALUE = 500000;
+type BarChartGraphData = {
+  [key in TimePeriod]: Record<string, number>;
+};
+
+interface StocksBarChartProps {
+  barChartGraphData: BarChartGraphData;
+  MAX_VALUE?: number;
+  primaryInvestMent: InvestmentType;
+}
+
+const StocksBarChart: React.FC<StocksBarChartProps> = ({
+  barChartGraphData,
+  MAX_VALUE = 500000,
+  primaryInvestMent,
+}) => {
   const [value, setValue] = useState([MAX_VALUE / 2]);
   const investedAmount = value[0];
   const [timePeriod, setTimePeriod] = useState<TimePeriod>(TimePeriod.OneMonth);
@@ -22,7 +37,6 @@ const StocksBarChart = () => {
       gainLossAmount - Math.abs(minGainLoss),
       0
     );
-
     const gainLossHeight =
       (adjustedGainLossAmount / (MAX_VALUE - Math.abs(minGainLoss))) * 100 + 30;
     const clampedHeight = Math.min(gainLossHeight, 100);
@@ -54,7 +68,7 @@ const StocksBarChart = () => {
   const minGainLoss = Math.min(...gainLossValues);
 
   return (
-    <div className="py-8 px-4 relative bg-white min-w-full md:min-w-[360px] md:max-w-96 space-y-16 rounded-lg shadow-md mt-6">
+    <div className="py-8 px-4 relative bg-white min-w-full md:min-w-[360px] md:max-w-96 space-y-16 rounded-lg shadow-md">
       <div>
         <h1 className="text-xl font-bold mb-6">What if you invest with us</h1>
         <Slider
@@ -72,33 +86,34 @@ const StocksBarChart = () => {
           </p>
         </div>
         <div className="mt-4 text-base flex justify-between">
-          Your investment with Crafterswealth
+          Your investment with {primaryInvestMent}
           <span className="text-green-400 font-bold">
             ₹
             {formatNumberInShort(
               investedAmount +
                 investedAmount *
-                  Math.abs(barChartGraphData[timePeriod].Crafterswealth)
+                  Math.abs(barChartGraphData[timePeriod][primaryInvestMent])
             )}
           </span>
         </div>
         <div className="text-sm flex justify-between">
           <p>With absolute return in the last {timePeriod}</p>
           <p className="text-green-400">
-            {(barChartGraphData[timePeriod].Crafterswealth * 100).toFixed(1)}%
+            {(barChartGraphData[timePeriod][primaryInvestMent] * 100).toFixed(
+              1
+            )}
+            %
           </p>
         </div>
       </div>
 
-      <div className="h-[280px] flex flex-col justify-end ">
+      <div className="h-[280px] flex flex-col justify-end">
         <div className="space-y-4">
           <div className="flex justify-around mt-8 border-b-[1px] border-gray-300 h-[260px]">
             {Object.keys(barChartGraphData[timePeriod]).map((key) => (
               <Fragment key={key}>
                 {renderBar(
-                  barChartGraphData[timePeriod][
-                    key as keyof (typeof barChartGraphData)[TimePeriod]
-                  ],
+                  barChartGraphData[timePeriod][key as InvestmentType],
                   minGainLoss
                 )}
               </Fragment>
