@@ -95,7 +95,7 @@ const OrdersNotification = () => {
         setCurrentOrderIndex((prevIndex) => (prevIndex + 1) % orders.length);
         notificationSound.play();
       }
-    }, 5000);
+    }, 10000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders, currentOrderIndex]);
