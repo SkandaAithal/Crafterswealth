@@ -167,7 +167,6 @@ const CartComponent = () => {
                               alt={cart.name}
                               height={50}
                               width={50}
-                              isLazyLoad
                               className="mx-auto object-contain"
                               skeletonClassName="rounded-full"
                             />
@@ -239,7 +238,6 @@ const CartComponent = () => {
         src="/empty-cart-image.jpg"
         width={200}
         height={200}
-        isLazyLoad
         skeletonClassName="rounded-full h-64 w-64 m-auto"
         alt="empty cart"
         className="w-60 h-60 md:w-80 md:h-80 mx-auto"

@@ -19,7 +19,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
   alt,
   className = "",
   skeletonClassName = "",
-  isLazyLoad = false,
+  isLazyLoad = true,
   width,
 
   height,

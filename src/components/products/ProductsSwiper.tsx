@@ -142,7 +142,6 @@ const ProductsSwiper: React.FC<ProductsProps> = ({ products }) => {
                         alt={featuredImage?.node?.altText ?? ""}
                         height={40}
                         width={40}
-                        isLazyLoad
                         skeletonClassName="rounded-full"
                       />
                     </div>

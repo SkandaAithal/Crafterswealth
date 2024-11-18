@@ -42,7 +42,6 @@ const ProductCard = ({ product, currentPrice, loading }: ProductCardProps) => {
             alt={featuredImage?.node?.altText ?? ""}
             height={60}
             width={60}
-            isLazyLoad
             skeletonClassName="rounded-full"
           />
         </div>

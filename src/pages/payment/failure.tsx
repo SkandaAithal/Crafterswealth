@@ -70,7 +70,6 @@ const FailurePage = () => {
           src="/payment-fail.jpg"
           width={300}
           height={300}
-          isLazyLoad
           skeletonClassName="rounded-full"
         />
       </div>

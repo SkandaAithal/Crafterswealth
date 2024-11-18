@@ -61,7 +61,6 @@ const ModalDrawer: React.FC<ModalDrawerProps> = ({
             width={100}
             height={100}
             className=" object-cover mx-auto  mt-4"
-            isLazyLoad
             skeletonClassName="rounded-full w-[95px] h-[95px] mx-auto mt-2"
           />
         ) : null}
@@ -117,8 +116,7 @@ const ModalDrawer: React.FC<ModalDrawerProps> = ({
                 alt="modal image"
                 width={100}
                 height={100}
-                className=" w-24 h-24 object-contain "
-                isLazyLoad
+                className=" w-24 h-24 object-contain"
               />
             </div>
           ) : null}

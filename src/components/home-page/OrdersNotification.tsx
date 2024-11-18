@@ -46,7 +46,6 @@ const OrdersNotification = () => {
                 alt={item.name}
                 height={30}
                 width={30}
-                isLazyLoad
                 className="mx-auto object-contain"
                 skeletonClassName="rounded-full"
               />

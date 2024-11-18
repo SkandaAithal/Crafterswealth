@@ -60,7 +60,6 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
           alt="banner-image"
           height={300}
           width={300}
-          isLazyLoad
           skeletonClassName="rounded-xl w-[300px] hidden md:block m-auto h-[500px]"
           className="w-full h-full hidden md:block"
         />
