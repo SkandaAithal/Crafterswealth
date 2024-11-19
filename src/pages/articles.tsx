@@ -3,7 +3,7 @@ import React from "react";
 import Typewriter from "@/components/common/TypeWriter";
 import ArticlesComponent from "@/components/articles/ArticlesComponent";
 
-const Articles: React.FC = () => {
+const Articles = () => {
   return (
     <main className="bg-gradient-to-b from-[#e1e8ff] to-white min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] layout space-y-6 pb-16">
       <div>

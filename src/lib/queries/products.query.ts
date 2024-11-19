@@ -137,3 +137,14 @@ export const GET_PUBLIC_ORDERS = gql`
     }
   }
 `;
+
+export const APPLY_COUPON_MUTATION = gql`
+  mutation ApplyCustomDiscount($input: ApplyCustomDiscountInput!) {
+    applyCustomDiscount(input: $input) {
+      appliedProducts
+      discountedTotal
+      message
+      percentageApplied
+    }
+  }
+`;

@@ -65,6 +65,8 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isCouponLoading, setIsCouponLoading] = useState(false);
+  const [discountedTotal, setDiscountedTotal] = useState(0);
   const [updateUserCheckoutDetails] = useMutation(UPDATE_USER_CHECKOUT_DETAILS);
 
   const form = useForm<CheckoutFormData>({
@@ -84,7 +86,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const stateValue = form.getValues("state");
 
   const lineItems = useMemo(() => {
-    const items: { productId: number; quantity: number }[] = [];
+    const items: { productId: number; quantity: number; total: string }[] = [];
 
     user.cart.forEach((item) => {
       if (item.access.length) {
@@ -115,8 +117,12 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       }
     });
 
-    return items;
-  }, [user.cart, products]);
+    const discount = discountedTotal ? discountedTotal / items.length : 0;
+    return items.map((item) => ({
+      ...item,
+      total: (Number(item.total) - discount).toString(),
+    }));
+  }, [user.cart, products, discountedTotal]);
 
   const handleSubmit = async (data: CheckoutFormData) => {
     if (!user.cart.length) return;
@@ -195,7 +201,6 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
         ? Math.round(parseFloat(order.total.trim()))
         : 0;
       const status = order.status;
-
       if (status === "PENDING" && orderId) {
         appDispatch({
           type: AppActionTypes.INITIATE_PAYMENT,
@@ -577,12 +582,18 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
               />
             </div>
             <div className="border rounded-md p-5 h-fit">
-              <OrderSummary isCheckout stateProp={stateValue} />
+              <OrderSummary
+                isCheckout
+                stateProp={stateValue}
+                setIsCouponLoading={setIsCouponLoading}
+                setDiscountedTotal={setDiscountedTotal}
+              />
               <div className="flex justify-center !mt-8">
                 <Button
                   type="submit"
                   className="w-full max-w-96"
                   loading={isPaymentLoading}
+                  disabled={isCouponLoading}
                 >
                   Proceed to Payment
                 </Button>

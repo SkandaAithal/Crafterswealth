@@ -33,7 +33,12 @@ const ArticlesComponent: React.FC = () => {
       updateQuery: (previousQueryResult, { fetchMoreResult }) => {
         if (!fetchMoreResult) return previousQueryResult;
 
-        const newPosts = fetchMoreResult.posts.edges;
+        const newPosts = fetchMoreResult.posts.edges.filter(
+          (newPost) =>
+            !previousQueryResult.posts.edges.some(
+              (existingPost) => existingPost.node.slug === newPost.node.slug
+            )
+        );
         setPosts((prev) => [...prev, ...newPosts]);
         setCursor(fetchMoreResult.posts.pageInfo.endCursor);
         setHasNextPage(fetchMoreResult.posts.pageInfo.hasNextPage);
@@ -83,11 +88,23 @@ const ArticlesComponent: React.FC = () => {
       <Skeleton key={index} className="h-[420px] w-full" />
     ));
 
+  const removeDuplicates = (posts: Post[]) => {
+    const uniqueSlugs = new Set();
+    return posts.filter((post) => {
+      const slug = post.node.slug;
+      if (uniqueSlugs.has(slug)) {
+        return false;
+      }
+      uniqueSlugs.add(slug);
+      return true;
+    });
+  };
+
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 layout md:pt-6">
       {loading && posts.length === 0
         ? renderLoaders()
-        : posts.map(({ node }) => (
+        : removeDuplicates(posts).map(({ node }) => (
             <Link key={node.slug} href={node.link} target="_blank">
               <AnimateOnce>
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden grid h-[420px]">

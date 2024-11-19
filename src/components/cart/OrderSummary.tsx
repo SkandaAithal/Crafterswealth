@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/provider/auth-provider";
 import { UserDetails } from "@/lib/types/common/user";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { useRouter } from "next/router";
@@ -8,27 +8,107 @@ import { CHECKOUT } from "@/lib/routes";
 import { calculateSubtotal, calculateTax, calculateTotal } from "@/lib/utils";
 import { twMerge } from "tailwind-merge";
 import { Cart } from "@/lib/types/products";
+import { Input } from "../ui/input";
+import { useMutation } from "@apollo/client";
+import { APPLY_COUPON_MUTATION } from "@/lib/queries/products.query";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const OrderSummary = ({
   isCheckout = false,
   stateProp = "",
+  setIsCouponLoading,
+  setDiscountedTotal,
 }: {
   isCheckout?: boolean;
   stateProp?: string;
+  setIsCouponLoading?: React.Dispatch<boolean>;
+  setDiscountedTotal?: React.Dispatch<number>;
 }) => {
   const router = useRouter();
   const { user } = useAuth();
   const { cart, state } = user as UserDetails;
 
-  const stateArg = stateProp ? stateProp : state;
-  const handleBtnClick = () => {
-    router.push(CHECKOUT);
-  };
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [error, setError] = useState<{ isError: boolean; message: string }>({
+    isError: false,
+    message: "",
+  });
 
-  const subtotal: number = calculateSubtotal(cart);
+  const stateArg = stateProp ? stateProp : state;
+  const subtotalWithoutDiscount = calculateSubtotal(cart);
+  const [subtotal, setTotal] = useState<number>(subtotalWithoutDiscount);
   const { sgst, cgst, igst } = calculateTax(subtotal, stateArg);
   const total: number = calculateTotal(subtotal, sgst, cgst, igst);
   const roundOff: number = total - (subtotal + sgst + cgst + igst);
+
+  const [applyCoupon, { data, loading: couponLoading }] = useMutation(
+    APPLY_COUPON_MUTATION,
+    {
+      onCompleted(data) {
+        if (data.applyCustomDiscount.percentageApplied) {
+          setTotal(data.applyCustomDiscount.discountedTotal);
+          if (setDiscountedTotal) {
+            setDiscountedTotal(
+              Number(
+                (
+                  subtotalWithoutDiscount -
+                  data.applyCustomDiscount.discountedTotal
+                ).toFixed(2)
+              )
+            );
+          }
+          setError({
+            isError: false,
+            message: data.applyCustomDiscount.message,
+          });
+        } else {
+          setError({
+            isError: true,
+            message: data.applyCustomDiscount.message,
+          });
+        }
+      },
+      onError() {
+        setError({
+          isError: true,
+          message: "An error occurred. Please try again.",
+        });
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (setIsCouponLoading) {
+      setIsCouponLoading(couponLoading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [couponLoading]);
+
+  const discountPercentage = data?.applyCustomDiscount?.percentageApplied;
+
+  const handleApplyCoupon = async () => {
+    if (couponCode) {
+      const productIds = cart.map((item) => item.productId.toString());
+      await applyCoupon({
+        variables: {
+          input: {
+            couponCode,
+            productIds,
+            totalAmount: subtotalWithoutDiscount,
+          },
+        },
+      });
+    } else {
+      setError({
+        isError: true,
+        message: "Please enter a coupon code.",
+      });
+    }
+  };
+
+  const handleBtnClick = () => {
+    router.push(CHECKOUT);
+  };
 
   return (
     <div
@@ -48,9 +128,59 @@ const OrderSummary = ({
           <p>₹{item.price.toFixed(2)}</p>
         </div>
       ))}
+      {isCheckout && (
+        <div className="flex justify-between items-center my-4">
+          <div className="w-full">
+            <div
+              className={twMerge(
+                "flex items-center justify-between border rounded-full p-1 h-12",
+                error.isError ? "border-2 border-destructive" : ""
+              )}
+            >
+              <Input
+                placeholder="Enter Coupon Code"
+                value={couponCode}
+                className="border-none rounded-full"
+                onChange={(e) => setCouponCode(e.target.value)}
+              />
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleApplyCoupon();
+                }}
+                className="!h-10"
+                loading={couponLoading}
+              >
+                Apply
+              </Button>
+            </div>
+            {error.message && (
+              <p
+                className={`mt-1 ml-3 text-sm flex items-center gap-1 ${
+                  error.isError ? "text-destructive" : "text-green-500"
+                }`}
+              >
+                {error.message} {!error.isError && <IoIosCheckmarkCircle />}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
       <Separator />
 
       <div className="text-base grid gap-2 my-4">
+        {discountPercentage && (
+          <div className="flex justify-between">
+            <div className="flex items-center gap-4">
+              <span className="font-semibold">Discount</span>
+              <span className="text-gray-500 font-bold text-sm">
+                -{discountPercentage}% off
+              </span>
+            </div>
+            <span> -₹{(subtotalWithoutDiscount - subtotal).toFixed(2)}</span>
+          </div>
+        )}
         <div className="flex justify-between">
           <span className="font-semibold">Subtotal</span>
           <span>₹{subtotal.toFixed(2)}</span>
@@ -86,15 +216,17 @@ const OrderSummary = ({
 
       <div className="flex justify-between mt-4 font-bold text-xl">
         <span>Total</span>
-        <span>₹{total.toFixed(2)}</span>
+
+        <span>₹{Math.round(total).toFixed(2)}</span>
       </div>
-      {!isCheckout ? (
+
+      {!isCheckout && (
         <div className="flex justify-center mt-8">
           <Button className="w-full max-w-96" onClick={handleBtnClick}>
             Checkout Now
           </Button>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
