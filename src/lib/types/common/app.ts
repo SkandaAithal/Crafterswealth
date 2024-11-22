@@ -12,6 +12,8 @@ export interface AppContextProps {
   boughtObject: Record<string, string[]>;
   allProducts: Record<string, string[]>;
   countries: CountriesTypes[];
+  isAchievementsLoading: boolean;
+  achievements: AchievementsData;
 }
 
 export interface VerifyEmail {
@@ -46,12 +48,28 @@ export interface CountriesTypes {
   code: string;
   flag: string;
 }
+
+export interface Achievement {
+  "Pur. Price": string;
+  "Target Price": string;
+  "Days Held": string;
+  "Stock Name": string;
+  PdfLink: string;
+  "Product Name": string;
+  Profit: string;
+}
+
+export interface AchievementsData {
+  [key: string]: Achievement[];
+}
+
 export interface AppState {
   products: ProductNode[];
   verifyEmail: VerifyEmail;
   forgotPassword: ForgotPasswordContext;
   payment: PaymentContext;
   countries: CountriesTypes[];
+  achievements: AchievementsData;
 }
 export enum AppActionTypes {
   ADD_PRODUCT = "ADD_PRODUCT",
@@ -67,6 +85,7 @@ export enum AppActionTypes {
   INITIATE_PAYMENT = "INITIATE_PAYMENT",
   CLEAR_PAYMENT = "CLEAR_PAYMENT",
   SET_COUNTRIES = "SET_COUNTRIES",
+  SET_ACHIEVEMENTS = "SET_ACHIEVEMENTS",
 }
 export type AppAction =
   | {
@@ -108,6 +127,10 @@ export type AppAction =
   | {
       type: AppActionTypes.SET_COUNTRIES;
       payload: CountriesTypes[];
+    }
+  | {
+      type: AppActionTypes.SET_ACHIEVEMENTS;
+      payload: AchievementsData;
     }
   | {
       type: AppActionTypes.INITIATE_PAYMENT;

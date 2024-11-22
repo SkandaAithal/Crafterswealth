@@ -25,6 +25,7 @@ export const initialState: AppState = {
   forgotPassword: forgotPasswordInitialState,
   payment: paymentInitialState,
   countries: [],
+  achievements: {},
 };
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
@@ -89,6 +90,9 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
         draft.payment = paymentInitialState;
         break;
 
+      case AppActionTypes.SET_ACHIEVEMENTS:
+        draft.achievements = action.payload;
+        break;
       default:
         break;
     }

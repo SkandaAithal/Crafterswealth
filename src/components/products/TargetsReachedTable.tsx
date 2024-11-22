@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -7,13 +7,14 @@ import {
   TableCell,
   TableHead,
 } from "@/components/ui/table";
-import { TARGETS_REACHED_ITEMS } from "@/lib/constants";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import AnimateOnce from "../common/AnimateOnce";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
+import { useApp } from "@/lib/provider/app-provider";
+import { Achievement } from "@/lib/types/common/app";
 
 enum SortOrder {
   ASC = "asc",
@@ -21,23 +22,32 @@ enum SortOrder {
 }
 
 interface SortConfig {
-  key: keyof (typeof TARGETS_REACHED_ITEMS)[0] | "profit";
+  key: keyof Achievement;
   order: SortOrder;
 }
 
 const TargetsReachedTable = ({
   headerClassName,
+  selectedCategory,
 }: {
   headerClassName: string;
+  selectedCategory: string;
 }) => {
+  const { achievements, isAchievementsLoading } = useApp();
   const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: "stock",
+    key: "Stock Name",
     order: SortOrder.ASC,
   });
 
-  const handleSort = (
-    key: keyof (typeof TARGETS_REACHED_ITEMS)[0] | "profit"
-  ) => {
+  const selectedAchievement = useMemo(() => {
+    const arr = isAchievementsLoading
+      ? []
+      : achievements[selectedCategory] ||
+        achievements[Object.keys(achievements)[0]];
+    return arr;
+  }, [achievements, isAchievementsLoading, selectedCategory]);
+
+  const handleSort = (key: keyof Achievement) => {
     const newOrder =
       sortConfig.key === key && sortConfig.order === SortOrder.ASC
         ? SortOrder.DESC
@@ -45,26 +55,25 @@ const TargetsReachedTable = ({
     setSortConfig({ key, order: newOrder });
   };
 
-  const sortedItems = [...TARGETS_REACHED_ITEMS].sort((a, b) => {
-    const aProfit = ((a.sell - a.buy) / a.buy) * 100;
-    const bProfit = ((b.sell - b.buy) / b.buy) * 100;
+  const sortedItems = useMemo(() => {
+    return [...selectedAchievement].sort((a, b) => {
+      const key = sortConfig.key;
 
-    if (sortConfig.key === "profit") {
-      return sortConfig.order === SortOrder.ASC
-        ? aProfit - bProfit
-        : bProfit - aProfit;
-    }
+      const isNumericField = key === "Profit" || key === "Days Held";
+      const aValue = isNumericField ? parseFloat(a[key] as string) : a[key];
+      const bValue = isNumericField ? parseFloat(b[key] as string) : b[key];
 
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.order === SortOrder.ASC ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.order === SortOrder.ASC ? 1 : -1;
-    }
-    return 0;
-  });
+      if (aValue < bValue) {
+        return sortConfig.order === SortOrder.ASC ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.order === SortOrder.ASC ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [selectedAchievement, sortConfig]);
 
-  const getSortIcon = (key: keyof any) => {
+  const getSortIcon = (key: keyof Achievement) => {
     let icon = <FaSort />;
 
     if (sortConfig.key === key) {
@@ -85,45 +94,44 @@ const TargetsReachedTable = ({
           <TableHeader className={twMerge("sticky top-0", headerClassName)}>
             <TableHead
               className="cursor-pointer"
-              onClick={() => handleSort("stock")}
+              onClick={() => handleSort("Stock Name")}
             >
               <div className="flex items-center gap-2">
-                Stock {getSortIcon("stock")}
+                Stock {getSortIcon("Stock Name")}
               </div>
             </TableHead>
             <TableHead
               className="cursor-pointer"
-              onClick={() => handleSort("profit")}
+              onClick={() => handleSort("Profit")}
             >
               <div className="flex items-center gap-2">
-                Returns {getSortIcon("profit")}
+                Returns {getSortIcon("Profit")}
               </div>
             </TableHead>
             <TableHead
               className="cursor-pointer"
-              onClick={() => handleSort("period")}
+              onClick={() => handleSort("Days Held")}
             >
               <div className="flex items-center gap-2">
-                Period {getSortIcon("period")}
+                Period {getSortIcon("Days Held")}
               </div>
             </TableHead>
             <TableHead className="w-32">View Paper</TableHead>
           </TableHeader>
           <TableBody>
             {sortedItems.map((item) => {
-              const profit = ((item.sell - item.buy) / item.buy) * 100;
               return (
-                <TableRow key={item.id}>
-                  <TableCell>{item.stock}</TableCell>
+                <TableRow key={item["Product Name"]}>
+                  <TableCell>{item["Stock Name"]}</TableCell>
 
                   <TableCell className="text-green-500 font-semibold">
-                    {profit.toFixed(2)} %
+                    {item["Profit"]} %
                   </TableCell>
 
-                  <TableCell>{item.period}</TableCell>
+                  <TableCell>{item["Days Held"].split(".")[0]} days</TableCell>
 
                   <TableCell className="text-center text-primary-blue">
-                    <Link href={item.pdfLink} target="_blank">
+                    <Link href={item.PdfLink} target="_blank">
                       <div className="flex items-center justify-center gap-1 cursor-pointer">
                         View <MdOutlineRemoveRedEye />
                       </div>

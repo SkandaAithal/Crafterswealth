@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import {
   MarketCapBarChartGraphData,
-  STOCK_RESEARCH_CONFIG,
+  PRODUCT_DETAILS_CONFIG,
 } from "@/lib/constants";
 import Title from "@/components/common/Title";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ const StockDetailsPage = () => {
   const { type, id } = router.query;
 
   const productDetails =
-    STOCK_RESEARCH_CONFIG[type as keyof typeof STOCK_RESEARCH_CONFIG];
+    PRODUCT_DETAILS_CONFIG[type as keyof typeof PRODUCT_DETAILS_CONFIG];
 
   const handleBuyNow = () => {
     router.push(`${PLAN}/${id}`);
@@ -163,7 +163,10 @@ const StockDetailsPage = () => {
             text={`Targets Reached from ${productDetails.type}`}
             size="H2"
           />
-          <TargetsReachedTable headerClassName="bg-accent" />
+          <TargetsReachedTable
+            headerClassName="bg-accent"
+            selectedCategory={productDetails.tableKey}
+          />
         </section>
       </section>
     </main>

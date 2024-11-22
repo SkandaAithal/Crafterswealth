@@ -537,9 +537,10 @@ export const SYMBOLS_DATA = [
   { proName: "BSE:LT", title: "Larsen & Toubro" },
 ];
 
-export const STOCK_RESEARCH_CONFIG = {
+export const PRODUCT_DETAILS_CONFIG = {
   "small-cap": {
     title: "Small Cap Stock Research",
+    tableKey: "Small Cap",
     subtitle: "Unlock Explosive Growth with High-Potential Small Caps 📈",
     type: InvestmentType.SmallCap,
     aboutStock:
@@ -587,6 +588,7 @@ export const STOCK_RESEARCH_CONFIG = {
 
   "mid-cap": {
     title: "Mid Cap Stock Research",
+    tableKey: "Mid Cap",
     subtitle: "Seize the Sweet Spot: Balanced Growth with Mid Caps 🏆",
     type: InvestmentType.MidCap,
     aboutStock:
@@ -634,6 +636,7 @@ export const STOCK_RESEARCH_CONFIG = {
 
   "large-cap": {
     title: "Large Cap Stock Research",
+    tableKey: "Large Cap",
     subtitle: "Stability Meets Growth: Your Secure Investment in Large Caps 💼",
     type: InvestmentType.LargeCap,
     aboutStock:

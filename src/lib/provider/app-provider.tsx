@@ -25,6 +25,7 @@ import { UPDATE_USER_META } from "../queries/users.query";
 import { toast } from "../hooks/use-toast";
 import { getSession } from "next-auth/react";
 import axios from "axios";
+import { GET_ACHIEVEMENT_API } from "../routes";
 
 const AppContext = createContext<AppContextProps | null>(null);
 
@@ -37,6 +38,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     APP_INFO
   );
   const [isMounted, setIsMounted] = useState(false);
+  const [isAchievementsLoading, setIsAchievementsLoading] =
+    useState<boolean>(true);
   const { user, redirectTrigger, setRedirectTrigger, isAuthenticated } =
     useAuth();
   const { subscription, bought } = user;
@@ -91,16 +94,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     return result;
   }, [categories, subscription, bought, allProducts]);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const allUniqueItems = useMemo(() => {
     return Array.from(new Set(Object.values(boughtObject).flat()));
   }, [boughtObject]);
   const boughtArray = useMemo(() => {
     return [...allUniqueItems, ...user.bought];
   }, [allUniqueItems, user.bought]);
+
   const updateUserBoughtPapers = async () => {
     if (allUniqueItems.length > 0 && user.bought.length > 0) {
       const session = await getSession();
@@ -153,11 +153,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const fetchAchievements = async () => {
+    setIsAchievementsLoading(true);
+    try {
+      const { data } = await axios.get(GET_ACHIEVEMENT_API);
+      dispatch({ type: AppActionTypes.SET_ACHIEVEMENTS, payload: data });
+    } catch (error) {
+      toast({
+        title: "Oops! Something went wrong",
+        description: "Achievements could not be fetched",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAchievementsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchCountries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.countries]);
 
+  useEffect(() => {
+    setIsMounted(true);
+    fetchAchievements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <AppContext.Provider
       value={{
@@ -172,6 +193,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         boughtObject,
         allProducts,
         countries: state.countries,
+        isAchievementsLoading: isAchievementsLoading,
+        achievements: state.achievements,
       }}
     >
       {children}

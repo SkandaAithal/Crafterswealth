@@ -10,9 +10,16 @@ const TargetsReachedTable = dynamic(
   }
 );
 import { ACCOMPLISHMENTS, HOME, PRODUCTS } from "@/lib/routes";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useApp } from "@/lib/provider/app-provider";
+import { getFirstIfArray } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Accomplishment = () => {
+  const { achievements, isAchievementsLoading } = useApp();
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const pageRoutes = [
     {
       label: "Home",
@@ -28,6 +35,15 @@ const Accomplishment = () => {
     },
   ];
 
+  useEffect(() => {
+    const firstCategory = getFirstIfArray(Object.keys(achievements));
+    setSelectedCategory(firstCategory);
+  }, [achievements]);
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <main className="pb-16 min-h-screen">
       <section className="text-center banner-2 md:text-start  pb-16">
@@ -39,8 +55,32 @@ const Accomplishment = () => {
           </div>
         </div>
       </section>
-      <div className="layout">
-        <TargetsReachedTable headerClassName="bg-primary" />
+      <div className="layout flex items-center gap-4">
+        {isAchievementsLoading
+          ? Array.from({ length: 2 }).map((_, index) => (
+              <Skeleton key={index} className="w-32  h-10 shadow-lg" />
+            ))
+          : Object.keys(achievements).map((category) => (
+              <div
+                key={category}
+                className={twMerge(
+                  "w-32 p-2 text-center rounded-lg cursor-pointer shadow-lg",
+                  category === selectedCategory
+                    ? "bg-primary-blue-100 text-white"
+                    : "border"
+                )}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category}
+              </div>
+            ))}
+        {}
+      </div>
+      <div className="layout !pt-7 min-h-[60dvh]">
+        <TargetsReachedTable
+          headerClassName="bg-primary"
+          selectedCategory={selectedCategory}
+        />
       </div>
     </main>
   );

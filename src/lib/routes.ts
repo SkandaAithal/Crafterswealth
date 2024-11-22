@@ -29,6 +29,7 @@ export const PAGES_TO_HIDE_HEADER = [PAYMENT_SUCCESS];
 // api routes
 export const GET_STOCKS_API = "/api/stocks";
 export const POST_STATUS_API = "/api/status";
+export const GET_ACHIEVEMENT_API = "/api/achievement";
 
 //protected routes
 export const PROTECTED_ROUTES = [
