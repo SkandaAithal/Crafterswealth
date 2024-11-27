@@ -12,21 +12,22 @@ import { Input } from "../ui/input";
 import { useMutation } from "@apollo/client";
 import { APPLY_COUPON_MUTATION } from "@/lib/queries/products.query";
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import { useApp } from "@/lib/provider/app-provider";
+import { AppActionTypes } from "@/lib/types/common/app";
 
 const OrderSummary = ({
   isCheckout = false,
   stateProp = "",
   setIsCouponLoading,
-  setDiscountedTotal,
 }: {
   isCheckout?: boolean;
   stateProp?: string;
   setIsCouponLoading?: React.Dispatch<boolean>;
-  setDiscountedTotal?: React.Dispatch<number>;
 }) => {
   const router = useRouter();
   const { user } = useAuth();
   const { cart, state } = user as UserDetails;
+  const { appDispatch, payment } = useApp();
 
   const [couponCode, setCouponCode] = useState<string>("");
   const [error, setError] = useState<{ isError: boolean; message: string }>({
@@ -41,22 +42,24 @@ const OrderSummary = ({
   const total: number = calculateTotal(subtotal, sgst, cgst, igst);
   const roundOff: number = total - (subtotal + sgst + cgst + igst);
 
+  useEffect(() => {
+    if (subtotalWithoutDiscount) setTotal(subtotalWithoutDiscount);
+  }, [subtotalWithoutDiscount, user]);
+
   const [applyCoupon, { data, loading: couponLoading }] = useMutation(
     APPLY_COUPON_MUTATION,
     {
       onCompleted(data) {
-        if (data.applyCustomDiscount.percentageApplied) {
+        if (data.applyCustomDiscount.percentageApplied && couponCode) {
+          appDispatch({
+            type: AppActionTypes.SET_COUPONCODE,
+            payload: Array.from(
+              new Set([...payment.coupons, couponCode.toLowerCase()])
+            ),
+          });
+
           setTotal(data.applyCustomDiscount.discountedTotal);
-          if (setDiscountedTotal) {
-            setDiscountedTotal(
-              Number(
-                (
-                  subtotalWithoutDiscount -
-                  data.applyCustomDiscount.discountedTotal
-                ).toFixed(2)
-              )
-            );
-          }
+
           setError({
             isError: false,
             message: data.applyCustomDiscount.message,
@@ -141,6 +144,7 @@ const OrderSummary = ({
                 placeholder="Enter Coupon Code"
                 value={couponCode}
                 className="border-none rounded-full"
+                disabled={couponLoading}
                 onChange={(e) => setCouponCode(e.target.value)}
               />
               <Button
@@ -185,7 +189,7 @@ const OrderSummary = ({
           <span className="font-semibold">Subtotal</span>
           <span>₹{subtotal.toFixed(2)}</span>
         </div>
-        {stateArg === "Karnataka" ? (
+        {stateArg === "KA" || stateArg === "Karnataka" ? (
           <>
             <div className="flex justify-between">
               <span className="font-semibold">SGST</span>

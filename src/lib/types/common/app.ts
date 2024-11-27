@@ -41,6 +41,7 @@ export interface ForgotPasswordContext {
 export interface PaymentContext {
   orderId: number;
   transactionId: string;
+  coupons: string[];
 }
 
 export interface CountriesTypes {
@@ -83,6 +84,7 @@ export enum AppActionTypes {
   FORGOT_PASSWORD_STEP_3 = "FORGOT_PASSWORD_STEP_3",
   SET_FORGOT_PASSWORD_DEFAULT = "SET_FORGOT_PASSWORD_DEFAULT",
   INITIATE_PAYMENT = "INITIATE_PAYMENT",
+  SET_COUPONCODE = "SET_COUPONCODE",
   CLEAR_PAYMENT = "CLEAR_PAYMENT",
   SET_COUNTRIES = "SET_COUNTRIES",
   SET_ACHIEVEMENTS = "SET_ACHIEVEMENTS",
@@ -134,7 +136,11 @@ export type AppAction =
     }
   | {
       type: AppActionTypes.INITIATE_PAYMENT;
-      payload: PaymentContext;
+      payload: Omit<PaymentContext, "coupons">;
+    }
+  | {
+      type: AppActionTypes.SET_COUPONCODE;
+      payload: string[];
     }
   | {
       type: AppActionTypes.CLEAR_PAYMENT;

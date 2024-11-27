@@ -2,8 +2,14 @@ import SwiperComponent from "@/components/common/SwiperComponent";
 import Title from "@/components/common/Title";
 import ProductCard from "@/components/products/ProductCard";
 import StocksBarChart from "@/components/products/StocksBarChart";
-import TargetsReached from "@/components/products/TargetsReached";
-
+import ProductStructuredData from "@/components/seo/ProductsStructureData";
+import SEOHead from "@/components/seo/SeoHead";
+const TargetsReached = dynamic(
+  () => import("@/components/products/TargetsReached"),
+  {
+    ssr: false,
+  }
+);
 import client from "@/lib/apollo-client";
 import { MarketBarChartGraphData } from "@/lib/constants";
 import useStockData from "@/lib/hooks/use-stock-data";
@@ -16,6 +22,7 @@ import { AppActionTypes } from "@/lib/types/common/app";
 import { InvestmentType } from "@/lib/types/components/stocks-chart";
 import { ProductsProps } from "@/lib/types/products";
 import { GetStaticProps, NextPage } from "next";
+import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
 import { Autoplay } from "swiper/modules";
 import { SwiperSlide } from "swiper/react";
@@ -27,6 +34,8 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
     () => products.map((product) => product.stock.stockSymbol),
     [products]
   );
+  const DESCRIPTION =
+    "Backed by years of experience and a team of seasoned analysts, CraftersWealth boasts of an impressive 96% success rate.";
   const { stockData, loading } = useStockData(SYMBOLS);
 
   useEffect(() => {
@@ -75,6 +84,8 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
 
   return (
     <main>
+      <SEOHead title="Today's Must Buy" description={DESCRIPTION} />
+      <ProductStructuredData products={products} />
       <section className="text-center banner-2 md:text-start grid md:grid-cols-2 layout pb-10">
         <Title text="Today's Must Buy" />
       </section>
@@ -83,10 +94,7 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
         <div className="space-y-10">
           <div className="">
             <Title text="Our Proven Success" size="H2" />
-            <p className="max-w-screen-sm">
-              Backed by years of experience and a team of seasoned analysts,
-              CraftersWealth boasts of an impressive 96% success rate.
-            </p>
+            <p className="max-w-screen-sm">{DESCRIPTION}</p>
           </div>
           <TargetsReached onlyTargets />
         </div>
@@ -102,28 +110,37 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
 export default Products;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data: categoriesData } = await client.query({
-    query: GET_PRODUCT_CATEGORIES,
-  });
+  try {
+    const { data: categoriesData } = await client.query({
+      query: GET_PRODUCT_CATEGORIES,
+    });
 
-  const categories = categoriesData?.productCategories?.nodes ?? [];
+    const categories = categoriesData?.productCategories?.nodes ?? [];
 
-  const products = (
-    await Promise.all(
-      categories.map(async ({ name }: { name: string }) => {
-        const { data } = await client.query({
-          query: GET_PRODUCTS,
-          variables: { categories: name },
-        });
-        return data?.products?.nodes ?? [];
-      })
-    )
-  ).flat();
+    const products = (
+      await Promise.all(
+        categories.map(async ({ name }: { name: string }) => {
+          const { data } = await client.query({
+            query: GET_PRODUCTS,
+            variables: { categories: name },
+          });
+          return data?.products?.nodes ?? [];
+        })
+      )
+    ).flat();
 
-  return {
-    props: {
-      products,
-    },
-    revalidate: 60,
-  };
+    return {
+      props: {
+        products,
+      },
+      revalidate: 60,
+    };
+  } catch (error) {
+    return {
+      props: {
+        products: [],
+      },
+      revalidate: 60,
+    };
+  }
 };

@@ -1,6 +1,6 @@
 import { FOOTER_ROUTES } from "@/lib/constants";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Title from "./Title";
 import { FaInstagram, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { PAGES_TO_HIDE_FOOTER } from "@/lib/routes";
@@ -50,7 +50,15 @@ const Footer = () => {
   const {
     handleSubmit,
     formState: { errors },
+    reset,
   } = form;
+
+  useEffect(() => {
+    if (user.email) {
+      reset({ email: user.email });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.email]);
 
   const handleSubscription: SubmitHandler<
     SubscribeToNewsLetterFormData

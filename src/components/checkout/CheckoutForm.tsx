@@ -58,7 +58,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     setRedirectTrigger,
     isAuthenticated,
   } = useAuth();
-  const { products, appDispatch } = useApp();
+  const { products, appDispatch, payment } = useApp();
 
   const [states, setStates] = useState<StateOption[]>([]);
   const [cities, setCities] = useState<CityOption[]>([]);
@@ -66,23 +66,34 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const [loadingCities, setLoadingCities] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isCouponLoading, setIsCouponLoading] = useState(false);
-  const [discountedTotal, setDiscountedTotal] = useState(0);
   const [updateUserCheckoutDetails] = useMutation(UPDATE_USER_CHECKOUT_DETAILS);
+
+  const userStateName = states.find(
+    (state) => state.value === user.state
+  )?.label;
+
+  const initialFormState = {
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    email: user.email || "",
+    phoneNumber: user.phoneNumber || "",
+    address: user.address || "",
+    city: user.city || "",
+    state: userStateName || "",
+    country: user.country || "",
+    postcode: user.postcode || "",
+  };
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormSchema),
-    defaultValues: {
-      firstName: user.firstName || "",
-      lastName: user.lastName || "",
-      email: user.email || "",
-      phoneNumber: user.phoneNumber || "",
-      address: user.address || "",
-      city: user.city || "",
-      state: user.state || "",
-      country: user.country || "",
-      postcode: user.postcode || "",
-    },
+    defaultValues: initialFormState,
   });
+
+  useEffect(() => {
+    if (userStateName) form.reset(initialFormState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userStateName, user]);
+
   const stateValue = form.getValues("state");
 
   const lineItems = useMemo(() => {
@@ -117,12 +128,8 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       }
     });
 
-    const discount = discountedTotal ? discountedTotal / items.length : 0;
-    return items.map((item) => ({
-      ...item,
-      total: (Number(item.total) - discount).toString(),
-    }));
-  }, [user.cart, products, discountedTotal]);
+    return items;
+  }, [user.cart, products]);
 
   const handleSubmit = async (data: CheckoutFormData) => {
     if (!user.cart.length) return;
@@ -182,6 +189,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
         transactionId: transactId,
         status: "PENDING",
         isPaid: false,
+        coupons: payment.coupons,
       };
 
       const { data: orderData } = await client.mutate({
@@ -271,7 +279,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       );
       const data = response.data;
       const fetchedStates = data.geonames.map((state: any) => ({
-        value: state.name,
+        value: state.adminCodes1.ISO3166_2,
         label: state.name,
         geoNameId: state.geonameId,
       }));
@@ -478,7 +486,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                             }
                           }}
                           value={states.find(
-                            (option) => option.value === field.value
+                            (option) => option.label === field.value
                           )}
                           className={twMerge(
                             form.formState.errors.state
@@ -586,7 +594,6 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                 isCheckout
                 stateProp={stateValue}
                 setIsCouponLoading={setIsCouponLoading}
-                setDiscountedTotal={setDiscountedTotal}
               />
               <div className="flex justify-center !mt-8">
                 <Button

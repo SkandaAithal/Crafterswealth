@@ -3,9 +3,11 @@ import SocialLogins from "@/components/auth/SocialLogins";
 import AnimateOnce from "@/components/common/AnimateOnce";
 import AuthBanner from "@/components/common/AuthBanner";
 import Title from "@/components/common/Title";
+import PageStructuredData from "@/components/seo/PageStructuredData";
+import SEOHead from "@/components/seo/SeoHead";
 import PageLoader from "@/components/ui/page-loader";
 import { useAuth } from "@/lib/provider/auth-provider";
-import { HOME } from "@/lib/routes";
+import { HOME, SINGN_UP_PAGE } from "@/lib/routes";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -14,6 +16,10 @@ const Signup = () => {
   const router = useRouter();
   const { status } = useSession();
   const { user } = useAuth();
+
+  const pageName = "Sign Up - Create Your Account";
+  const pageDescription =
+    "Create a new account with CraftersWealth to access your personalized portfolio, insights, and exclusive features. Sign up easily with email or social logins.";
 
   useEffect(() => {
     if (status === "authenticated" && user.id) {
@@ -27,6 +33,16 @@ const Signup = () => {
   }
   return (
     <main className="lg:grid flex flex-col lg:gap-0 lg:grid-cols-2 min-h-[calc(100vh-100px)]">
+      <SEOHead
+        title={pageName}
+        description={pageDescription}
+        keywords="sign up, create account, registration, user authentication, CraftersWealth"
+      />
+      <PageStructuredData
+        name={pageName}
+        description={pageDescription}
+        url={SINGN_UP_PAGE}
+      />
       <AuthBanner />
       <section className="grid gap-6 place-content-center py-14">
         <div className="flex flex-col justify-center items-center gap-1">

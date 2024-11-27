@@ -25,6 +25,12 @@ export const GEO_NAMES_USER_NAME = process.env.NEXT_PUBLIC_GEO_NAME_USER_NAME!;
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
 export const APP_INFO = "app-info";
 
+//seo
+export const DEFAULT_IMAGE = "/opengraph-crafterswealth.jpg";
+export const DEFAULT_TWITTER_CARD = "summary_large_image";
+export const SITE_NAME = "CraftersWealth";
+export const TWITTER_CREATOR = "@CraftersWealth";
+
 export const HEADER_ROUTES = [
   { name: "Home", route: HOME },
   { name: "Opportunity Dashboard", route: PRODUCTS },

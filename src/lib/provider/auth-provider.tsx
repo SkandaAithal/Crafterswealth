@@ -33,6 +33,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const isLoad = status === "loading";
     return status === "authenticated" || isLoad;
   };
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       setIsAuthLoading(true);
@@ -63,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsAuthLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, status]);
+  }, [status]);
 
   return (
     <AuthContext.Provider

@@ -5,7 +5,7 @@ import useProcessOrder from "@/lib/hooks/use-order-payload";
 import { useApp } from "@/lib/provider/app-provider";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { UPDATE_ORDER_MUTATION } from "@/lib/queries/products.query";
-import { CONTACT } from "@/lib/routes";
+import { CONTACT, PAYMENT_FAILURE } from "@/lib/routes";
 import { AppActionTypes } from "@/lib/types/common/app";
 import { OrderStatus } from "@/lib/types/checkout";
 import { SessionObject } from "@/lib/types/common/user";
@@ -13,6 +13,8 @@ import { useMutation } from "@apollo/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import PageStructuredData from "@/components/seo/PageStructuredData";
+import SEOHead from "@/components/seo/SeoHead";
 
 const FailurePage = () => {
   const router = useRouter();
@@ -56,14 +58,39 @@ const FailurePage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment, session, user.id]);
+  const pageName = "Payment Failure - Order Not Completed";
+  const pageDescription =
+    "Your order could not be completed due to a payment failure. Please try again or contact us for assistance.";
 
   return isLoading ? (
-    <PageLoader
-      className="h-screen fixed inset-0 z-[100]"
-      text="Cancelling order"
-    />
+    <>
+      <SEOHead
+        title={pageName}
+        description={pageDescription}
+        keywords="payment failure, order failed, payment error, contact support"
+      />
+      <PageStructuredData
+        name={pageName}
+        description={pageDescription}
+        url={PAYMENT_FAILURE}
+      />
+      <PageLoader
+        className="h-screen fixed inset-0 z-[100]"
+        text="Cancelling order"
+      />
+    </>
   ) : (
     <main className="min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] layout grid place-content-center text-center gap-4 pb-20">
+      <SEOHead
+        title={pageName}
+        description={pageDescription}
+        keywords="payment failure, order failed, payment error, contact support"
+      />
+      <PageStructuredData
+        name={pageName}
+        description={pageDescription}
+        url={PAYMENT_FAILURE}
+      />
       <div className="mx-auto w-fit">
         <LazyImage
           alt="payment failed"

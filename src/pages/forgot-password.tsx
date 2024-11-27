@@ -2,7 +2,7 @@ import ForgotPassword from "@/components/auth/ForgotPassword";
 import Title from "@/components/common/Title";
 import PageLoader from "@/components/ui/page-loader";
 import { useApp } from "@/lib/provider/app-provider";
-import { LOGIN_PAGE } from "@/lib/routes";
+import { FORGOT_PASSWORD_PAGE, LOGIN_PAGE } from "@/lib/routes";
 import Link from "next/link";
 import React from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -10,6 +10,8 @@ import { IoFingerPrint } from "react-icons/io5";
 import { TfiEmail } from "react-icons/tfi";
 import { CgPassword } from "react-icons/cg";
 import { BsShieldCheck } from "react-icons/bs";
+import SEOHead from "@/components/seo/SeoHead";
+import PageStructuredData from "@/components/seo/PageStructuredData";
 const ForgotPasswordPage = () => {
   const { forgotPassword, isMounted } = useApp();
   const { step1, step2, step3 } = forgotPassword;
@@ -58,6 +60,16 @@ const ForgotPasswordPage = () => {
   };
   return isMounted ? (
     <main className="min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] relative  grid place-content-center">
+      <SEOHead
+        title={getTitleAndDescription().title}
+        description={getTitleAndDescription().description}
+        keywords="forgot password, reset password, account recovery, secure password"
+      />
+      <PageStructuredData
+        name={getTitleAndDescription().title}
+        description={getTitleAndDescription().description}
+        url={FORGOT_PASSWORD_PAGE}
+      />
       <div className="absolute top-10 left-1/2 -translate-x-1/2">
         <div className="flex justify-center items-center gap-4">
           {[...Array(steps)].map((_, index) => (

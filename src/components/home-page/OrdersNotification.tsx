@@ -17,7 +17,6 @@ const OrdersNotification = () => {
   });
   const orders = data?.publicOrders;
   const [currentOrderIndex, setCurrentOrderIndex] = useState(0);
-  const notificationSound = new Audio("/audio/notification.wav");
 
   const renderIcon = (orderItem: OrderItem[]) => {
     return (
@@ -92,6 +91,8 @@ const OrdersNotification = () => {
           position: "bottom-left",
         });
         setCurrentOrderIndex((prevIndex) => (prevIndex + 1) % orders.length);
+        const notificationSound = new Audio("/audio/notification.wav");
+
         notificationSound.play();
       }
     }, 10000);

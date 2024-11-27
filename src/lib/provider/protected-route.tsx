@@ -42,15 +42,15 @@ const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [redirectTrigger]);
 
+  if (!isProtected) {
+    return children;
+  }
+
   if (isAuthLoading) {
     return <PageLoader />;
   }
 
   if (isAuthenticated()) {
-    return children;
-  }
-
-  if (!isProtected) {
     return children;
   }
 

@@ -15,6 +15,9 @@ import { useApp } from "@/lib/provider/app-provider";
 import { getFirstIfArray } from "@/lib/utils";
 import { twMerge } from "tailwind-merge";
 import { Skeleton } from "@/components/ui/skeleton";
+import BreadcrumbStructuredData from "@/components/seo/BreadCrumbsStructuredData";
+import PageStructuredData from "@/components/seo/PageStructuredData";
+import SEOHead from "@/components/seo/SeoHead";
 
 const Accomplishment = () => {
   const { achievements, isAchievementsLoading } = useApp();
@@ -30,7 +33,7 @@ const Accomplishment = () => {
       href: PRODUCTS,
     },
     {
-      label: "Accomplishment",
+      label: "Accomplishments",
       href: ACCOMPLISHMENTS,
     },
   ];
@@ -46,6 +49,16 @@ const Accomplishment = () => {
 
   return (
     <main className="pb-16 min-h-screen">
+      <SEOHead
+        title="Accomplishments - Proven Track Record"
+        description="Explore our proven track record with a 96% success rate. Leverage years of experience and professional insights with CraftersWealth."
+      />
+      <BreadcrumbStructuredData routes={pageRoutes} />
+      <PageStructuredData
+        name="Accomplishments - Proven Track Record"
+        description="Explore our proven track record with a 96% success rate. Leverage years of experience and professional insights with CraftersWealth."
+        url={ACCOMPLISHMENTS}
+      />
       <section className="text-center banner-2 md:text-start  pb-16">
         <BreadCrumbsComponent routes={pageRoutes} />
         <div className="h-56 layout grid md:grid-cols-2 ">

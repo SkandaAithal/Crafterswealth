@@ -54,6 +54,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
       fetchPolicy: "cache-first",
     });
   const [updateUserMeta] = useMutation(UPDATE_USER_META);
+
   const categories = useMemo(
     () => (data?.productCategories?.nodes as ProductCategory[]) ?? [],
     [data]

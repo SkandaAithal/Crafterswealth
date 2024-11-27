@@ -363,7 +363,7 @@ export const calculateTax = (
     igst = 0;
 
   const taxRate = 0.18;
-  if (state === "Karnataka") {
+  if (state === "Karnataka" || state === "KA") {
     const totalTax = subtotal * taxRate;
     sgst = totalTax / 2;
     cgst = totalTax / 2;

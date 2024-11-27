@@ -7,7 +7,8 @@ import Testimonials from "@/components/home-page/Testimonials";
 import TradingViewTicker from "@/components/home-page/TradingViewTicker";
 import ProductsSwiper from "@/components/products/ProductsSwiper";
 import StocksBarChart from "@/components/products/StocksBarChart";
-import TargetsReached from "@/components/products/TargetsReached";
+import ProductStructuredData from "@/components/seo/ProductsStructureData";
+import SEOHead from "@/components/seo/SeoHead";
 import { Button } from "@/components/ui/button";
 import LazyImage from "@/components/ui/lazy-image";
 import client from "@/lib/apollo-client";
@@ -20,14 +21,26 @@ import { PRODUCTS } from "@/lib/routes";
 import { InvestmentType } from "@/lib/types/components/stocks-chart";
 import { ProductsProps } from "@/lib/types/products";
 import { GetStaticProps, NextPage } from "next";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-
+const TargetsReached = dynamic(
+  () => import("@/components/products/TargetsReached"),
+  {
+    ssr: false,
+  }
+);
 const Home: NextPage<ProductsProps> = ({ products }) => {
   const router = useRouter();
   const handleredirectToProductsPage = () => router.push(PRODUCTS);
 
   return (
     <main>
+      <SEOHead
+        title="CraftersWealth - Investment Made Easy"
+        description="CraftersWealth offers expert-backed investment insights and research papers to help you make informed decisions in the stock market."
+        keywords="investment insights, stock market tips, research papers, CraftersWealth investments"
+      />
+      <ProductStructuredData products={products} />
       <section className="banner min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid md:grid-cols-2 place-content-center text-center md:text-left ">
         <div className="flex flex-col justify-center items-start md:gap-10  ">
           <div>
@@ -67,7 +80,7 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
 
       <TradingViewTicker symbols={SYMBOLS_DATA} />
 
-      <section className="bg-gradient-to-b from-accent to-white pt-16 px-0 md:px-[64px] xl:px-[96px] text-center mx-auto space-y-12 ">
+      <section className="bg-gradient-to-b from-accent to-white pt-16 px-0 md:px-[64px] xl:px-[96px] text-center mx-auto space-y-12">
         <Title text="Today’s Must Buy" />
         <div className=" md:grid grid-cols-1 lg:grid-cols-3 place-content-center gap-6">
           <div className="md:col-span-2 mask my-auto">
@@ -100,30 +113,39 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data: categoriesData } = await client.query({
-    query: GET_PRODUCT_CATEGORIES,
-  });
+  try {
+    const { data: categoriesData } = await client.query({
+      query: GET_PRODUCT_CATEGORIES,
+    });
 
-  const categories = categoriesData?.productCategories?.nodes ?? [];
+    const categories = categoriesData?.productCategories?.nodes ?? [];
 
-  const products = (
-    await Promise.all(
-      categories.map(async ({ name }: { name: string }) => {
-        const { data } = await client.query({
-          query: GET_PRODUCTS,
-          variables: { categories: name },
-        });
-        return data?.products?.nodes ?? [];
-      })
-    )
-  ).flat();
+    const products = (
+      await Promise.all(
+        categories.map(async ({ name }: { name: string }) => {
+          const { data } = await client.query({
+            query: GET_PRODUCTS,
+            variables: { categories: name },
+          });
+          return data?.products?.nodes ?? [];
+        })
+      )
+    ).flat();
 
-  return {
-    props: {
-      products,
-    },
-    revalidate: 60,
-  };
+    return {
+      props: {
+        products,
+      },
+      revalidate: 60,
+    };
+  } catch (error) {
+    return {
+      props: {
+        products: [],
+      },
+      revalidate: 60,
+    };
+  }
 };
 
 export default Home;

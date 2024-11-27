@@ -15,6 +15,9 @@ import StocksBarChart from "@/components/products/StocksBarChart";
 import { RiStockFill } from "react-icons/ri";
 import { IconType } from "react-icons/lib";
 import { twMerge } from "tailwind-merge";
+import SEOHead from "@/components/seo/SeoHead";
+import SingleProductStructuredData from "@/components/seo/SingleProductStructureData";
+import BreadcrumbStructuredData from "@/components/seo/BreadCrumbsStructuredData";
 
 const TargetsReachedTable = dynamic(
   () => import("@/components/products/TargetsReachedTable"),
@@ -35,21 +38,27 @@ const StockDetailsPage = () => {
 
   if (!productDetails) {
     return (
-      <div className="text-center min-h-[90dvh] grid place-content-center">
-        <Title
-          text="We couldn’t find the product you're looking for."
-          className="text-wrap"
-          size="H2"
+      <main>
+        <SEOHead
+          title="Product Not Found - CraftersWealth"
+          description="We couldn’t find the product you're looking for. Explore other investment opportunities with CraftersWealth."
         />
-        <Button
-          variant={"secondary"}
-          className="shadow-xl w-fit mx-auto mt-7 flex gap-2 text-xl !px-8"
-          onClick={() => router.push(PRODUCTS)}
-        >
-          <IoArrowBack size={24} />
-          Go Back
-        </Button>
-      </div>
+        <div className="text-center min-h-[90dvh] grid place-content-center">
+          <Title
+            text="We couldn’t find the product you're looking for."
+            className="text-wrap"
+            size="H2"
+          />
+          <Button
+            variant={"secondary"}
+            className="shadow-xl w-fit mx-auto mt-7 flex gap-2 text-xl !px-8"
+            onClick={() => router.push(PRODUCTS)}
+          >
+            <IoArrowBack size={24} />
+            Go Back
+          </Button>
+        </div>
+      </main>
     );
   }
 
@@ -70,6 +79,18 @@ const StockDetailsPage = () => {
 
   return (
     <main>
+      <SEOHead
+        title={productDetails.title}
+        description={productDetails.aboutStock}
+        keywords={`investment, stocks, ${productDetails.title}, ${productDetails.type}`}
+      />
+      <SingleProductStructuredData
+        productDetails={productDetails}
+        id={id}
+        type={type}
+      />
+      <BreadcrumbStructuredData routes={pageRoutes} />
+
       <AnimateOnce>
         <div className="banner-2 pb-16">
           <BreadCrumbsComponent routes={pageRoutes} />

@@ -1,5 +1,7 @@
 import Title from "@/components/common/Title";
 import Typewriter from "@/components/common/TypeWriter";
+import PlansStructuredData from "@/components/seo/PlansStructuredData";
+import SEOHead from "@/components/seo/SeoHead";
 import PlansLayout from "@/components/subcription-and-plan/PlansLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWindowWidth } from "@/lib/hooks/use-window-width";
@@ -23,6 +25,9 @@ const PlansPage = () => {
   const [getPlans, { data, loading }] =
     useLazyQuery<ProductResponse>(GET_PRODUCT_PLANS);
 
+  const pageName = "Plans & Pricing - Choose Your Investment Plan";
+  const pageDescription =
+    "Discover investment plans tailored to your goals. Compare pricing and choose the plan that offers the best return on investment.";
   const plansApiData = data?.product?.plans;
   const plansFromState =
     products.find((product) => product.id === slug)?.plans ?? [];
@@ -50,6 +55,7 @@ const PlansPage = () => {
   }
 
   const checkIfPremium = (val: boolean) => setIsPremium(val);
+
   return (
     <main
       className={twMerge(
@@ -59,6 +65,17 @@ const PlansPage = () => {
           : "bg-gradient-to-b from-[#c8ecfc] to-primary"
       )}
     >
+      <SEOHead
+        title={pageName}
+        description={pageDescription}
+        keywords="investment plans, pricing, subscription plans, financial plans, CraftersWealth"
+      />
+      <PlansStructuredData
+        name={pageName}
+        description={pageDescription}
+        planCategories={plans ?? []}
+        id={(slug as string) ?? ""}
+      />
       <div className="relative text-center layout h-40">
         <Link href={PRODUCTS}>
           <div className="absolute top-3 md:left-10 left-5 flex gap-1 items-center font-bold">

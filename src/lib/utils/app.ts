@@ -17,6 +17,7 @@ export const forgotPasswordInitialState = {
 export const paymentInitialState = {
   orderId: 0,
   transactionId: "",
+  coupons: [],
 };
 
 export const initialState: AppState = {
@@ -82,8 +83,13 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
         draft.forgotPassword = forgotPasswordInitialState;
         break;
 
+      case AppActionTypes.SET_COUPONCODE:
+        draft.payment.coupons = action.payload;
+        break;
+
       case AppActionTypes.INITIATE_PAYMENT:
-        draft.payment = action.payload;
+        draft.payment.orderId = action.payload.orderId;
+        draft.payment.transactionId = action.payload.transactionId;
         break;
 
       case AppActionTypes.CLEAR_PAYMENT:

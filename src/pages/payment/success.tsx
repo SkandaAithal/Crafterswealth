@@ -5,7 +5,7 @@ import { useApp } from "@/lib/provider/app-provider";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { UPDATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
-import { MY_PAPERS, PAYMENT_FAILURE } from "@/lib/routes";
+import { MY_PAPERS, PAYMENT_FAILURE, PAYMENT_SUCCESS } from "@/lib/routes";
 import { AppActionTypes } from "@/lib/types/common/app";
 import { OrderStatus } from "@/lib/types/checkout";
 import {
@@ -19,6 +19,8 @@ import { produce } from "immer";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
+import PageStructuredData from "@/components/seo/PageStructuredData";
+import SEOHead from "@/components/seo/SeoHead";
 
 const SuccessPage = () => {
   const router = useRouter();
@@ -195,7 +197,26 @@ const SuccessPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment, session, user.id]);
-  return <PageLoader className="h-screen" text={textMessage} />;
+
+  const pageName = "Payment Success - Your Purchase is Confirmed";
+  const pageDescription =
+    "Thank you for your purchase! Your order has been successfully processed. Access your purchased items now.";
+
+  return (
+    <>
+      <SEOHead
+        title={pageName}
+        description={pageDescription}
+        keywords="order success, purchase confirmed, payment success, CraftersWealth"
+      />
+      <PageStructuredData
+        name={pageName}
+        description={pageDescription}
+        url={PAYMENT_SUCCESS}
+      />
+      <PageLoader className="h-screen" text={textMessage} />
+    </>
+  );
 };
 
 export default SuccessPage;
