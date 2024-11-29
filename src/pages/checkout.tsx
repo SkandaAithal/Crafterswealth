@@ -39,8 +39,7 @@ const CheckoutPage: NextPage<CheckoutProps> = ({ countries }) => {
 export const getStaticProps = async () => {
   try {
     const restCountriesResponse = await axios.get(
-      process.env.NEXT_PUBLIC_REST_COUNTRIES_API!,
-      { timeout: 10000 }
+      process.env.NEXT_PUBLIC_REST_COUNTRIES_API!
     );
     const restCountriesData = restCountriesResponse.data;
 
@@ -53,8 +52,7 @@ export const getStaticProps = async () => {
     let geoNamesCountries = [];
     try {
       const geoNamesResponse = await axios.get(
-        process.env.NEXT_PUBLIC_GEO_NAMES_COUNTRIES_API!,
-        { timeout: 10000 }
+        process.env.NEXT_PUBLIC_GEO_NAMES_COUNTRIES_API!
       );
       const geoNamesData = geoNamesResponse.data;
       geoNamesCountries = geoNamesData.geonames.map((country: any) => ({
