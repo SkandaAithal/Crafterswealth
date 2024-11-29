@@ -329,7 +329,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.country]);
+  }, [user.country, countries]);
 
   useEffect(() => {
     if (user.state) {

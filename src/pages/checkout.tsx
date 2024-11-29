@@ -3,13 +3,13 @@ import AnimateOnce from "@/components/common/AnimateOnce";
 import Title from "@/components/common/Title";
 import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
+import { useApp } from "@/lib/provider/app-provider";
 import { CHECKOUT } from "@/lib/routes";
-import { CheckoutProps } from "@/lib/types/checkout";
-import axios from "axios";
 import { NextPage } from "next";
 import React from "react";
 
-const CheckoutPage: NextPage<CheckoutProps> = ({ countries }) => {
+const CheckoutPage: NextPage = () => {
+  const { countries } = useApp();
   const pageName = "Checkout - Complete Your Purchase";
   const pageDescription =
     "Securely complete your purchase with CraftersWealth. Provide your details and finalize your order with ease.";
@@ -36,59 +36,4 @@ const CheckoutPage: NextPage<CheckoutProps> = ({ countries }) => {
   );
 };
 
-export const getStaticProps = async () => {
-  try {
-    const restCountriesResponse = await axios.get(
-      process.env.NEXT_PUBLIC_REST_COUNTRIES_API!
-    );
-    const restCountriesData = restCountriesResponse.data;
-
-    const restCountries = restCountriesData.map((country: any) => ({
-      name: country.name.common,
-      code: country.cca2,
-      flag: country.flags.svg,
-    }));
-
-    let geoNamesCountries = [];
-    try {
-      const geoNamesResponse = await axios.get(
-        process.env.NEXT_PUBLIC_GEO_NAMES_COUNTRIES_API!
-      );
-      const geoNamesData = geoNamesResponse.data;
-      geoNamesCountries = geoNamesData.geonames.map((country: any) => ({
-        name: country.countryName,
-        code: country.countryCode,
-        geoNameId: country.geonameId,
-      }));
-    } catch (error) {
-      return {
-        props: {
-          countries: [],
-        },
-      };
-    }
-
-    const countries = restCountries.map((restCountry: any) => {
-      const geoCountry = geoNamesCountries.find(
-        (geoCountry: any) => geoCountry.code === restCountry.code
-      );
-      return {
-        ...restCountry,
-        geoNameId: geoCountry?.geoNameId || null,
-      };
-    });
-
-    return {
-      props: {
-        countries,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        countries: [],
-      },
-    };
-  }
-};
 export default CheckoutPage;

@@ -48,6 +48,7 @@ export interface CountriesTypes {
   name: string;
   code: string;
   flag: string;
+  geoNameId: number;
 }
 
 export interface Achievement {

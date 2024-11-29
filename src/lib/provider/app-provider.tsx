@@ -139,7 +139,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   }, [boughtArray]);
 
   const fetchCountries = async () => {
-    if (!state.countries.length) {
+    try {
       const restCountriesResponse = await axios.get(
         process.env.NEXT_PUBLIC_REST_COUNTRIES_API!
       );
@@ -150,7 +150,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         code: country.cca2,
         flag: country.flags.svg,
       }));
-      dispatch({ type: AppActionTypes.SET_COUNTRIES, payload: restCountries });
+
+      let geoNamesCountries = [];
+      try {
+        const geoNamesResponse = await axios.get(
+          process.env.NEXT_PUBLIC_GEO_NAMES_COUNTRIES_API!
+        );
+        const geoNamesData = geoNamesResponse.data;
+
+        geoNamesCountries = geoNamesData.geonames.map((country: any) => ({
+          name: country.countryName,
+          code: country.countryCode,
+          geoNameId: country.geonameId,
+        }));
+      } catch {
+        toast({
+          title: "Oops! Something went wrong",
+          description: "Countries data from GeoNames could not be fetched",
+          variant: "destructive",
+        });
+      }
+
+      const countries = restCountries.map((restCountry: any) => {
+        const geoCountry = geoNamesCountries.find(
+          (geoCountry: any) => geoCountry.code === restCountry.code
+        );
+        return {
+          ...restCountry,
+          geoNameId: geoCountry?.geoNameId || null,
+        };
+      });
+
+      dispatch({ type: AppActionTypes.SET_COUNTRIES, payload: countries });
+    } catch {
+      toast({
+        title: "Oops! Something went wrong",
+        description: "Countries data from REST Countries could not be fetched",
+        variant: "destructive",
+      });
     }
   };
 
@@ -173,7 +210,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     fetchCountries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.countries]);
+  }, []);
 
   useEffect(() => {
     setIsMounted(true);
