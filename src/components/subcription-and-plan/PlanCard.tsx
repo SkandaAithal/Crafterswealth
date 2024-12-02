@@ -80,6 +80,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
       productId,
       id: product.id,
       name: plan.access.length ? "Bundle Offer" : product.name,
+      productName: plan.access.length ? plan.type : product.name,
       category: category,
       regularPlanPrice: plan.regular_price,
       price: plan.sale_price,
@@ -87,6 +88,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
       access: plan.access,
       description: plan.description,
       plan: plan.type,
+      hsnCode: product.hsnCode,
     };
 
     if (cartProduct.access.length) {

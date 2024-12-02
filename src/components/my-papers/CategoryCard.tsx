@@ -8,7 +8,7 @@ import { formatToIndianNumberingSystem } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
 import { FaLock } from "react-icons/fa6";
 import { Button } from "../ui/button";
-import { PLAN } from "@/lib/routes";
+import { PRODUCTS_DETAIL } from "@/lib/routes";
 import { useApp } from "@/lib/provider/app-provider";
 import { useRouter } from "next/router";
 
@@ -54,11 +54,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const isNotBought =
     boughtProducts.filter((p) => p.categorySlug === category.slug).length === 0;
 
-  const handlePlanPageRedirect = () => {
+  const handleDetailPageRedirect = () => {
     const planId = products.find(
       (product) => product.productCategories.nodes[0].slug === category.slug
     )?.id;
-    router.push(`${PLAN}/${planId}`);
+    router.push(`${PRODUCTS_DETAIL}?type=${category.slug}&id=${planId}`);
   };
 
   return (
@@ -95,13 +95,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           {isSelected && !isLoading ? (
             <>
               <div className="flex justify-start items-center gap-3">
-                <p className="text-lg font-semibold">Total:</p>
+                <p className="text-lg font-semibold">Investment value:</p>
                 <div className="text-sm font-bold">
                   ₹{formatToIndianNumberingSystem(totalBuyPrice)}
                 </div>
               </div>
               <div className="flex justify-start items-center gap-3">
-                <p className="text-lg font-semibold">Market:</p>
+                <p className="text-lg font-semibold">Total value:</p>
                 <div className="text-sm font-bold ">
                   ₹{formatToIndianNumberingSystem(totalMarketPrice)}
                 </div>
@@ -130,9 +130,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             className={twMerge(
               isSelected ? "!text-lg" : "!py-2 !px-4 w-fit mx-auto text-base"
             )}
-            onClick={handlePlanPageRedirect}
+            onClick={handleDetailPageRedirect}
           >
-            Buy {category.name}
+            Access {category.name}
           </Button>
           <div className="flex items-center gap-3 text-base font-semibold">
             <FaLock size={24} /> <p>{category.name} is locked</p>

@@ -1,5 +1,6 @@
 import { produce } from "immer";
 import { AppAction, AppActionTypes, AppState } from "../types/common/app";
+import { OrderStatus } from "../types/checkout";
 
 export const verifyEmailInitialState = {
   isModalOpen: false,
@@ -18,6 +19,12 @@ export const paymentInitialState = {
   orderId: 0,
   transactionId: "",
   coupons: [],
+  order: {
+    total: "",
+    orderNumber: "",
+    status: OrderStatus.PENDING,
+    subtotal: "",
+  },
 };
 
 export const initialState: AppState = {
@@ -27,6 +34,7 @@ export const initialState: AppState = {
   payment: paymentInitialState,
   countries: [],
   achievements: {},
+  invoiceNumber: "",
 };
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
@@ -90,10 +98,16 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
       case AppActionTypes.INITIATE_PAYMENT:
         draft.payment.orderId = action.payload.orderId;
         draft.payment.transactionId = action.payload.transactionId;
+        draft.payment.order = action.payload.order;
         break;
 
       case AppActionTypes.CLEAR_PAYMENT:
         draft.payment = paymentInitialState;
+        draft.invoiceNumber = "";
+        break;
+
+      case AppActionTypes.SET_INVOICE_NUMBER:
+        draft.invoiceNumber = action.payload;
         break;
 
       case AppActionTypes.SET_ACHIEVEMENTS:

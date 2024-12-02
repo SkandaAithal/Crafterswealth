@@ -232,7 +232,7 @@ const Header = () => {
   return (
     <header
       id="header"
-      className="bg-background shadow-md md:pt-6 md:px-8 p-4 mx-auto flex justify-between items-center sticky top-0 w-full z-[50] lg:h-[100px]"
+      className="bg-background shadow-md md:pt-6 md:px-8 p-4 mx-auto flex justify-between items-center sticky top-0 w-full z-[99999] lg:h-[100px]"
     >
       {renderLogo(true)}
       <nav className="hidden lg:flex items-center space-x-8">

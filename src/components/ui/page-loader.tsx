@@ -24,11 +24,16 @@ const PageLoader: React.FC<PageLoaderProps> = ({
   return (
     <div
       className={twMerge(
-        "w-screen  grid place-content-center gap-6 bg-primary",
+        "w-screen  grid place-content-center gap-6 bg-primary relative",
         isHeaderHidden ? "h-screen" : "h-full min-h-[calc(100vh-100px)]",
         className
       )}
     >
+      {text && (
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-yellow-500 text-white px-4 py-3 rounded-full shadow-lg text-base font-medium space-x-2 animate-pulse text-nowrap">
+          Please wait.. This process may take some time.
+        </div>
+      )}
       <div className="loading-wave mx-auto">
         <div className="loading-bar"></div>
         <div className="loading-bar"></div>

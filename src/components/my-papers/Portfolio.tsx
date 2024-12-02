@@ -121,6 +121,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDropdownOpen]);
 
+  const isCategoriesLessThanThree = categories.length < 3;
   return (
     <section className="layout-sm !py-0">
       {isLoading ? (
@@ -152,7 +153,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
               <Separator />
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">
-                  Total Invested ({portfolioProducts.length})
+                  Total Investment ({portfolioProducts.length})
                 </h2>
                 <h1 className="text-2xl xl:text-3xl font-bold">
                   ₹{formatToIndianNumberingSystem(totalBuyPrice)}
@@ -171,14 +172,15 @@ const Portfolio: React.FC<PortfolioProps> = ({
           </div>
           <div className="col-span-2">
             <SwiperComponent
-              slidesPerView={3}
+              slidesPerView={isCategoriesLessThanThree ? 2 : 3}
               centeredSlides
               loop
               initialSlide={selectedIndex}
               className={twMerge(
                 isMobile || windowWidth < 1280 || windowWidth < 900
                   ? "mask"
-                  : ""
+                  : "",
+                isCategoriesLessThanThree ? "max-w-screen-md mask" : ""
               )}
               onSlideChange={(swiper) => {
                 const newSelectedIndex = swiper.realIndex;
@@ -187,12 +189,12 @@ const Portfolio: React.FC<PortfolioProps> = ({
               }}
               breakpoints={{
                 768: { slidesPerView: 2 },
-                900: { slidesPerView: 3 },
+                900: { slidesPerView: isCategoriesLessThanThree ? 2 : 3 },
                 1024: {
                   slidesPerView: 2,
                 },
                 1280: {
-                  slidesPerView: 3,
+                  slidesPerView: isCategoriesLessThanThree ? 2 : 3,
                 },
               }}
               onSwiper={(swiper) => (swiperRef.current = swiper)}
@@ -221,7 +223,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
                     className={twMerge(
                       "p-6 mx-3 hidden rounded-2xl md:flex flex-col justify-between min-h-60 cursor-pointer bg-accent transition-all shadow-inner duration-500",
                       selectedIndex === index
-                        ? "h-80 bg-[#e1e8ff]"
+                        ? "h-80 bg-primary-blue-30"
                         : "bg-accent"
                     )}
                     onClick={() => {
@@ -244,7 +246,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
                 portfolioProducts={portfolioProducts}
                 boughtProducts={boughtProducts}
                 className={twMerge(
-                  "p-6 my-4 flex rounded-2xl md:hidden flex-col justify-between h-80 min-h-60 bg-[#e1e8ff]"
+                  "p-6 my-4 flex rounded-2xl md:hidden flex-col justify-between h-80 min-h-60 bg-primary-blue-30"
                 )}
                 isSelected
                 isLoading={isMarketPriceLoading}

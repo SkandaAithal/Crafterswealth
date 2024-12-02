@@ -58,7 +58,7 @@ const ProductCard = ({ product, currentPrice, loading }: ProductCardProps) => {
               <h2 className="text-xl font-semibold">{name}</h2>
               <div className="space-y-3">
                 <div className="space-y-2">
-                  <p>Potential Left</p>
+                  <p>Remaining Growth Potential</p>
                   <div className="flex items-center justify-center gap-1 !my-5 text-4xl font-extrabold">
                     {loading ? (
                       <Skeleton className="h-10 w-3/5 " />

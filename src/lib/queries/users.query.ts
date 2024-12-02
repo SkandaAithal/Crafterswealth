@@ -59,7 +59,7 @@ export const CREATE_USER_SIGNUP = gql`
   }
 `;
 
-export const SEND_VERIFY_EMAIL_MUTATION = gql`
+export const SEND_EMAIL_MUTATION = gql`
   mutation SendEmail($input: SendEmailInput!) {
     sendEmail(input: $input) {
       sent

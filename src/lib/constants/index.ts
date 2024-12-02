@@ -18,11 +18,21 @@ import {
   FaRocket,
   FaBalanceScale,
   FaUniversity,
+  FaCheckCircle,
+  FaBookOpen,
+  FaChartPie,
+  FaClock,
+  FaUserPlus,
+  FaTasks,
+  FaFileAlt,
 } from "react-icons/fa";
 
 export const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY!;
 export const GEO_NAMES_USER_NAME = process.env.NEXT_PUBLIC_GEO_NAME_USER_NAME!;
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
+export const SUPPORT_EMAIL = "support@crafterswealth.com";
+export const OFFICIAL_EMAIL = "Rishabh@crafterswealth.com";
+export const ACCOUNTS_EMAIL = "account@crafterswealth.com";
 export const APP_INFO = "app-info";
 
 //seo
@@ -43,7 +53,7 @@ export const HEADER_ROUTES = [
       { name: "Expert Articles", route: ARTICLES, icon: PiArticleMediumLight },
     ],
   },
-  { name: "Our Story", route: ABOUT_US },
+  { name: "About Us", route: ABOUT_US },
   { name: "Contact Us", route: CONTACT },
 ];
 
@@ -60,269 +70,6 @@ export const ICONS = [
   "/icons/icon-2.png",
   "/icons/icon-3.png",
   "/icons/icon-4.png",
-];
-
-export const PRODUCTS_CAROUSEL_ITEMS = [
-  {
-    id: 1,
-    heading: "Small Cap Targets",
-    link: PRODUCTS,
-    description:
-      "Find the right buy prices and projected target hits for high-growth small cap stocks. Perfect for aggressive investors seeking detailed buy recommendations.",
-    imgUrl: "/icons/icon-2.png",
-  },
-  {
-    id: 2,
-    heading: "Mid Cap Insights",
-    link: PRODUCTS,
-    description:
-      "Get buy recommendations and target timelines for stable mid cap stocks. Ideal for investors seeking a balance between growth and security.",
-    imgUrl: "/icons/icon-3.png",
-  },
-  {
-    id: 3,
-    heading: "Large Cap Signals",
-    link: PRODUCTS,
-    description:
-      "Access precise buy prices and target forecasts for large cap stocks with consistent returns. Best for long-term investors looking for solid growth.",
-    imgUrl: "/icons/icon-4.png",
-  },
-  {
-    id: 4,
-    heading: "Market Blogs",
-    link: ARTICLES,
-    description:
-      "Stay updated on the latest trends, strategies, and insights to help you make informed investment decisions.",
-    imgUrl: "/icons/icon-1.png",
-  },
-];
-
-export const TARGETS_REACHED_ITEMS = [
-  {
-    id: 1,
-    stock: "GrindWell (RP0017)",
-    sell: 2609.9,
-    buy: 2282.0,
-    period: "28 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 2,
-    stock: "Tata Motors (TTM001)",
-    sell: 510.5,
-    buy: 460.0,
-    period: "15 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 3,
-    stock: "Reliance Industries (RELI021)",
-    sell: 2625.7,
-    buy: 2400.5,
-    period: "30 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 4,
-    stock: "Infosys (INFY007)",
-    sell: 1599.2,
-    buy: 1480.0,
-    period: "21 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 5,
-    stock: "HDFC Bank (HDFC010)",
-    sell: 1509.8,
-    buy: 1390.3,
-    period: "25 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 6,
-    stock: "Bharti Airtel (BHA005)",
-    sell: 820.6,
-    buy: 780.0,
-    period: "18 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 7,
-    stock: "ICICI Bank (ICIC011)",
-    sell: 950.3,
-    buy: 910.0,
-    period: "20 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 8,
-    stock: "Larsen & Toubro (LART002)",
-    sell: 1875.5,
-    buy: 1750.3,
-    period: "26 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 9,
-    stock: "Asian Paints (ASP003)",
-    sell: 3200.0,
-    buy: 3000.5,
-    period: "14 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 10,
-    stock: "Axis Bank (AXIS008)",
-    sell: 850.4,
-    buy: 810.0,
-    period: "19 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 11,
-    stock: "Wipro (WIP001)",
-    sell: 430.2,
-    buy: 400.0,
-    period: "22 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 12,
-    stock: "Tech Mahindra (TECH002)",
-    sell: 1045.7,
-    buy: 990.3,
-    period: "27 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 13,
-    stock: "Adani Ports (ADAN003)",
-    sell: 740.8,
-    buy: 700.1,
-    period: "17 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 14,
-    stock: "SBI (SBI012)",
-    sell: 625.0,
-    buy: 580.0,
-    period: "24 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 15,
-    stock: "Coal India (COAL013)",
-    sell: 225.3,
-    buy: 210.0,
-    period: "16 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 16,
-    stock: "Maruti Suzuki (MAR014)",
-    sell: 8750.5,
-    buy: 8400.0,
-    period: "29 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 17,
-    stock: "Power Grid (PWR015)",
-    sell: 220.5,
-    buy: 200.0,
-    period: "13 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 18,
-    stock: "Tata Steel (TSTL016)",
-    sell: 1215.9,
-    buy: 1150.0,
-    period: "30 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 19,
-    stock: "Hindustan Unilever (HUL017)",
-    sell: 2700.2,
-    buy: 2550.0,
-    period: "22 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 20,
-    stock: "Ultratech Cement (ULT018)",
-    sell: 6850.6,
-    buy: 6500.5,
-    period: "25 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 21,
-    stock: "JSW Steel (JSW019)",
-    sell: 725.0,
-    buy: 680.0,
-    period: "19 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 22,
-    stock: "HCL Technologies (HCL020)",
-    sell: 1250.7,
-    buy: 1180.0,
-    period: "27 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 23,
-    stock: "Zomato (ZOM021)",
-    sell: 120.0,
-    buy: 100.5,
-    period: "18 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 24,
-    stock: "Paytm (PAY022)",
-    sell: 860.4,
-    buy: 800.0,
-    period: "23 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
-  {
-    id: 25,
-    stock: "M&M (MAM023)",
-    sell: 1545.9,
-    buy: 1480.0,
-    period: "26 days",
-    pdfLink:
-      "https://crafterswealth.com/wp-content/uploads/woocommerce_uploads/2024/09/RP0074-plsxlg.pdf",
-  },
 ];
 
 export const MarketBarChartGraphData = {
@@ -344,158 +91,175 @@ export const MarketBarChartGraphData = {
 };
 
 export const MarketCapBarChartGraphData = {
-  [TimePeriod.OneMonth]: {
-    [InvestmentType.SmallCap]: 0.115,
-    [InvestmentType.MidCap]: 0.08,
-    [InvestmentType.LargeCap]: 0.04,
+  [InvestmentType.ValueSprint]: {
+    [TimePeriod.OneMonth]: {
+      [InvestmentType.ValueSprint]: 0.115,
+      [InvestmentType.Nifty50]: 0.08,
+      [InvestmentType.MutualFund]: 0.04,
+    },
+    [TimePeriod.ThreeMonths]: {
+      [InvestmentType.ValueSprint]: 0.14,
+      [InvestmentType.Nifty50]: 0.12,
+      [InvestmentType.MutualFund]: 0.15,
+    },
+    [TimePeriod.SixMonths]: {
+      [InvestmentType.ValueSprint]: 0.31,
+      [InvestmentType.Nifty50]: 0.23,
+      [InvestmentType.MutualFund]: 0.35,
+    },
   },
-  [TimePeriod.ThreeMonths]: {
-    [InvestmentType.SmallCap]: 0.14,
-    [InvestmentType.MidCap]: 0.12,
-    [InvestmentType.LargeCap]: 0.15,
-  },
-  [TimePeriod.SixMonths]: {
-    [InvestmentType.SmallCap]: 0.31,
-    [InvestmentType.MidCap]: 0.23,
-    [InvestmentType.LargeCap]: 0.35,
+  [InvestmentType.MomentumPulse]: {
+    [TimePeriod.OneMonth]: {
+      [InvestmentType.MomentumPulse]: 0.115,
+      [InvestmentType.Nifty50]: 0.08,
+      [InvestmentType.MutualFund]: 0.04,
+    },
+    [TimePeriod.ThreeMonths]: {
+      [InvestmentType.MomentumPulse]: 0.14,
+      [InvestmentType.Nifty50]: 0.12,
+      [InvestmentType.MutualFund]: 0.15,
+    },
+    [TimePeriod.SixMonths]: {
+      [InvestmentType.MomentumPulse]: 0.31,
+      [InvestmentType.Nifty50]: 0.23,
+      [InvestmentType.MutualFund]: 0.35,
+    },
   },
 };
 
 export const FAQ_DATA = {
-  pricing: [
+  about: [
     {
-      question: "What makes CraftersWealth’s research papers different?",
+      question: "What is CraftersWealth and what services do you offer?",
       answer:
-        "CraftersWealth gives you clear instructions on what stocks to buy, when to buy, and when to sell. Our research papers are packed with detailed analysis and target dates for maximum profit.",
+        "CraftersWealth is a SEBI-registered financial research firm specializing in comprehensive stock market research, algorithm-driven insights, and educational content. Our services include high-quality equity research reports, real-time market insights, and customer-centric solutions designed to help investors achieve consistent and profitable returns.",
     },
     {
-      question: "How can I access CraftersWealth’s research papers?",
+      question: "Who are the founders of CraftersWealth?",
       answer:
-        "It’s easy! Click on the 'Access Now' button on our site. Each paper includes actionable insights like buy/target prices, analysis, and target dates.",
-    },
-    {
-      question: "Is CraftersWealth suitable for beginners in the stock market?",
-      answer:
-        "Absolutely! Our papers are designed for all experience levels, including beginners. They offer easy-to-follow recommendations and detailed insights.",
-    },
-    {
-      question: "What payment methods do you accept for research papers?",
-      answer:
-        "We accept all major credit cards, debit cards, UPI, and other digital payment methods to ensure a secure and seamless transaction process.",
-    },
-    {
-      question: "Is there any discount on bulk purchases of research papers?",
-      answer:
-        "Yes, we offer special discounts for bulk purchases. Contact our sales team for more information on discounts for institutional or multi-user licenses.",
-    },
-  ],
-  features: [
-    {
-      question: "What are the key features of CraftersWealth research papers?",
-      answer:
-        "Our research papers offer in-depth stock analysis, expert recommendations, price targets, and predicted timelines for reaching investment goals.",
-    },
-    {
-      question: "How often are new research papers published?",
-      answer:
-        "New research papers are published monthly, with insights on small cap, mid cap, and large cap stocks, covering multiple sectors.",
-    },
-    {
-      question: "Do the research papers include risk analysis?",
-      answer:
-        "Yes, each research paper includes a detailed risk assessment to help you gauge the potential downsides before making an investment.",
-    },
-    {
-      question: "Are the research papers updated if new market trends emerge?",
-      answer:
-        "We update our research papers as needed when significant market changes occur, ensuring that investors have the most current information.",
+        "CraftersWealth was co-founded by Raghu Srinivasan, a Chartered Accountant with over 40 years of expertise in corporate finance and taxation, and Rishabh Rao, a technology innovator with a background in Computer Science and a passion for stock market research.",
     },
     {
       question:
-        "Can I receive notifications when new research papers are available?",
+        "How does CraftersWealth differentiate itself from other financial research firms?",
       answer:
-        "Yes, you can sign up for our email alerts to get notified as soon as new research papers are published.",
+        "CraftersWealth stands out by blending decades of financial expertise with innovative technology. Here’s what sets us apart:\n\n- Personalized Behavioral Finance Tools: We offer tailored advice based on an investor's psychological profile, helping align strategies with individual mindsets.\n- Affordable, Transparent Pricing: Our value-driven pricing ensures clarity, with detailed breakdowns for each service tier.\n- Tech-Driven, Real-Time Recommendations: Proprietary algorithms provide actionable, data-backed insights for timely decisions.\n- Holistic Investment Solutions: A one-stop platform integrating research, advisory, education, and software, streamlining the investment journey.\n\nThis comprehensive approach empowers our clients to make confident and profitable investment choices.",
+    },
+    {
+      question: "Is CraftersWealth a SEBI-registered firm?",
+      answer:
+        "Yes, CraftersWealth is a SEBI-registered Research Analyst firm under the name Crafters Financial Research Private Limited (Research Analyst) with SEBI Registration No. INH000016117. This ensures that we adhere to strict regulatory standards, guaranteeing transparency, accountability, and ethical practices in all our research and services.",
+    },
+    {
+      question: "Who can benefit from your services?",
+      answer:
+        "Our services cater to a diverse range of investors, from beginners seeking foundational guidance to experienced professionals aiming for consistent market success. In addition to offering profitable stock research, we provide educational content, including insights, tutorials, and market updates, to empower investors with the knowledge they need to make informed decisions. Whether you're an individual or a business, our solutions are tailored to meet your financial goals.",
+    },
+  ],
+  research: [
+    {
+      question: "What kind of research papers do you provide?",
+      answer:
+        "Each paper is an in-depth analysis of a single stock, providing actionable buy/sell signals based on a combination of fundamental and technical analysis. Our proprietary software, backed by thorough backtesting, delivers high success rates and clear, reliable recommendations.",
+    },
+    {
+      question: "How often are new research papers released?",
+      answer:
+        "New research papers are released every day, ensuring that our subscribers have access to the latest, most relevant stock market insights on a daily basis.",
+    },
+    {
+      question: "How are your research papers priced?",
+      answer:
+        "Our research papers are priced with value in mind, offering transparent pricing models for all service tiers. Subscribers can choose a plan that aligns with their investment goals.",
+    },
+    {
+      question: "What makes your research reports different from other firms?",
+      answer:
+        "Our reports are unique due to our use of proprietary software, high success rates, and daily updates. We combine technical and fundamental analysis, offering easy-to-understand buy/sell signals based on backtested data and personalized insights.",
+    },
+    {
+      question: "How can I access your research papers?",
+      answer:
+        "To access our research papers, subscribe to our service. You will gain access to an exclusive dashboard for regular updates and personalized stock recommendations sent directly to your email.",
+    },
+  ],
+  pricing: [
+    {
+      question: "What pricing plans do you offer for your services?",
+      answer:
+        "We offer both Standard and Premium plans for all our products. The Standard plan includes one single transactional paper or a monthly subscription to all papers. The Premium plan offers full access to all products with three options: Quarterly (₹1199), Half-Yearly (₹1999), and Yearly (₹2999).",
+    },
+    {
+      question: "Are there any free trials or sample reports available?",
+      answer:
+        "Yes! Our Standard plan offers a one-time transactional paper at ₹99, with 10 free papers from our archive. You can also subscribe for a month at ₹499 to access all papers.",
+    },
+    {
+      question: "How do I know which pricing plan is right for me?",
+      answer:
+        "Choose a plan based on your risk tolerance and product preference. If you’re looking to try out services on a budget, the ₹99 paper is a good start. Most customers prefer the Quarterly Plan because it bundles access to all our products, making it cost-effective.",
+    },
+    {
+      question: "Do you offer any discounts or promotional offers?",
+      answer:
+        "Yes, we provide discounted future renewals for Half-Yearly and Yearly plans. Keep an eye out for special promotions or limited-time offers that may come up.",
+    },
+    {
+      question: "Can I upgrade my plan at any time?",
+      answer:
+        "Yes, you can easily upgrade from a Standard to a Premium plan at any time. We will ensure you get the remaining value of your previous plan applied to the new one.",
+    },
+  ],
+  technology: [
+    {
+      question:
+        "What technology and tools do you use to generate your research?",
+      answer:
+        "We use proprietary algorithms combined with advanced technical and fundamental analysis tools. Our research is powered by custom-built software and data analytics platforms to generate real-time, actionable insights.",
+    },
+    {
+      question: "Are your algorithms proprietary, and how are they developed?",
+      answer:
+        "Yes, our algorithms are proprietary and developed by a dedicated team using statistical models, backtesting techniques, and years of market data. They are continuously refined to ensure the best performance.",
+    },
+    {
+      question:
+        "How do you ensure the accuracy of your research with technology?",
+      answer:
+        "Our research is backed by rigorous testing using historical data, continuous monitoring, and real-time analysis. We ensure accuracy by leveraging cutting-edge models, expert reviews, and backtesting tools.",
+    },
+    {
+      question: "Can I use your software to make investments directly?",
+      answer:
+        "Our software provides actionable recommendations, but it does not allow direct usage. You can implement our insights through your brokerage platform by accessing our premium research reports.",
+    },
+    {
+      question: "Is your technology constantly updated?",
+      answer:
+        "Yes, we continually update our technology to keep up with market changes and incorporate the latest developments in financial data analysis, ensuring you always have access to the most reliable information.",
     },
   ],
   support: [
     {
       question: "How can I contact customer support?",
       answer:
-        "You can reach us at support@crafterswealth.com or through our 24/7 live chat on the website for any questions or concerns.",
+        "You can contact customer support via email at support@crafterswealth.com or through WhatsApp. Our team is available to assist you with any inquiries or issues.",
     },
     {
-      question: "What is the average response time for support queries?",
+      question: "What do I do in case of a payment failure?",
       answer:
-        "Our support team typically responds within 24 hours, but most queries are resolved much faster, especially through live chat.",
+        "If you experience a payment failure, don’t worry. Your transaction will be reverted within 7 business days. If the issue persists, please contact our support team immediately. We'll help resolve the issue.",
     },
     {
-      question: "Can I get help with understanding the research papers?",
+      question:
+        "What kind of support is available to subscribers of your services?",
       answer:
-        "Absolutely! Our support team can guide you through the details of our research papers if you need further clarification.",
+        "Subscribers can access basic or priority support, depending on their plan. We offer email support, phone support for urgent issues, and personalized assistance for premium users.",
     },
     {
-      question: "Do you offer personalized investment advice?",
+      question: "Is there any additional support for new users?",
       answer:
-        "While our research papers provide in-depth analysis, we do not offer personalized investment advice. For individual recommendations, consult a financial advisor.",
-    },
-    {
-      question: "Is there any dedicated support for premium users?",
-      answer:
-        "Yes, premium users get priority support via email and chat, ensuring quicker resolution of any issues or queries.",
-    },
-  ],
-  subscription: [
-    {
-      question: "What subscription plans do you offer?",
-      answer:
-        "We offer two plans: Basic for ₹99 (1 research paper + 10 archived papers) and Premium for ₹300 (access to all new papers for 1 month).",
-    },
-    {
-      question: "Can I upgrade or downgrade my subscription plan?",
-      answer:
-        "Yes, you can easily switch between plans from your account dashboard. The changes will take effect immediately after confirmation.",
-    },
-    {
-      question: "Is there a trial period for new users?",
-      answer:
-        "We do not offer a free trial, but our Basic plan for ₹99 allows you to explore our content at an affordable rate before upgrading to Premium.",
-    },
-    {
-      question: "Will I be notified before my subscription renews?",
-      answer:
-        "Yes, you will receive a reminder email 3 days before your subscription is due to renew, giving you time to make any changes or cancellations.",
-    },
-    {
-      question: "Can I cancel my subscription at any time?",
-      answer:
-        "Yes, you can cancel your subscription anytime from your account dashboard. Your access will continue until the end of the billing period.",
-    },
-  ],
-  security: [
-    {
-      question: "How secure is my payment information?",
-      answer:
-        "We use advanced encryption protocols to secure all payment transactions. Your data is protected by industry-standard security measures.",
-    },
-    {
-      question: "Does CraftersWealth store my payment details?",
-      answer:
-        "No, we do not store any payment information. All transactions are handled securely by our trusted payment gateways.",
-    },
-    {
-      question: "How is my personal information used?",
-      answer:
-        "Your personal data is used only to provide our services. We follow strict data protection laws and never share your information with third parties without your consent.",
-    },
-    {
-      question: "What steps are taken to prevent data breaches?",
-      answer:
-        "We use robust firewalls, encryption, and regular security audits to ensure that your data is safe from breaches and unauthorized access.",
-    },
-    {
-      question: "How can I reset my password if I forget it?",
-      answer:
-        "You can reset your password by clicking on the 'Forgot Password' link on the login page. We will send you an email with instructions to reset it.",
+        "Yes, we offer onboarding assistance for new users, including tutorials, FAQs, and an introductory guide to our services. Our customer support team is also available to help you get started.",
     },
   ],
 };
@@ -544,147 +308,137 @@ export const SYMBOLS_DATA = [
 ];
 
 export const PRODUCT_DETAILS_CONFIG = {
-  "small-cap": {
-    title: "Small Cap Stock Research",
-    tableKey: "Small Cap",
-    subtitle: "Unlock Explosive Growth with High-Potential Small Caps 📈",
-    type: InvestmentType.SmallCap,
+  "value-sprint": {
+    title: InvestmentType.ValueSprint,
+    tableKey: InvestmentType.ValueSprint,
+    subtitle: "Unlock Short-Term Gains with Value Sprint Strategy",
+    type: InvestmentType.ValueSprint,
+    amazingFeatures:
+      "Understand the core features that make Value Sprint a powerful strategy for identifying undervalued stocks.",
     aboutStock:
-      "Small cap stocks represent companies with smaller market capitalization, typically ranging from ₹100 crore to ₹5,000 crore. These stocks are more volatile but have greater potential for substantial growth, often outperforming larger stocks during bull markets.",
+      "Value Sprint is designed to uncover undervalued stocks with high growth potential. With a short-term focus, this strategy aims to identify hidden gems in the market, offering significant returns in a brief period. By leveraging in-depth research and analysis, we select stocks that are poised for strong price movement, ensuring a promising investment opportunity with a proven success rate.",
 
     features: [
       {
-        title: "High Growth Potential",
+        title: "High Success Rate",
         description:
-          "Focuses on identifying small cap stocks with high potential for substantial growth.",
+          "With an 85% success rate, Value Sprint delivers reliable results even in uncertain market conditions.",
         icon: FaRocket,
       },
       {
-        title: "In-Depth Analysis",
+        title: "Short-Term Focus",
         description:
-          "Comprehensive technical and fundamental analysis, including insider and institutional data.",
+          "The strategy targets stocks with strong potential for short-term growth, holding for an average of just 10 days.",
         icon: FaSearchDollar,
       },
       {
-        title: "Real-Time Insights",
+        title: "Undervalued Stocks",
         description:
-          "Provides timely market insights and data to keep you competitive.",
+          "Focuses on stocks that are currently undervalued, offering opportunities for significant growth in the near term.",
         icon: FaChartLine,
       },
       {
-        title: "Emerging Sectors",
+        title: "Resilient in Down Markets",
         description:
-          "Gain exposure to companies in emerging industries and technologies.",
+          "Even during market downturns, Value Sprint identifies stocks with strong growth potential, ensuring continued profitability.",
         icon: FaBalanceScale,
       },
       {
-        title: "Diversified Opportunities",
+        title: "Moderate Returns with Minimal Risk",
         description:
-          "Investment in early-stage companies with diversified growth opportunities.",
+          "Achieves average gains of 5% per trade, balancing steady returns with limited exposure to risk.",
         icon: FaUniversity,
       },
       {
-        title: "Aggressive Returns",
+        title: "Targeted Stock Picks",
         description:
-          "Ideal for aggressive investors looking for high growth potential.",
+          "Identifies high-potential mid, small, and large-cap stocks that are positioned for quick price movement.",
         icon: FaShieldAlt,
       },
     ],
   },
 
-  "mid-cap": {
-    title: "Mid Cap Stock Research",
-    tableKey: "Mid Cap",
-    subtitle: "Seize the Sweet Spot: Balanced Growth with Mid Caps 🏆",
-    type: InvestmentType.MidCap,
+  "momentum-pulse": {
+    title: InvestmentType.MomentumPulse,
+    tableKey: InvestmentType.MomentumPulse,
+    subtitle: "Strategic Investing for Momentum-Driven Gains",
+    amazingFeatures:
+      "Understand the core features that drive our high-performing Momentum Pulse strategy.",
+    type: InvestmentType.MomentumPulse,
     aboutStock:
-      "Mid cap stocks represent companies with a market capitalization between ₹5,000 crore and ₹20,000 crore. These companies offer a balance between growth potential and stability, often considered a 'sweet spot' for risk and reward in the stock market.",
+      "Momentum Pulse is crafted for investors who seek to ride market trends confidently. This strategy combines the power of detailed research with a focus on momentum-driven opportunities in financially sound mid, large, and small-cap stocks. Perfect for medium-term growth seekers, it’s designed to align with dynamic market movements and deliver actionable insights.",
 
     features: [
       {
-        title: "Balanced Growth",
+        title: "Proven Success Rate",
         description:
-          "Offers a mix of growth potential and stability, ideal for moderate-risk investors.",
-        icon: FaBalanceScale,
+          "Momentum Pulse maintains a 95% success rate, ensuring reliable and profitable results.",
+        icon: FaCheckCircle,
       },
       {
-        title: "Proven Stability",
+        title: "Comprehensive Research",
         description:
-          "Focuses on companies with proven track records and stable growth.",
-        icon: FaShieldAlt,
+          "Combines both technical and fundamental analysis to provide a well-rounded market outlook.",
+        icon: FaBookOpen,
       },
       {
-        title: "Sectoral Analysis",
+        title: "Quality Stock Selection",
         description:
-          "Includes in-depth sectoral and peer comparisons to guide investment.",
-        icon: FaUniversity,
+          "Focuses on mid, large, and small-cap stocks with strong financials and growth potential.",
+        icon: FaChartPie,
       },
       {
-        title: "Economic Expansion",
+        title: "Medium Holding Period",
         description:
-          "Mid caps tend to outperform in periods of economic growth.",
+          "Average holding time of 45 days, balancing between short-term gains and long-term growth.",
+        icon: FaClock,
+      },
+      {
+        title: "Consistent Returns",
+        description:
+          "Achieves an average gain of 11.5% per trade, optimizing returns with a balanced approach.",
         icon: FaChartLine,
       },
       {
-        title: "Predictive Models",
+        title: "Medium-Risk Strategy",
         description:
-          "Access to predictive data models for making informed decisions.",
-        icon: FaSearchDollar,
-      },
-      {
-        title: "Growth Potential",
-        description:
-          "Invest in companies with the potential to become future large caps.",
-        icon: FaRocket,
-      },
-    ],
-  },
-
-  "large-cap": {
-    title: "Large Cap Stock Research",
-    tableKey: "Large Cap",
-    subtitle: "Stability Meets Growth: Your Secure Investment in Large Caps 💼",
-    type: InvestmentType.LargeCap,
-    aboutStock:
-      "Large cap stocks are shares of companies with a market capitalization above ₹20,000 crore. These companies are typically well-established, financially stable, and provide a lower-risk investment option.",
-
-    features: [
-      {
-        title: "Lower Risk",
-        description:
-          "Large caps are less volatile and provide a safer investment option.",
-        icon: FaShieldAlt,
-      },
-      {
-        title: "Dividend Income",
-        description: "Stable companies offering reliable dividend yields.",
-        icon: FaUniversity,
-      },
-      {
-        title: "Long-Term Stability",
-        description:
-          "Ideal for conservative investors focused on wealth preservation.",
+          "Designed for investors who want to take a moderate risk to achieve significant returns, ensuring a balanced approach to portfolio growth.",
         icon: FaBalanceScale,
-      },
-      {
-        title: "Macro Analysis",
-        description: "Includes macroeconomic insights and trend analysis.",
-        icon: FaChartLine,
-      },
-      {
-        title: "Global Market Trends",
-        description:
-          "Monitors global conditions to optimize large cap strategies.",
-        icon: FaSearchDollar,
-      },
-      {
-        title: "Wealth Preservation",
-        description: "Focus on long-term growth with minimal risk.",
-        icon: FaShieldAlt,
       },
     ],
   },
 };
+
+export const STEPS_DETAILS = [
+  {
+    icon: FaUserPlus,
+    title: "Sign Up",
+    description:
+      "Create an account and choose your preferred plan. You'll gain instant access to exclusive research and strategies tailored to your investment goals.",
+    step: 1,
+  },
+  {
+    icon: FaFileAlt,
+    title: "Access Research",
+    description:
+      "Get access to detailed reports with actionable buy/sell signals. Our expert analysis will guide you in making informed investment decisions.",
+    step: 2,
+  },
+  {
+    icon: FaTasks,
+    title: "Implement Insights",
+    description:
+      "Use the buy/sell recommendations from our reports on your brokerage platform to execute trades. Our insights are designed for easy application.",
+    step: 3,
+  },
+  {
+    icon: FaChartLine,
+    title: "Track and Optimize",
+    description:
+      "Monitor your investments regularly and receive continuous updates to optimize your portfolio, ensuring you're always aligned with market trends.",
+    step: 4,
+  },
+];
 
 export const customDropDownStyles = {
   control: (provided: any) => ({

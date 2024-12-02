@@ -43,44 +43,63 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const renderProducts = () => (
-    <div className="layout min-h-[540px] overflow-x-hidden mask-desktop">
-      <SwiperComponent
-        modules={[Autoplay]}
-        spaceBetween={20}
-        slidesPerView={1.1}
-        centeredSlides={true}
-        loop={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        breakpoints={{
-          640: { slidesPerView: 2, spaceBetween: 20 },
-          1024: { slidesPerView: 3.1, spaceBetween: 40 },
-        }}
-        style={{
-          overflow: "visible",
-        }}
-      >
-        {[...products, ...products].map((product, idx) => {
+  const renderProducts = () => {
+    return products.length >= 3 ? (
+      <div className="layout min-h-[540px] overflow-x-hidden mask-desktop">
+        <SwiperComponent
+          modules={[Autoplay]}
+          spaceBetween={20}
+          slidesPerView={1.1}
+          centeredSlides={true}
+          loop={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          breakpoints={{
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3.1, spaceBetween: 40 },
+          }}
+          style={{
+            overflow: "visible",
+          }}
+        >
+          {[...products, ...products].map((product) => {
+            const currentPrice = stockData.find(
+              (data) => data.symbol === product.stock.stockSymbol
+            )?.price;
+
+            return (
+              <SwiperSlide key={product.id}>
+                <ProductCard
+                  product={product}
+                  currentPrice={currentPrice as number}
+                  loading={loading}
+                />
+              </SwiperSlide>
+            );
+          })}
+        </SwiperComponent>
+      </div>
+    ) : (
+      <div className="layout min-h-[540px] grid gap-16 md:gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => {
           const currentPrice = stockData.find(
             (data) => data.symbol === product.stock.stockSymbol
           )?.price;
 
           return (
-            <SwiperSlide key={idx}>
-              <ProductCard
-                product={product}
-                currentPrice={currentPrice as number}
-                loading={loading}
-              />
-            </SwiperSlide>
+            <ProductCard
+              key={product.id}
+              product={product}
+              currentPrice={currentPrice as number}
+              loading={loading}
+            />
           );
         })}
-      </SwiperComponent>
-    </div>
-  );
+      </div>
+    );
+  };
 
   return (
     <main>

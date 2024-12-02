@@ -11,7 +11,7 @@ const Articles = () => {
   const pageDescription =
     "Explore the latest insights and trends in the stock market. Stay updated with expert opinions, tips, and news on various financial topics.";
   return (
-    <main className="bg-gradient-to-b from-[#e1e8ff] to-white min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] layout space-y-6 pb-16">
+    <main className="bg-gradient-to-b from-primary-blue-30 to-white min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] layout space-y-6 pb-16">
       <SEOHead
         title={pageName}
         description={pageDescription}
@@ -25,8 +25,8 @@ const Articles = () => {
       <div>
         <Title text="Market Blogs" className="text-center" />
         <Typewriter
-          text="Explore the latest insights and trends in the stock market. Stay updated with expert opinions, tips, and news on various financial topics."
-          className="max-w-screen-md mx-auto text-center h-14"
+          text="Explore the latest insights and trends in the stock market."
+          className="max-w-screen-md mx-auto text-center"
         />
       </div>
       <ArticlesComponent />

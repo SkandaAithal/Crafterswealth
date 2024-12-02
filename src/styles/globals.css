@@ -464,3 +464,10 @@ body,
 .key:nth-child(even) {
   animation-duration: 3s;
 }
+
+#masonry-container {
+  column-gap: 1.5rem;
+}
+.masonry-item {
+  break-inside: avoid;
+}

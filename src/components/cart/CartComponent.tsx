@@ -22,6 +22,7 @@ import { Cart } from "@/lib/types/products";
 
 const CartComponent = () => {
   const router = useRouter();
+
   const {
     user,
     authDispatch,
@@ -29,6 +30,7 @@ const CartComponent = () => {
     setRedirectTrigger,
     isAuthenticated,
   } = useAuth();
+
   const cartArray = user.cart as Cart[];
   const { products } = useApp();
   const [loadingIndexes, setLoadingIndexes] = useState<number[]>([]);

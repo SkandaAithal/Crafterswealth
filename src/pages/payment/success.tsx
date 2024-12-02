@@ -4,10 +4,13 @@ import useProcessOrder from "@/lib/hooks/use-order-payload";
 import { useApp } from "@/lib/provider/app-provider";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { UPDATE_ORDER_MUTATION } from "@/lib/queries/products.query";
-import { UPDATE_USER_META } from "@/lib/queries/users.query";
+import {
+  SEND_EMAIL_MUTATION,
+  UPDATE_USER_META,
+} from "@/lib/queries/users.query";
 import { MY_PAPERS, PAYMENT_FAILURE, PAYMENT_SUCCESS } from "@/lib/routes";
 import { AppActionTypes } from "@/lib/types/common/app";
-import { OrderStatus } from "@/lib/types/checkout";
+import { InvoiceData, OrderStatus } from "@/lib/types/checkout";
 import {
   AuthActionTypes,
   SessionObject,
@@ -21,6 +24,10 @@ import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
+import useInvoiceGeneration from "@/lib/hooks/use-invoice-pdf";
+import { generateInvoiceEmailTemplate } from "@/lib/utils/email-templates/invoice";
+import { toast } from "@/lib/hooks/use-toast";
+import { ACCOUNTS_EMAIL, OFFICIAL_EMAIL } from "@/lib/constants";
 
 const SuccessPage = () => {
   const router = useRouter();
@@ -37,6 +44,8 @@ const SuccessPage = () => {
   } = useAuth();
   const { data: session } = useSession();
   const { getSuccessOrderPayload } = useProcessOrder();
+  const { generateInvoice } = useInvoiceGeneration();
+
   const [textMessage, setTextMessage] = useState("Processing Order...");
 
   const gotToPaymentFailurePage = () => {
@@ -95,12 +104,11 @@ const SuccessPage = () => {
           }
         });
       } else {
+        const arr = allProducts[item.category] ?? [];
         const pIndex =
-          allProducts[item.category].findIndex(
-            (pid) => pid === item.productId.toString()
-          ) + 1;
+          arr.findIndex((pid) => pid === item.productId.toString()) + 1;
         boughtSet.add(item.productId.toString());
-        const archives = allProducts[item.category].slice(pIndex, pIndex + 10);
+        const archives = arr.slice(pIndex, pIndex + 10);
         archives.forEach((item) => boughtSet.add(item));
       }
     });
@@ -137,29 +145,69 @@ const SuccessPage = () => {
     },
   });
 
+  const [sendEmail] = useMutation(SEND_EMAIL_MUTATION);
+
   const [updateOrder] = useMutation(UPDATE_ORDER_MUTATION, {
     onCompleted: async (data) => {
       if (data?.updateOrder?.order?.status === OrderStatus.COMPLETED) {
-        setTextMessage("Placing your order...");
         if (!isAuthenticated() || !user.id) {
           return setRedirectTrigger(!redirectTrigger);
         }
-        const variables = {
-          input: {
-            email: user.email,
-            bought,
-            subscription,
-          },
-        };
 
-        await updateUserMeta({
-          variables,
-          context: {
-            headers: {
-              Authorization: `Bearer ${(session as SessionObject).authToken}`,
+        setTextMessage("Generating Invoice...");
+
+        try {
+          const { data, invoiceData } = await generateInvoice();
+          const pdfLink = data.wordpressMediaUrl ?? "";
+          const emailHtml = generateInvoiceEmailTemplate(
+            invoiceData as InvoiceData,
+            pdfLink
+          );
+          const emailRecipients = [user.email, ACCOUNTS_EMAIL];
+          setTextMessage("Sending invoice");
+
+          await Promise.all(
+            emailRecipients.map((recipient) =>
+              sendEmail({
+                variables: {
+                  input: {
+                    body: emailHtml,
+                    from: OFFICIAL_EMAIL,
+                    subject: "Invoice Email",
+                    to: recipient,
+                  },
+                },
+              })
+            )
+          );
+
+          setTextMessage("Placing your order...");
+
+          const variables = {
+            input: {
+              email: user.email,
+              bought,
+              subscription,
             },
-          },
-        });
+          };
+
+          await updateUserMeta({
+            variables,
+            context: {
+              headers: {
+                Authorization: `Bearer ${(session as SessionObject).authToken}`,
+              },
+            },
+          });
+        } catch (error) {
+          setTextMessage("Order failed!");
+          toast({
+            title: "Order failed!",
+            description: "Failed to generate invoice",
+            variant: "destructive",
+          });
+          gotToPaymentFailurePage();
+        }
       }
     },
     onError: () => {

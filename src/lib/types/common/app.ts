@@ -1,3 +1,4 @@
+import { OrderStatus } from "../checkout";
 import { ProductCategory, ProductNode } from "../products";
 
 export interface AppContextProps {
@@ -14,6 +15,7 @@ export interface AppContextProps {
   countries: CountriesTypes[];
   isAchievementsLoading: boolean;
   achievements: AchievementsData;
+  invoiceNumber: string;
 }
 
 export interface VerifyEmail {
@@ -38,9 +40,16 @@ export interface ForgotPasswordContext {
   step3: Omit<Step1, "email">;
 }
 
+export interface Order {
+  total: string;
+  orderNumber: string;
+  status: OrderStatus;
+  subtotal: string;
+}
 export interface PaymentContext {
   orderId: number;
   transactionId: string;
+  order: Order;
   coupons: string[];
 }
 
@@ -72,6 +81,7 @@ export interface AppState {
   payment: PaymentContext;
   countries: CountriesTypes[];
   achievements: AchievementsData;
+  invoiceNumber: string;
 }
 export enum AppActionTypes {
   ADD_PRODUCT = "ADD_PRODUCT",
@@ -89,6 +99,7 @@ export enum AppActionTypes {
   CLEAR_PAYMENT = "CLEAR_PAYMENT",
   SET_COUNTRIES = "SET_COUNTRIES",
   SET_ACHIEVEMENTS = "SET_ACHIEVEMENTS",
+  SET_INVOICE_NUMBER = "SET_INVOICE_NUMBER",
 }
 export type AppAction =
   | {
@@ -134,6 +145,10 @@ export type AppAction =
   | {
       type: AppActionTypes.SET_ACHIEVEMENTS;
       payload: AchievementsData;
+    }
+  | {
+      type: AppActionTypes.SET_INVOICE_NUMBER;
+      payload: string;
     }
   | {
       type: AppActionTypes.INITIATE_PAYMENT;

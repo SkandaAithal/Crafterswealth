@@ -30,6 +30,9 @@ export const PAGES_TO_HIDE_HEADER = [PAYMENT_SUCCESS];
 export const GET_STOCKS_API = "/api/stocks";
 export const POST_STATUS_API = "/api/status";
 export const GET_ACHIEVEMENT_API = "/api/achievement";
+export const INVOICE_API = "/api/invoice";
+export const INVOICE_NUMBER_API = "/api/invoice-number";
+export const NEWSLETTER_API = "/api/newsletter";
 
 //protected routes
 export const PROTECTED_ROUTES = [
@@ -40,3 +43,19 @@ export const PROTECTED_ROUTES = [
   PAYMENT_SUCCESS,
   PAYMENT_FAILURE,
 ];
+
+export const PAGE_MAP = {
+  [HOME]: "Home Page",
+  [CONTACT]: "Contact Page",
+  [PRODUCTS]: "Products Page",
+  [ARTICLES]: "Articles Page",
+  [ABOUT_US]: "About Us Page",
+  [PRIVACY_POLICY]: "Privacy Policy Page",
+  [TERMS_AND_CONDITION]: "Terms and Conditions Page",
+  [PLAN]: "Plan Page",
+  [PRODUCTS_DETAIL]: "Product Details Page",
+  [ACCOMPLISHMENTS]: "Accomplishments Page",
+  [MY_PAPERS]: "My Papers Page",
+  [CART]: "Cart Page",
+  [CHECKOUT]: "Checkout Page",
+};

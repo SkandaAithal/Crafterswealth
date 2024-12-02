@@ -20,7 +20,11 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
   return (
     <AnimateOnce>
       {!onlyTargets ? (
-        <Title text="Recent Targets Achieved by CraftersWealth" size="H2" />
+        <Title
+          text="Recent Targets Achieved by CraftersWealth"
+          size="H2"
+          className="px-2"
+        />
       ) : (
         <></>
       )}
@@ -46,7 +50,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
                     target="_blank"
                     className=" rounded-2xl overflow-hidden m-4 h-[260px] w-72 shadow-lg"
                   >
-                    <div className="p-6 bg-[#e1e8ff] hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
+                    <div className="p-6 bg-primary-blue-30 hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
                       <h1 className="text-xl font-bold text-center mb-4">
                         <p className="line-clamp-2">{item["Stock Name"]}</p>
                         <p className="line-clamp-1">({item["Product Name"]})</p>
@@ -89,7 +93,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
                 target="_blank"
                 className=" rounded-2xl overflow-hidden m-4 h-[260px] w-72 shadow-lg"
               >
-                <div className="p-6 bg-[#e1e8ff] hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
+                <div className="p-6 bg-primary-blue-30 hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
                   <h1 className="text-xl font-bold text-center mb-4">
                     <p className="line-clamp-2">{item["Stock Name"]}</p>
                     <p className="line-clamp-1">({item["Product Name"]})</p>

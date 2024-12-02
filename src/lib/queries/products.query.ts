@@ -2,11 +2,12 @@ import { gql } from "@apollo/client";
 
 export const GET_PRODUCTS = gql`
   query Products($categories: String!) {
-    products(where: { category: $categories }, first: 1) {
+    products(where: { category: $categories, status: "publish" }, first: 1) {
       nodes {
         name
         id
         ... on SimpleProduct {
+          hsnCode
           productCategories {
             nodes {
               name
@@ -85,6 +86,7 @@ export const CREATE_ORDER_MUTATION = gql`
         total(format: RAW)
         orderNumber
         status
+        subtotal(format: RAW)
       }
     }
   }

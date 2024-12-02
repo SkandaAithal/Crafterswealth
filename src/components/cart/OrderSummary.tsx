@@ -189,7 +189,7 @@ const OrderSummary = ({
           <span className="font-semibold">Subtotal</span>
           <span>₹{subtotal.toFixed(2)}</span>
         </div>
-        {stateArg === "KA" || stateArg === "Karnataka" ? (
+        {stateArg === "Karnataka" ? (
           <>
             <div className="flex justify-between">
               <span className="font-semibold">SGST</span>

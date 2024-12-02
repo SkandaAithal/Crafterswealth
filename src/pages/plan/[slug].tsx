@@ -26,8 +26,7 @@ const PlansPage = () => {
     useLazyQuery<ProductResponse>(GET_PRODUCT_PLANS);
 
   const pageName = "Plans & Pricing - Choose Your Investment Plan";
-  const pageDescription =
-    "Discover investment plans tailored to your goals. Compare pricing and choose the plan that offers the best return on investment.";
+  const pageDescription = "Unlock High Returns with Our Flexible Plans";
   const plansApiData = data?.product?.plans;
   const plansFromState =
     products.find((product) => product.id === slug)?.plans ?? [];
@@ -61,7 +60,7 @@ const PlansPage = () => {
       className={twMerge(
         "transition-colors duration-500 min-h-screen",
         isPremium
-          ? "bg-gradient-to-b from-[#e1e8ff] to-primary"
+          ? "bg-gradient-to-b from-primary-blue-30 to-primary"
           : "bg-gradient-to-b from-[#c8ecfc] to-primary"
       )}
     >
@@ -84,7 +83,7 @@ const PlansPage = () => {
           </div>
         </Link>
         <Title text="Plans & Pricing" />
-        <Typewriter text="Invest wisely with Plans that offer the best return on your investment" />
+        <Typewriter text={pageDescription} />
       </div>
 
       <section className="layout !pt-8 pb-16">

@@ -208,15 +208,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
+    setIsMounted(true);
+    fetchAchievements();
     fetchCountries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    setIsMounted(true);
-    fetchAchievements();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <AppContext.Provider
       value={{
@@ -233,6 +230,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         countries: state.countries,
         isAchievementsLoading: isAchievementsLoading,
         achievements: state.achievements,
+        invoiceNumber: state.invoiceNumber,
       }}
     >
       {children}

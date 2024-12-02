@@ -3,6 +3,7 @@ import PlanCard from "./PlanCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Switch } from "../ui/switch";
 import { PlanPageProps } from "@/lib/types/plan";
+import { FaCrown } from "react-icons/fa";
 
 const PlansLayout: React.FC<PlanPageProps> = ({ plans, checkIfPremium }) => {
   const plan1 = plans[0].name;
@@ -34,7 +35,13 @@ const PlansLayout: React.FC<PlanPageProps> = ({ plans, checkIfPremium }) => {
       <div className="flex items-center gap-4 text-xl font-semibold mb-10 justify-center">
         <h1>{plan1}</h1>
         <Switch checked={selectedPlan === plan2} onClick={toggleSwitch} />
-        <h1>{plan2}</h1>
+        <div className="relative">
+          <h1>{plan2}</h1>
+          <FaCrown
+            className="text-yellow-500 absolute -top-0.5 -right-4 rotate-45"
+            size={16}
+          />
+        </div>
       </div>
 
       <AnimatePresence>

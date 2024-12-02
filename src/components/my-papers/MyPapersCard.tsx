@@ -35,6 +35,8 @@ const MyPapersCard: React.FC<MyPapersCardsProps> = ({
   const potential = marketPrice
     ? ((target - marketPrice) / marketPrice) * 100
     : 0;
+  const isTargetReached = potential <= 0;
+  const profitFromTarget = ((target - buyPrice) / buyPrice) * 100;
 
   const productsViewdKey = "productsViewed";
   const productsInvestedKey = "productsInvested";
@@ -111,7 +113,7 @@ const MyPapersCard: React.FC<MyPapersCardsProps> = ({
           loadingIndexes.includes(`${productsInvestedKey}_${index}`)
             ? "skeleton-loader"
             : "",
-          isPaperInvested ? "bg-[#e1e8ff]" : "bg-accent"
+          isPaperInvested ? "bg-primary-blue-30" : "bg-accent"
         )}
       >
         <div className="flex justify-between items-center">
@@ -162,11 +164,15 @@ const MyPapersCard: React.FC<MyPapersCardsProps> = ({
             </h3>
           </div>
           <div className="mt-4 md:mt-0 flex md:flex-col items-center gap-3">
-            <h3 className="text-lg font-semibold">Potential now</h3>
+            <h3 className="text-lg font-semibold">
+              {isTargetReached ? "Target Reached" : "Growth Potential"}
+            </h3>
             {isLoading ? (
               <Skeleton className="h-10 w-28" />
             ) : (
-              <TrendIndicator number={potential} />
+              <TrendIndicator
+                number={isTargetReached ? profitFromTarget : potential}
+              />
             )}
           </div>
         </div>

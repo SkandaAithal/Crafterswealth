@@ -8,7 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { formatNumberInShort } from "@/lib/utils";
 
-type BarChartGraphData = {
+export type BarChartGraphData = {
   [key in TimePeriod]: Record<string, number>;
 };
 
@@ -46,7 +46,9 @@ const StocksBarChart: React.FC<StocksBarChartProps> = ({
         <div
           className={twMerge(
             "w-16 h-full text-sm absolute font-semibold text-center transition-all duration-500",
-            gainLoss >= 0 ? "bg-green-400" : "bg-red-500"
+            gainLoss >= 0
+              ? "bg-gradient-to-t from-green-300 to-green-500"
+              : "bg-gradient-to-t from-red-400 to-red-600"
           )}
           style={{
             height: `${clampedHeight}%`,
@@ -70,7 +72,9 @@ const StocksBarChart: React.FC<StocksBarChartProps> = ({
   return (
     <div className="py-8 px-4 relative bg-white min-w-full md:min-w-[360px] md:max-w-96 space-y-16 rounded-lg shadow-md">
       <div>
-        <h1 className="text-xl font-bold mb-6">What if you invest with us</h1>
+        <h1 className="text-xl font-bold mb-6">
+          What If You Invested With Us?
+        </h1>
         <Slider
           value={value}
           onValueChange={(newValue) => setValue(newValue)}
@@ -97,17 +101,17 @@ const StocksBarChart: React.FC<StocksBarChartProps> = ({
           </span>
         </div>
         <div className="text-sm flex justify-between">
-          <p>With absolute return in the last {timePeriod}</p>
+          <p>Returns in the last {timePeriod}</p>
           <p className="text-green-400">
             {(barChartGraphData[timePeriod][primaryInvestMent] * 100).toFixed(
               1
             )}
-            %
+            %&nbsp;*
           </p>
         </div>
       </div>
 
-      <div className="h-[280px] flex flex-col justify-end">
+      <div className="h-[320px] flex flex-col justify-end">
         <div className="space-y-4">
           <div className="flex justify-around mt-8 border-b-[1px] border-gray-300 h-[260px]">
             {Object.keys(barChartGraphData[timePeriod]).map((key) => (
@@ -149,6 +153,10 @@ const StocksBarChart: React.FC<StocksBarChartProps> = ({
             ))}
           </div>
         </div>
+        <p className="text-xs mt-3 text-left text-gray-500">
+          * Past performance is not indicative of future results, and the
+          figures shown are for comparison purposes only.
+        </p>
       </div>
     </div>
   );

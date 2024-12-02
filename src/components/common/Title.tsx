@@ -22,9 +22,7 @@ const Title: React.FC<TitleProps> = ({
         {text}
       </h1>
     ) : (
-      <h1
-        className={`text-2xl md:text-3xl lg:text-4xl mb-4 font-bold ${className}`}
-      >
+      <h1 className={`text-3xl lg:text-4xl mb-4 font-bold ${className}`}>
         {text}
       </h1>
     );

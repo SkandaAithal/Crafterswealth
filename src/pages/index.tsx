@@ -41,8 +41,8 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
         keywords="investment insights, stock market tips, research papers, CraftersWealth investments"
       />
       <ProductStructuredData products={products} />
-      <section className="banner min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid md:grid-cols-2 place-content-center text-center md:text-left ">
-        <div className="flex flex-col justify-center items-start md:gap-10  ">
+      <section className="banner min-h-[calc(100dvh-75px)] md:min-h-[calc(100dvh-100px)] px-6 md:px-20 lg:px-[144px] gap-3  w-full grid lg:grid-cols-2 place-content-center text-center lg:text-left ">
+        <div className="flex flex-col justify-center items-start lg:gap-10">
           <div>
             <Title
               text="Investment Made Easy with"
@@ -59,7 +59,7 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
             </div>
           </div>
 
-          <div className="text-center md:text-start w-full">
+          <div className="text-center lg:text-start w-full">
             <Button
               onClick={handleredirectToProductsPage}
               className="w-fit mt-5 text-2xl font-bold !px-16 md:!py-3"
@@ -73,8 +73,8 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
           alt="banner-image"
           height={300}
           width={300}
-          skeletonClassName="rounded-xl w-[300px] hidden md:block m-auto h-[500px]"
-          className="w-full h-full hidden md:block"
+          skeletonClassName="rounded-xl m-auto hidden md:block w-[250px] h-[450px]"
+          className="w-full lg:h-[300px] xl:h-[400px] hidden md:block 2xl:h-[500px]"
         />
       </section>
 
@@ -86,12 +86,58 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
           <div className="md:col-span-2 mask my-auto">
             <ProductsSwiper products={products} />
           </div>
-          <div className="flex justify-center xl:justify-end items-center px-4 md:px-0">
+          <div className="flex justify-center xl:justify-end items-center px-4 md:px-0 mt-6 ">
             <StocksBarChart
               barChartGraphData={MarketBarChartGraphData}
               primaryInvestMent={InvestmentType.Crafterswealth}
             />
           </div>
+        </div>
+        <div>
+          <AnimateOnce>
+            <div className="px-4">
+              <Title
+                text="Benefits of CraftersWealth"
+                size="H2"
+                className="!mb-12"
+              />
+
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10 max-w-screen-md mx-auto">
+                {[
+                  {
+                    title: "Tech-Driven Innovation",
+                    description:
+                      "Harness cutting-edge technology to deliver smarter, more effective investment strategies.",
+                  },
+                  {
+                    title: "Affordable Expert Solutions",
+                    description:
+                      "Access premium research and tools without the premium price tag.",
+                  },
+                  {
+                    title: "Comprehensive Stock Insights",
+                    description:
+                      "Make informed decisions with in-depth analysis and clear recommendations.",
+                  },
+                  {
+                    title: "Exclusive Educational Resources",
+                    description:
+                      "Gain an edge with specialized content tailored to enhance your investment knowledge.",
+                  },
+                ].map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="bg-primary shadow-lg rounded-2xl cursor-default p-8 md:h-64 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
+                    >
+                      <h3 className="text-2xl font-bold">{item.title}</h3>
+                      <p>{item.description}</p>
+                    </div>
+                  );
+                })}
+              </section>
+            </div>
+          </AnimateOnce>
         </div>
         <div className="grid gap-6">
           <TargetsReached />

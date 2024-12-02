@@ -21,7 +21,7 @@ import {
 } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
 import {
-  SEND_VERIFY_EMAIL_MUTATION,
+  SEND_EMAIL_MUTATION,
   UPDATE_USER_META,
 } from "@/lib/queries/users.query";
 import { useApp } from "@/lib/provider/app-provider";
@@ -37,6 +37,8 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { IoFingerPrint } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { LOGIN_PAGE } from "@/lib/routes";
+import { generateOTPEmailTemplate } from "@/lib/utils/email-templates/otp";
+import { OFFICIAL_EMAIL } from "@/lib/constants";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -161,11 +163,11 @@ const ForgotPassword = () => {
       setIsSendingEmailLoading(true);
 
       const response = await client.mutate({
-        mutation: SEND_VERIFY_EMAIL_MUTATION,
+        mutation: SEND_EMAIL_MUTATION,
         variables: {
           input: {
-            body: `Your OTP is: <strong>${randomOtp}</strong>`,
-            from: "support@crafterswealth.com",
+            body: generateOTPEmailTemplate(randomOtp),
+            from: OFFICIAL_EMAIL,
             subject: "User verification OTP",
             to: emailArg ? emailArg : step1.email,
           },

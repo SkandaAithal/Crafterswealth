@@ -18,6 +18,7 @@ import {
   StateOption,
   CityOption,
   CheckoutFormData,
+  OrderStatus,
 } from "@/lib/types/checkout";
 import Select from "react-select";
 import {
@@ -68,10 +69,6 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const [isCouponLoading, setIsCouponLoading] = useState(false);
   const [updateUserCheckoutDetails] = useMutation(UPDATE_USER_CHECKOUT_DETAILS);
 
-  const userStateName = states.find(
-    (state) => state.value === user.state
-  )?.label;
-
   const initialFormState = {
     firstName: user.firstName || "",
     lastName: user.lastName || "",
@@ -79,7 +76,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     phoneNumber: user.phoneNumber || "",
     address: user.address || "",
     city: user.city || "",
-    state: userStateName || "",
+    state: user.state || "",
     country: user.country || "",
     postcode: user.postcode || "",
   };
@@ -90,9 +87,9 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   });
 
   useEffect(() => {
-    if (userStateName) form.reset(initialFormState);
+    form.reset(initialFormState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStateName, user]);
+  }, [user]);
 
   const stateValue = form.getValues("state");
 
@@ -209,10 +206,14 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
         ? Math.round(parseFloat(order.total.trim()))
         : 0;
       const status = order.status;
-      if (status === "PENDING" && orderId) {
+      if (status === OrderStatus.PENDING && orderId) {
         appDispatch({
           type: AppActionTypes.INITIATE_PAYMENT,
-          payload: { orderId, transactionId: transactId },
+          payload: {
+            orderId,
+            transactionId: transactId,
+            order,
+          },
         });
 
         const payload = {
@@ -279,7 +280,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
       );
       const data = response.data;
       const fetchedStates = data.geonames.map((state: any) => ({
-        value: state.adminCodes1.ISO3166_2,
+        value: state.name,
         label: state.name,
         geoNameId: state.geonameId,
       }));
@@ -346,72 +347,25 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
 
   return (
     <>
-      <>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className=" grid grid-cols-1 lg:grid-cols-3 gap-y-10 lg:gap-x-10 layout !pb-40"
-          >
-            <div className="col-span-2 space-y-4">
-              <h1 className="text-3xl font-bold mb-8">Billing</h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your first name"
-                          className={twMerge(
-                            form.formState.errors.firstName
-                              ? "border-2 border-destructive"
-                              : ""
-                          )}
-                          {...field}
-                          readOnly
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your last name"
-                          className={twMerge(
-                            form.formState.errors.lastName
-                              ? "border-2 border-destructive"
-                              : ""
-                          )}
-                          {...field}
-                          readOnly
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className=" grid grid-cols-1 lg:grid-cols-3 gap-y-10 lg:gap-x-10 layout !pb-40"
+        >
+          <div className="col-span-2 space-y-4">
+            <h1 className="text-3xl font-bold mb-8">Billing</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="email"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
                       <Input
-                        type="email"
-                        placeholder="Your email"
+                        placeholder="Your first name"
                         className={twMerge(
-                          form.formState.errors.email
+                          form.formState.errors.firstName
                             ? "border-2 border-destructive"
                             : ""
                         )}
@@ -425,163 +379,20 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
               />
               <FormField
                 control={form.control}
-                name="phoneNumber"
+                name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        placeholder="Your last name"
                         className={twMerge(
-                          form.formState.errors.phoneNumber
-                            ? "border-2 border-destructive"
-                            : ""
-                        )}
-                        placeholder="Your phone number"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <CountrySelect
-                    countries={countries}
-                    field={field}
-                    onCountryChange={fetchStates}
-                    form={form}
-                  />
-                )}
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex gap-2 items-center">
-                        State
-                        {loadingStates ? (
-                          <TbLoader3 size={20} className="animate-spin" />
-                        ) : null}
-                      </FormLabel>
-
-                      <FormControl>
-                        <Select
-                          options={states}
-                          placeholder={
-                            states.length
-                              ? "Search your state"
-                              : "Select country first"
-                          }
-                          onChange={(selected: StateOption | null) => {
-                            field.onChange(selected ? selected.value : "");
-                            if (selected) {
-                              fetchCities(selected.geoNameId);
-                            }
-                          }}
-                          value={states.find(
-                            (option) => option.label === field.value
-                          )}
-                          className={twMerge(
-                            form.formState.errors.state
-                              ? "border-2 border-destructive rounded-lg"
-                              : ""
-                          )}
-                          styles={customDropDownStyles}
-                          isSearchable
-                          noOptionsMessage={() => (
-                            <NoOptionsMessage message="No States found." />
-                          )}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex gap-2 items-center">
-                        City
-                        {loadingCities ? (
-                          <TbLoader3 size={20} className="animate-spin" />
-                        ) : null}
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          options={cities}
-                          placeholder={
-                            cities.length
-                              ? "Search your city"
-                              : "Select state first"
-                          }
-                          onChange={(selected: CityOption | null) => {
-                            field.onChange(selected ? selected.value : "");
-                          }}
-                          value={cities.find(
-                            (option) => option.value === field.value
-                          )}
-                          className={twMerge(
-                            form.formState.errors.city
-                              ? "border-2 border-destructive rounded-lg"
-                              : ""
-                          )}
-                          styles={customDropDownStyles}
-                          isSearchable
-                          noOptionsMessage={() => (
-                            <NoOptionsMessage message="No Cities found." />
-                          )}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="postcode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Postcode</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Your postcode"
-                        className={twMerge(
-                          form.formState.errors.postcode
+                          form.formState.errors.lastName
                             ? "border-2 border-destructive"
                             : ""
                         )}
                         {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Your address"
-                        className={twMerge(
-                          form.formState.errors.address
-                            ? "border-2 border-destructive"
-                            : ""
-                        )}
-                        {...field}
+                        readOnly
                       />
                     </FormControl>
                     <FormMessage />
@@ -589,26 +400,214 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                 )}
               />
             </div>
-            <div className="border rounded-md p-5 h-fit">
-              <OrderSummary
-                isCheckout
-                stateProp={stateValue}
-                setIsCouponLoading={setIsCouponLoading}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Your email"
+                      className={twMerge(
+                        form.formState.errors.email
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
+                      {...field}
+                      readOnly
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      className={twMerge(
+                        form.formState.errors.phoneNumber
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
+                      placeholder="Your phone number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <CountrySelect
+                  countries={countries}
+                  field={field}
+                  onCountryChange={fetchStates}
+                  form={form}
+                />
+              )}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex gap-2 items-center">
+                      State
+                      {loadingStates ? (
+                        <TbLoader3 size={20} className="animate-spin" />
+                      ) : null}
+                    </FormLabel>
+
+                    <FormControl>
+                      <Select
+                        options={states}
+                        placeholder={
+                          states.length
+                            ? "Search your state"
+                            : "Select country first"
+                        }
+                        onChange={(selected: StateOption | null) => {
+                          field.onChange(selected ? selected.value : "");
+                          if (selected) {
+                            fetchCities(selected.geoNameId);
+                          }
+                        }}
+                        value={states.find(
+                          (option) => option.label === field.value
+                        )}
+                        className={twMerge(
+                          form.formState.errors.state
+                            ? "border-2 border-destructive rounded-lg"
+                            : ""
+                        )}
+                        styles={customDropDownStyles}
+                        isSearchable
+                        noOptionsMessage={() => (
+                          <NoOptionsMessage message="No States found." />
+                        )}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <div className="flex justify-center !mt-8">
-                <Button
-                  type="submit"
-                  className="w-full max-w-96"
-                  loading={isPaymentLoading}
-                  disabled={isCouponLoading}
-                >
-                  Proceed to Payment
-                </Button>
-              </div>
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex gap-2 items-center">
+                      City
+                      {loadingCities ? (
+                        <TbLoader3 size={20} className="animate-spin" />
+                      ) : null}
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        options={cities}
+                        placeholder={
+                          cities.length
+                            ? "Search your city"
+                            : "Select state first"
+                        }
+                        onChange={(selected: CityOption | null) => {
+                          field.onChange(selected ? selected.value : "");
+                        }}
+                        value={cities.find(
+                          (option) => option.value === field.value
+                        )}
+                        className={twMerge(
+                          form.formState.errors.city
+                            ? "border-2 border-destructive rounded-lg"
+                            : ""
+                        )}
+                        styles={customDropDownStyles}
+                        isSearchable
+                        noOptionsMessage={() => (
+                          <NoOptionsMessage message="No Cities found." />
+                        )}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          </form>
-        </Form>
-      </>
+            <FormField
+              control={form.control}
+              name="postcode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Postcode</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Your postcode"
+                      className={twMerge(
+                        form.formState.errors.postcode
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Your address"
+                      className={twMerge(
+                        form.formState.errors.address
+                          ? "border-2 border-destructive"
+                          : ""
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="border rounded-md p-5 h-fit">
+            <OrderSummary
+              isCheckout
+              stateProp={stateValue}
+              setIsCouponLoading={setIsCouponLoading}
+            />
+            <div className="flex justify-center !mt-8">
+              <Button
+                type="submit"
+                className="w-full max-w-96"
+                loading={isPaymentLoading}
+                disabled={isCouponLoading}
+              >
+                Proceed to Payment
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Form>
     </>
   );
 };

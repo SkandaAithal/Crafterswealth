@@ -48,7 +48,7 @@ export enum InvestmentStatus {
   LOWEST_POTENTIAL = "Low Potential",
   // TARGETS_REACHED = "Achieved Targets",
   INVESTED = "Currently Invested",
+  NOT_INVESTED = "Not Invested",
   VIEWED = "Viewed",
   NOT_VIEWED = "Not Viewed",
-  NOT_INVESTED = "Not Invested",
 }

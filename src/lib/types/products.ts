@@ -22,6 +22,7 @@ export interface Stock {
 export interface ProductNode {
   id: string;
   name: string;
+  hsnCode: string;
   productCategories: {
     nodes: ProductCategory[];
   };
@@ -47,10 +48,12 @@ export interface Cart {
   category: string;
   price: number;
   period: string;
+  productName: string;
   access: string[];
   regularPlanPrice: number;
   description: string;
   plan: string;
+  hsnCode: string;
 }
 
 export interface CategoryProductIds {

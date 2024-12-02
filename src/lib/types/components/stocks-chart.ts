@@ -8,7 +8,6 @@ export enum InvestmentType {
   Crafterswealth = "Crafterswealth",
   Nifty50 = "Nifty-50",
   MutualFund = "Mutual fund",
-  SmallCap = "Small Cap",
-  MidCap = "Mid Cap",
-  LargeCap = "Large Cap",
+  ValueSprint = "Value Sprint",
+  MomentumPulse = "Momentum Pulse",
 }

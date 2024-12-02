@@ -6,13 +6,17 @@ import { Skeleton } from "../ui/skeleton";
 import LazyImage from "../ui/lazy-image";
 import Link from "next/link";
 import AnimateOnce from "../common/AnimateOnce";
+import Title from "../common/Title";
+import ArticleCard from "./ArticleCard";
+import { useWindowWidth } from "@/lib/hooks/use-window-width";
+import SubscribeToNewsLetter from "../common/SubscribeToNewsLetter";
 
 const ArticlesComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-
+  const { isMobile } = useWindowWidth();
   const POST_COUNT_LIMIT = 3;
 
   const { loading, fetchMore } = useQuery<PostsData, PostsVars>(GET_POSTS, {
@@ -88,6 +92,23 @@ const ArticlesComponent: React.FC = () => {
       <Skeleton key={index} className="h-[420px] w-full" />
     ));
 
+  const renderArticlePageLoader = () => (
+    <>
+      <div className="space-y-4 w-full">
+        <Skeleton className="h-[400px] w-full" />
+        <Skeleton className="h-[40px] w-[500px]" />
+        <Skeleton className="h-[40px] w-96" />
+        <Skeleton className="h-[20px] w-full" />
+        <Skeleton className="h-[20px] w-full" />
+      </div>
+      <div className="space-y-6">
+        <Skeleton className="h-[220px] w-full" />
+        <Skeleton className="h-[220px] w-full" />
+        <Skeleton className="h-[220px] w-full" />
+      </div>
+    </>
+  );
+
   const removeDuplicates = (posts: Post[]) => {
     const uniqueSlugs = new Set();
     return posts.filter((post) => {
@@ -100,42 +121,84 @@ const ArticlesComponent: React.FC = () => {
     });
   };
 
+  const filteredPost = removeDuplicates(posts);
+  const firstPost = filteredPost[0];
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 layout md:pt-6">
-      {loading && posts.length === 0
-        ? renderLoaders()
-        : removeDuplicates(posts).map(({ node }) => (
-            <Link key={node.slug} href={node.link} target="_blank">
+    <>
+      <div className="grid place-content-center text-center space-y-5">
+        <h1 className="text-xl font-semibold"> Subscribe for our NewsLetter</h1>
+        <SubscribeToNewsLetter />
+      </div>
+      <section className="max-w-screen-xl mx-auto md:pt-6 grid grid-cols-1 md:grid-cols-2 w-full col-span-3 gap-6">
+        {loading && posts.length === 0 ? (
+          renderArticlePageLoader()
+        ) : (
+          <>
+            <div className=" w-full">
               <AnimateOnce>
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden grid h-[420px]">
+                <div className="h-[400px]">
                   <LazyImage
                     height={300}
                     width={200}
-                    src={node.featuredImage.node.sourceUrl}
-                    alt={node.title}
-                    className="w-full h-48 object-cover"
+                    src={firstPost?.node.featuredImage.node.sourceUrl}
+                    alt={firstPost?.node.title}
+                    className="w-full h-full object-cover"
                   />
-                  <div className="p-4 justify-between flex flex-col">
-                    <h2 className="text-xl font-bold mb-2">{node.title}</h2>
-                    <p
-                      className="line-clamp-3 text-gray-600 mb-4"
-                      dangerouslySetInnerHTML={{
-                        __html: node.excerpt.replace(/\[&hellip;\]/g, "..."),
-                      }}
-                    />
-                    <p className="text-sm italic">
-                      posted at&nbsp;
-                      <span className="font-semibold">
-                        {formatDateToReadable(node.date)}
-                      </span>
-                    </p>
-                  </div>
                 </div>
+                <Title
+                  text={firstPost?.node.title}
+                  size="H2"
+                  className="mt-6"
+                />
+                <p
+                  className="line-clamp-3 text-gray-600 mb-4"
+                  dangerouslySetInnerHTML={{
+                    __html: (firstPost?.node?.excerpt ?? "").replace(
+                      /\[&hellip;\]/g,
+                      "..."
+                    ),
+                  }}
+                />
+                <Link
+                  key={firstPost?.node?.slug ?? ""}
+                  href={firstPost?.node?.link ?? ""}
+                  target="_blank"
+                  className="bg-primary-blue-30 p-2 rounded-lg"
+                >
+                  View Article
+                </Link>
               </AnimateOnce>
-            </Link>
-          ))}
-      {isFetching && renderLoaders()}
-    </section>
+            </div>
+            <div className="flex flex-col gap-6">
+              <h1 className="font-bold text-2xl">Recent Articles</h1>
+              {filteredPost.slice(1, 4).map(({ node }) => (
+                <ArticleCard
+                  key={node.slug}
+                  node={node}
+                  formatDateToReadable={formatDateToReadable}
+                  inSideView
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </section>
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6  md:pt-6 max-w-screen-xl mx-auto">
+        {loading && posts.length === 0
+          ? renderLoaders()
+          : filteredPost
+              .slice(4)
+              .map(({ node }) => (
+                <ArticleCard
+                  key={node.slug}
+                  node={node}
+                  formatDateToReadable={formatDateToReadable}
+                  inSideView={isMobile}
+                />
+              ))}
+        {isFetching && renderLoaders()}
+      </section>
+    </>
   );
 };
 

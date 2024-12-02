@@ -3,9 +3,11 @@ import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { AppActionTypes, SendVerificationEmailArgs } from "../types/common/app";
 import client from "../apollo-client";
-import { SEND_VERIFY_EMAIL_MUTATION } from "../queries/users.query";
+import { SEND_EMAIL_MUTATION } from "../queries/users.query";
 import { toast } from "../hooks/use-toast";
 import { Cart } from "../types/products";
+import { generateOTPEmailTemplate } from "./email-templates/otp";
+import { OFFICIAL_EMAIL } from "../constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -258,11 +260,11 @@ export const handleSendVerificationEmail = async ({
   try {
     setIsVerifyEmailLoading(true);
     const response = await client.mutate({
-      mutation: SEND_VERIFY_EMAIL_MUTATION,
+      mutation: SEND_EMAIL_MUTATION,
       variables: {
         input: {
-          body: `Your OTP is: <strong>${randomOtp}</strong>`,
-          from: "support@crafterswealth.com",
+          body: generateOTPEmailTemplate(randomOtp),
+          from: OFFICIAL_EMAIL,
           subject: "Verify Email",
           to: email,
         },
@@ -363,7 +365,7 @@ export const calculateTax = (
     igst = 0;
 
   const taxRate = 0.18;
-  if (state === "Karnataka" || state === "KA") {
+  if (state === "Karnataka") {
     const totalTax = subtotal * taxRate;
     sgst = totalTax / 2;
     cgst = totalTax / 2;
@@ -412,4 +414,11 @@ export const isSubscriptionValid = (period: string): boolean => {
   const currentDate = new Date();
 
   return currentDate <= expiryDate;
+};
+
+export const capitalizeWords = (text: string) => {
+  return text
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };

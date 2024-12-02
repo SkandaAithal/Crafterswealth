@@ -19,7 +19,7 @@ import { SessionObject } from "@/lib/types/common/user";
 import { getSession } from "next-auth/react";
 import { Skeleton } from "../ui/skeleton";
 import { useRouter } from "next/router";
-import { PLAN } from "@/lib/routes";
+import { PRODUCTS_DETAIL } from "@/lib/routes";
 
 const MyPapersParentComponent = () => {
   const router = useRouter();
@@ -30,13 +30,16 @@ const MyPapersParentComponent = () => {
   const [boughtProducts, setBoughtProducts] = useState<BoughtProduct[]>([]);
   const { user, redirectTrigger, setRedirectTrigger, isAuthenticated } =
     useAuth();
-  const { boughtObject, categories, products } = useApp();
+  const { boughtObject, categories, products, allProducts } = useApp();
   const categoryName =
     categories.find((c) => c.slug === selectedCategory)?.name ?? "";
+  const allp = Object.values(allProducts).flat();
+
   const SYMBOLS = useMemo(
     () => boughtProducts.map((item) => item.stockSymbol),
     [boughtProducts]
   );
+
   // Pagination
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,8 +52,10 @@ const MyPapersParentComponent = () => {
   }, [boughtObject]);
 
   const boughtArray = useMemo(() => {
-    return user.bought.length ? [...allUniqueItems, ...user.bought] : [];
-  }, [allUniqueItems, user.bought]);
+    return user.bought.length
+      ? [...allUniqueItems, ...user.bought].filter((id) => allp.includes(id))
+      : [];
+  }, [allUniqueItems, allp, user.bought]);
 
   const [updateUserMeta, { loading: userMetaUpdating }] =
     useMutation(UPDATE_USER_META);
@@ -215,11 +220,13 @@ const MyPapersParentComponent = () => {
     }
   };
 
-  const handlePlanPageRedirect = () => {
-    const planId = products.find(
-      (product) => product.productCategories.nodes[0].slug === selectedCategory
-    )?.id;
-    router.push(`${PLAN}/${planId}`);
+  const handleDetailPageRedirect = () => {
+    const product = products.find(
+      (prod) => prod.productCategories.nodes[0].slug === selectedCategory
+    );
+    router.push(
+      `${PRODUCTS_DETAIL}?type=${selectedCategory}&id=${product?.id}`
+    );
   };
 
   const latestProduct = filteredProductsByCategory[0];
@@ -280,8 +287,8 @@ const MyPapersParentComponent = () => {
             <h1 className="text-xl md:text-2xl font-semibold text-center">
               No papers are available for {categoryName}
             </h1>
-            <Button onClick={handlePlanPageRedirect} className="w-80 mx-auto">
-              Buy {categoryName} plans
+            <Button onClick={handleDetailPageRedirect} className="w-80 mx-auto">
+              Access {categoryName}
             </Button>
           </div>
         ) : paginatedProducts.length ? (

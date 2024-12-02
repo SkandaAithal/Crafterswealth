@@ -32,6 +32,7 @@ const config: Config = {
           blue: "#017aff",
           "blue-80": "#2a2a8d",
           "blue-100": "#001351",
+          "blue-30": "#cef4ff",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

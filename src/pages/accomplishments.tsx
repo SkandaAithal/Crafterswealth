@@ -77,7 +77,7 @@ const Accomplishment = () => {
               <div
                 key={category}
                 className={twMerge(
-                  "w-32 p-2 text-center rounded-lg cursor-pointer shadow-lg",
+                  "p-2 text-center rounded-lg cursor-pointer shadow-lg",
                   category === selectedCategory
                     ? "bg-primary-blue-100 text-white"
                     : "border"
