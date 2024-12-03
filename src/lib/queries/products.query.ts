@@ -150,3 +150,9 @@ export const APPLY_COUPON_MUTATION = gql`
     }
   }
 `;
+
+export const INVOICE_NUMBER_QUERY = gql`
+  query invoiceNumber {
+    invoiceCounter
+  }
+`;

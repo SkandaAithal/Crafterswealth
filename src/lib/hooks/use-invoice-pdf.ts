@@ -5,7 +5,9 @@ import { toWords } from "number-to-words";
 import { capitalizeWords } from "@/lib/utils";
 import axios from "axios";
 import { AppActionTypes } from "@/lib/types/common/app";
-import { INVOICE_API, INVOICE_NUMBER_API } from "@/lib/routes";
+import { INVOICE_API } from "@/lib/routes";
+import { INVOICE_NUMBER_QUERY } from "../queries/products.query";
+import client from "../apollo-client";
 
 const useInvoiceGeneration = () => {
   const { user } = useAuth();
@@ -16,8 +18,11 @@ const useInvoiceGeneration = () => {
 
   const generateInvoiceNumber = async () => {
     try {
-      const response = await axios.post(INVOICE_NUMBER_API);
-      const incrementalNumber = response.data.invoiceNumber;
+      const { data } = await client.query({
+        query: INVOICE_NUMBER_QUERY,
+      });
+
+      const incrementalNumber = data.invoiceCounter;
       const currentYear = new Date().getFullYear();
       const nextYear = currentYear + 1;
       const yearPart = `${currentYear.toString().slice(-2)}-${nextYear.toString().slice(-2)}`;

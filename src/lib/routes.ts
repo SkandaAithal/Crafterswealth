@@ -31,7 +31,6 @@ export const GET_STOCKS_API = "/api/stocks";
 export const POST_STATUS_API = "/api/status";
 export const GET_ACHIEVEMENT_API = "/api/achievement";
 export const INVOICE_API = "/api/invoice";
-export const INVOICE_NUMBER_API = "/api/invoice-number";
 export const NEWSLETTER_API = "/api/newsletter";
 
 //protected routes
