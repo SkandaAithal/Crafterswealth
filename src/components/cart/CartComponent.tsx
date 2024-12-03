@@ -19,10 +19,11 @@ import AnimateOnce from "../common/AnimateOnce";
 import { useRouter } from "next/router";
 import { produce } from "immer";
 import { Cart } from "@/lib/types/products";
+import useInvoiceGeneration from "@/lib/hooks/use-invoice-pdf";
 
 const CartComponent = () => {
   const router = useRouter();
-
+  const { generateInvoice } = useInvoiceGeneration();
   const {
     user,
     authDispatch,
@@ -225,6 +226,7 @@ const CartComponent = () => {
                     </div>
                   </div>
                 </AnimateOnce>
+                <Button onClick={generateInvoice}>Create pdf</Button>
               </div>
             );
           })}
