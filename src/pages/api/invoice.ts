@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { InvoiceData } from "@/lib/types/checkout";
 import { generateInvoiceHTMLforPDF } from "@/lib/utils/email-templates/invoice";
-import path from "path";
 
 export default async function handler(
   req: NextApiRequest,
@@ -45,17 +44,15 @@ export default async function handler(
     const htmlContent = generateInvoiceHTMLforPDF(invoiceData);
     await page.setContent(htmlContent);
 
-    // Save PDF to /tmp directory
-    const tempFilePath = path.join(
-      "/tmp",
-      `invoice_${invoiceData.orderDetails.orderNumber}.pdf`
-    );
-    await page.pdf({ path: tempFilePath, format: "A4" });
+    const pdfBuffer = await page.pdf({ format: "A4" });
     await browser.close();
+
+    // Convert the PDF buffer to a Base64 string
+    const pdfBase64 = (pdfBuffer as Buffer).toString("base64");
 
     res.status(200).json({
       message: "PDF generated successfully",
-      tempFilePath,
+      pdfBase64,
     });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

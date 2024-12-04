@@ -125,14 +125,16 @@ const useInvoiceGeneration = () => {
         invoiceData,
       });
 
-      if (!generateResponse.tempFilePath) {
+      if (!generateResponse.pdfBase64) {
         throw new Error("Failed to generate PDF.");
       }
+
       const { data: uploadResponse } = await axios.post(UPLOAD_INVOICE_API, {
-        tempFilePath: generateResponse.tempFilePath,
+        pdfBase64: generateResponse.pdfBase64,
         title: `Invoice_${invoiceNo}`,
         description: `Invoice generated for ${order.billing.email}`,
       });
+
       return { data: uploadResponse, invoiceData };
     } catch (error) {
       throw new Error("Failed to generate invoice.");

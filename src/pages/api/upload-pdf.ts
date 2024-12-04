@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import FormData from "form-data";
 import axios from "axios";
+import path from "path";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,13 +16,16 @@ export default async function handler(
   const wordpressUsername = process.env.WORDPRESS_USERNAME!;
   const wordpressAppPassword = process.env.WORDPRESS_APP_PASSWORD!;
 
-  const { tempFilePath, title, description } = req.body;
+  const { pdfBase64, title, description } = req.body;
 
-  if (!tempFilePath || !fs.existsSync(tempFilePath)) {
-    return res.status(400).json({ error: "Invalid or missing file path." });
+  if (!pdfBase64) {
+    return res.status(400).json({ error: "Missing PDF data." });
   }
 
   try {
+    const tempFilePath = path.join("/tmp", `${title}.pdf`);
+    fs.writeFileSync(tempFilePath, Buffer.from(pdfBase64, "base64"));
+
     const formData = new FormData();
     formData.append("file", fs.createReadStream(tempFilePath), title);
     formData.append("title", title);
@@ -46,7 +50,6 @@ export default async function handler(
       wordpressMediaUrl: uploadResponse.data.source_url,
     });
   } catch (error) {
-    fs.unlinkSync(tempFilePath);
     res.status(500).json({ error: (error as Error).message });
   }
 }
