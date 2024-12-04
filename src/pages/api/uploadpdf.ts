@@ -19,6 +19,9 @@ export default async function handler(
 
   const { compressedBase64, title, description } = req.body;
 
+  const isProduction =
+    process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_VERSION;
+
   if (!compressedBase64) {
     return res.status(400).json({ error: "Missing compressed PDF data." });
   }
@@ -30,19 +33,27 @@ export default async function handler(
 
     // Sanitize the title to create a valid file name
     const sanitizedTitle = title.replace(/[/\\:*?"<>|]/g, "_");
-    const tempFilePath = path.join("/tmp", `${sanitizedTitle}.pdf`);
 
-    // Write the PDF file to the /tmp directory
+    // Define the temporary file path
+    const tempDir = isProduction ? "/tmp" : path.join(process.cwd(), "temp");
+    const tempFilePath = path.join(tempDir, `${sanitizedTitle}.pdf`);
+
+    // Ensure the temp directory exists in local development
+    if (!isProduction && !fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    // Write the PDF file to the temporary directory
     fs.writeFileSync(tempFilePath, pdfBuffer);
 
-    // Ensure the file exists before proceeding
+    // Ensure the file exists
     if (!fs.existsSync(tempFilePath)) {
       throw new Error(`Temporary file not found: ${tempFilePath}`);
     }
 
     // Prepare FormData for WordPress upload
     const formData = new FormData();
-    formData.append("file", fs.createReadStream(tempFilePath), sanitizedTitle);
+    formData.append("file", fs.createReadStream(tempFilePath));
     formData.append("title", title);
     formData.append("description", description);
 
@@ -61,7 +72,6 @@ export default async function handler(
     // Clean up the temporary file after successful upload
     fs.unlinkSync(tempFilePath);
 
-    // Respond with the WordPress media URL
     res.status(200).json({
       message: "File uploaded successfully",
       wordpressMediaUrl: uploadResponse.data.source_url,
@@ -69,16 +79,23 @@ export default async function handler(
   } catch (error) {
     // Clean up the temporary file if it exists
     const tempFilePath = path.join(
-      "/tmp",
+      isProduction ? "/tmp" : path.join(process.cwd(), "temp"),
       `${title.replace(/[/\\:*?"<>|]/g, "_")}.pdf`
     );
     if (fs.existsSync(tempFilePath)) {
       fs.unlinkSync(tempFilePath);
     }
 
+    let errorMessage = "An unknown error occurred";
+
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data || error.message || error.toString();
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
     res.status(500).json({
-      error:
-        error instanceof Error ? error.message : "An unknown error occurred",
+      error: errorMessage,
     });
   }
 }
