@@ -155,7 +155,7 @@ const StockDetailsPage = () => {
                   onClick={handleBuyNow}
                   className="w-fit mt-5 text-2xl font-bold !px-10 md:!py-3"
                 >
-                  Go to {productDetails.type} Plans
+                  Buy now
                 </Button>
               </div>
             </div>
