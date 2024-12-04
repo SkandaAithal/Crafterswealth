@@ -5,7 +5,7 @@ import { toWords } from "number-to-words";
 import { capitalizeWords } from "@/lib/utils";
 import axios from "axios";
 import { AppActionTypes } from "@/lib/types/common/app";
-import { INVOICE_API } from "@/lib/routes";
+import { INVOICE_API, UPLOAD_INVOICE_API } from "@/lib/routes";
 import { INVOICE_NUMBER_QUERY } from "../queries/products.query";
 import client from "../apollo-client";
 
@@ -121,8 +121,19 @@ const useInvoiceGeneration = () => {
           )} Only`,
         },
       };
-      const { data } = await axios.post(INVOICE_API, { invoiceData });
-      return { data, invoiceData };
+      const { data: generateResponse } = await axios.post(INVOICE_API, {
+        invoiceData,
+      });
+
+      if (!generateResponse.tempFilePath) {
+        throw new Error("Failed to generate PDF.");
+      }
+      const { data: uploadResponse } = await axios.post(UPLOAD_INVOICE_API, {
+        tempFilePath: generateResponse.tempFilePath,
+        title: `Invoice_${invoiceNo}`,
+        description: `Invoice generated for ${order.billing.email}`,
+      });
+      return { data: uploadResponse, invoiceData };
     } catch (error) {
       throw new Error("Failed to generate invoice.");
     }
