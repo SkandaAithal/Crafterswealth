@@ -9,10 +9,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   const WORDPRESS_UPLOAD_URL = process.env.WORDPRESS_UPLOAD_URL!;
   const wordpressUsername = process.env.WORDPRESS_USERNAME!;
   const wordpressAppPassword = process.env.WORDPRESS_APP_PASSWORD!;
