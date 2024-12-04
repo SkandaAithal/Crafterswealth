@@ -24,7 +24,6 @@ import AnimateOnce from "@/components/common/AnimateOnce";
 import { useAuth } from "@/lib/provider/auth-provider";
 import Link from "next/link";
 import { FaEnvelope, FaInstagram, FaWhatsapp } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 import { toast } from "@/lib/hooks/use-toast";
 import client from "@/lib/apollo-client";
 import { SEND_EMAIL_MUTATION } from "@/lib/queries/users.query";
@@ -174,16 +173,6 @@ const Contact = () => {
             >
               <FaWhatsapp
                 className="text-green-500 hover:scale-125 transition-transform duration-300 ease-in-out"
-                size={30}
-              />
-            </Link>
-            <Link
-              href="https://twitter.com/crafterswealth"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaXTwitter
-                className="text-black hover:scale-125 transition-transform duration-300 ease-in-out"
                 size={30}
               />
             </Link>

@@ -48,7 +48,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   );
 
   const TotalNet = totalMarketPrice
-    ? ((totalMarketPrice - totalBuyPrice) / totalMarketPrice) * 100
+    ? ((totalMarketPrice - totalBuyPrice) / totalBuyPrice) * 100
     : 0;
 
   const isNotBought =

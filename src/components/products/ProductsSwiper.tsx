@@ -151,7 +151,7 @@ const ProductsSwiper: React.FC<ProductsProps> = ({ products }) => {
                         .join(", ")}
                     </h1>
                     <div className="space-y-2">
-                      <p>Potential Left</p>
+                      <p>Remaining Growth Potential</p>
                       <div className="flex items-center justify-center gap-1 text-4xl font-extrabold">
                         {loading ? (
                           <Skeleton className="h-10 w-3/5" />

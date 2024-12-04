@@ -55,13 +55,15 @@ const FAQ = () => {
           spaceBetween={5}
           onSlideChange={(swiper) => {
             const selectedIndex = swiper.realIndex;
-            setSelectedCategory(faqCategories[selectedIndex]);
+            setSelectedCategory(
+              [...faqCategories, ...faqCategories][selectedIndex]
+            );
           }}
           onSwiper={(swiper) => ((swiperRef.current as SwiperType) = swiper)}
           initialSlide={faqCategories.indexOf(selectedCategory)}
         >
-          {faqCategories.map((category, index) => (
-            <SwiperSlide key={category}>
+          {[...faqCategories, ...faqCategories].map((category, index) => (
+            <SwiperSlide key={index}>
               <div
                 className={`capitalize cursor-pointer text-center text-sm p-3 rounded-md transition-all shadow-inner duration-300 ${
                   selectedCategory === category

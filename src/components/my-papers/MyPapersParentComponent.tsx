@@ -144,19 +144,21 @@ const MyPapersParentComponent = () => {
   const productsWithMarketPrice = useMemo(() => {
     return boughtProducts.map((product) => {
       if (stocksLoading) return product;
-
+      const { target, stockSymbol } = product;
       const marketPrice =
-        stockData.find((item) => item.symbol === product.stockSymbol)?.price ||
-        0;
+        stockData.find((item) => item.symbol === stockSymbol)?.price || 0;
 
-      return { ...product, marketPrice };
+      const potential = marketPrice
+        ? ((target - marketPrice) / marketPrice) * 100
+        : 0;
+      return { ...product, marketPrice: potential <= 0 ? target : marketPrice };
     });
   }, [boughtProducts, stockData, stocksLoading]);
 
   const filteredProductsByCategory = useMemo(() => {
-    return productsWithMarketPrice
-      .filter((product) => product.categorySlug === selectedCategory)
-      .reverse();
+    return productsWithMarketPrice.filter(
+      (product) => product.categorySlug === selectedCategory
+    );
   }, [productsWithMarketPrice, selectedCategory]);
 
   const filteredProductsByStatus = useMemo(() => {

@@ -22,6 +22,7 @@ import BreadcrumbStructuredData from "@/components/seo/BreadCrumbsStructuredData
 import { useWindowWidth } from "@/lib/hooks/use-window-width";
 import LazyImage from "@/components/ui/lazy-image";
 import { InvestmentType } from "@/lib/types/components/stocks-chart";
+import StepsSwiper from "@/components/products/StepsSwiper";
 
 const TargetsReachedTable = dynamic(
   () => import("@/components/products/TargetsReachedTable"),
@@ -165,14 +166,14 @@ const StockDetailsPage = () => {
       <section className="bg-gradient-to-t from-accent to-white layout pb-16">
         <AnimateOnce>
           <div className="mb-10 text-center">
-            <h1 className="text-2xl text-gray-700 mb-4">
+            <h1 className="text-2xl text-gray-700 mb-2">
               An Exhaustive list of
             </h1>
             <Title text="Amazing Features" />
 
             <p>{productDetails.amazingFeatures}</p>
           </div>
-          <section className="grid pb-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 md:gap-14 max-w-screen-lg mx-auto">
+          <section className="grid pb-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7  max-w-4xl mx-auto">
             {productDetails.features.map((feature, index) => {
               const Icon = feature.icon as IconType;
               const isEven = index % 2 === 0;
@@ -180,19 +181,19 @@ const StockDetailsPage = () => {
                 <div
                   key={index}
                   className={twMerge(
-                    "bg-primary shadow-lg rounded-2xl cursor-default p-8 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300",
+                    "bg-primary shadow-lg rounded-2xl cursor-default p-6 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300",
                     isEven
                       ? "bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
                       : ""
                   )}
                 >
-                  <div className="p-6 rounded-full bg-primary-blue">
-                    <Icon className="text-3xl text-primary" />
+                  <div className="p-4 rounded-full bg-primary-blue">
+                    <Icon className="text-2xl text-primary" />
                   </div>
                   <h3 className="text-2xl font-bold">{feature.title}</h3>
                   <p
                     className={twMerge(
-                      "text-base",
+                      "text-sm",
                       isEven ? "text-primary" : "text-gray-600"
                     )}
                   >
@@ -205,50 +206,56 @@ const StockDetailsPage = () => {
         </AnimateOnce>
         <AnimateOnce>
           <div className="mx-auto px-4">
-            <div className="grid gap-8 md:grid-cols-4">
-              {STEPS_DETAILS.map((step, index) => (
-                <div
-                  key={step.step}
-                  className="relative flex flex-col items-center text-center"
-                >
-                  <div className="md:mb-4 flex h-20 w-20 items-center justify-center rounded-lg bg-teal-50 p-4 shadow-md">
-                    <step.icon className="text-teal-500" size={40} />
-                  </div>
+            {isHideSteps ? (
+              <StepsSwiper />
+            ) : (
+              <div className="grid gap-8 md:grid-cols-4">
+                {STEPS_DETAILS.map((step, index) => (
                   <div
-                    className={twMerge(
-                      "absolute top-1/2 left-1/2 -translate-x-[10%] xl:-translate-x-[8%] -translate-y-8  items-center",
-                      isHideSteps ? "hidden" : "flex",
-                      index < STEPS_DETAILS.length - 1 ? " w-full" : "w-fit"
-                    )}
+                    key={step.step}
+                    className="relative flex flex-col items-center text-center"
                   >
+                    <div className="md:mb-4 flex h-20 w-20 items-center justify-center rounded-lg bg-teal-50 p-4 shadow-md">
+                      <step.icon className="text-teal-500" size={40} />
+                    </div>
                     <div
                       className={twMerge(
-                        "flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-sm font-semibold text-white z-10 shadow-lg",
-                        index < STEPS_DETAILS.length - 1 ? "" : "-translate-x-6"
+                        "absolute top-1/2 left-1/2 -translate-x-[10%] xl:-translate-x-[8%] -translate-y-8  items-center",
+                        isHideSteps ? "hidden" : "flex",
+                        index < STEPS_DETAILS.length - 1 ? " w-full" : "w-fit"
                       )}
                     >
-                      {step.step}
-                    </div>
-                    {index < STEPS_DETAILS.length - 1 && (
-                      <div className="ml-5 w-full h-[2px]">
-                        <div className="h-full w-full border-t-2 border-dashed border-teal-300"></div>
+                      <div
+                        className={twMerge(
+                          "flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-sm font-semibold text-white z-10 shadow-lg",
+                          index < STEPS_DETAILS.length - 1
+                            ? ""
+                            : "-translate-x-6"
+                        )}
+                      >
+                        {step.step}
                       </div>
-                    )}
+                      {index < STEPS_DETAILS.length - 1 && (
+                        <div className="ml-5 w-full h-[2px]">
+                          <div className="h-full w-full border-t-2 border-dashed border-teal-300"></div>
+                        </div>
+                      )}
+                    </div>
+                    <h3
+                      className={twMerge(
+                        "lg:mt-20 xl:mt-16 mb-2 text-center text-lg font-semibold text-gray-900",
+                        isHideSteps ? "mt-4" : "md:mt-32"
+                      )}
+                    >
+                      {step.title}
+                    </h3>
+                    <p className="text-center text-sm text-gray-600">
+                      {step.description}
+                    </p>
                   </div>
-                  <h3
-                    className={twMerge(
-                      "lg:mt-20 xl:mt-16 mb-2 text-center text-lg font-semibold text-gray-900",
-                      isHideSteps ? "mt-4" : "md:mt-32"
-                    )}
-                  >
-                    {step.title}
-                  </h3>
-                  <p className="text-center text-sm text-gray-600">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </AnimateOnce>
 

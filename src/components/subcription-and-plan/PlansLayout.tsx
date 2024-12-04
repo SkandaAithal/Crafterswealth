@@ -38,7 +38,8 @@ const PlansLayout: React.FC<PlanPageProps> = ({ plans, checkIfPremium }) => {
         <div className="relative">
           <h1>{plan2}</h1>
           <FaCrown
-            className="text-yellow-500 absolute -top-0.5 -right-4 rotate-45"
+            className="text-yellow-500 absolute -top-[6px] -right-2"
+            style={{ transform: "rotate(20deg)" }}
             size={16}
           />
         </div>

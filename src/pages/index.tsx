@@ -102,7 +102,7 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
                 className="!mb-12"
               />
 
-              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10 max-w-screen-md mx-auto">
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-screen-md mx-auto">
                 {[
                   {
                     title: "Tech-Driven Innovation",
@@ -128,10 +128,10 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
                   return (
                     <div
                       key={index}
-                      className="bg-primary shadow-lg rounded-2xl cursor-default p-8 md:h-64 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
+                      className="bg-primary shadow-lg rounded-2xl cursor-default px-4 md:px-5 py-6 md:h-44 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
                     >
-                      <h3 className="text-2xl font-bold">{item.title}</h3>
-                      <p>{item.description}</p>
+                      <h3 className="text-[22px] font-bold">{item.title}</h3>
+                      <p className="text-base">{item.description}</p>
                     </div>
                   );
                 })}

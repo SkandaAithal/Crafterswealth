@@ -35,13 +35,15 @@ const Portfolio: React.FC<PortfolioProps> = ({
   const { isMobile, windowWidth } = useWindowWidth();
   const swiperRef = useRef<SwiperType | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const categoriesArray = [...categories, ...categories];
+  const categoriesArray =
+    categories.length < 3
+      ? [...categories, ...categories, ...categories]
+      : [...categories, ...categories];
   const selectedCategory = categories.find(
     (c) => c.slug === selectedProductCategory
   );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-
   const isLoading = isAppLoading || isProductsLoading;
 
   const { totalBuyPrice, totalMarketPrice } = portfolioProducts.reduce(
@@ -54,15 +56,20 @@ const Portfolio: React.FC<PortfolioProps> = ({
   );
 
   const TotalNet = totalMarketPrice
-    ? ((totalMarketPrice - totalBuyPrice) / totalMarketPrice) * 100
+    ? ((totalMarketPrice - totalBuyPrice) / totalBuyPrice) * 100
     : 0;
-
   useEffect(() => {
-    if (categoriesArray.length > 0) {
-      setProductCategory(getFirstIfArray(categories).slug);
+    if (!isLoading) {
+      const slug = getFirstIfArray(portfolioProducts)?.categorySlug ?? "";
+      setProductCategory(slug);
+      const ctgIdx = categoriesArray.findIndex((ctg) => ctg.slug === slug);
+      if (ctgIdx >= 0 && swiperRef.current) {
+        setSelectedIndex(ctgIdx);
+        swiperRef.current.slideToLoop(ctgIdx);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories]);
+  }, [isLoading, boughtProducts]);
 
   const handleNext = () => {
     const newIndex = (selectedIndex + 1) % categoriesArray.length;

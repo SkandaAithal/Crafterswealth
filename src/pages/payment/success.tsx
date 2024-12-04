@@ -154,60 +154,24 @@ const SuccessPage = () => {
           return setRedirectTrigger(!redirectTrigger);
         }
 
-        setTextMessage("Generating Invoice...");
+        setTextMessage("Placing your order...");
 
-        try {
-          const { data, invoiceData } = await generateInvoice();
-          const pdfLink = data.wordpressMediaUrl ?? "";
-          const emailHtml = generateInvoiceEmailTemplate(
-            invoiceData as InvoiceData,
-            pdfLink
-          );
-          const emailRecipients = [user.email, ACCOUNTS_EMAIL];
-          setTextMessage("Sending invoice");
+        const variables = {
+          input: {
+            email: user.email,
+            bought,
+            subscription,
+          },
+        };
 
-          await Promise.all(
-            emailRecipients.map((recipient) =>
-              sendEmail({
-                variables: {
-                  input: {
-                    body: emailHtml,
-                    from: OFFICIAL_EMAIL,
-                    subject: "Invoice Email",
-                    to: recipient,
-                  },
-                },
-              })
-            )
-          );
-
-          setTextMessage("Placing your order...");
-
-          const variables = {
-            input: {
-              email: user.email,
-              bought,
-              subscription,
+        await updateUserMeta({
+          variables,
+          context: {
+            headers: {
+              Authorization: `Bearer ${(session as SessionObject).authToken}`,
             },
-          };
-
-          await updateUserMeta({
-            variables,
-            context: {
-              headers: {
-                Authorization: `Bearer ${(session as SessionObject).authToken}`,
-              },
-            },
-          });
-        } catch (error) {
-          setTextMessage("Order failed!");
-          toast({
-            title: "Order failed!",
-            description: "Failed to generate invoice",
-            variant: "destructive",
-          });
-          gotToPaymentFailurePage();
-        }
+          },
+        });
       }
     },
     onError: () => {
@@ -220,18 +184,56 @@ const SuccessPage = () => {
     if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
     }
-    const inputPayload = getSuccessOrderPayload();
 
-    await updateOrder({
-      variables: {
-        input: inputPayload,
-      },
-      context: {
-        headers: {
-          Authorization: `Bearer ${(session as SessionObject).authToken}`,
+    try {
+      setTextMessage("Generating Invoice...");
+
+      const { data, invoiceData } = await generateInvoice();
+      const pdfLink = data.wordpressMediaUrl ?? "";
+      const emailHtml = generateInvoiceEmailTemplate(
+        invoiceData as InvoiceData,
+        pdfLink
+      );
+      const emailRecipients = [user.email, ACCOUNTS_EMAIL];
+      const inputPayload = getSuccessOrderPayload();
+      setTextMessage("Processing order...");
+
+      await updateOrder({
+        variables: {
+          input: inputPayload,
         },
-      },
-    });
+        context: {
+          headers: {
+            Authorization: `Bearer ${(session as SessionObject).authToken}`,
+          },
+        },
+      });
+
+      setTextMessage("Sending invoice");
+
+      await Promise.all(
+        emailRecipients.map((recipient) =>
+          sendEmail({
+            variables: {
+              input: {
+                body: emailHtml,
+                from: OFFICIAL_EMAIL,
+                subject: "Invoice Email",
+                to: recipient,
+              },
+            },
+          })
+        )
+      );
+    } catch (error) {
+      setTextMessage("Order failed!");
+      toast({
+        title: "Order failed!",
+        description: "Failed to generate invoice",
+        variant: "destructive",
+      });
+      gotToPaymentFailurePage();
+    }
   };
 
   useEffect(() => {

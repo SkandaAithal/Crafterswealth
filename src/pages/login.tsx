@@ -16,19 +16,20 @@ import PageStructuredData from "@/components/seo/PageStructuredData";
 const Login = () => {
   const router = useRouter();
   const redirect = router.query?.redirect as string;
-  const { status } = useSession();
-  const { user } = useAuth();
+  const { data: session, status } = useSession();
+  const { isAuthenticated } = useAuth();
   const pageName = "Login - Access Your Account";
   const pageDescription =
     "Log in to your CraftersWealth account to access your personalized portfolio, insights, and more. Sign in with your credentials or use social logins.";
+
   useEffect(() => {
-    if (status === "authenticated" && user.id) {
+    if (isAuthenticated()) {
       router.push(redirect ? redirect : HOME);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, session]);
 
-  if (status === "authenticated" && user.id) {
+  if (isAuthenticated()) {
     return <PageLoader />;
   }
 

@@ -13,6 +13,7 @@ const TargetsReached = dynamic(
 import client from "@/lib/apollo-client";
 import { MarketBarChartGraphData } from "@/lib/constants";
 import useStockData from "@/lib/hooks/use-stock-data";
+import { useWindowWidth } from "@/lib/hooks/use-window-width";
 import { useApp } from "@/lib/provider/app-provider";
 import {
   GET_PRODUCT_CATEGORIES,
@@ -29,7 +30,7 @@ import { SwiperSlide } from "swiper/react";
 
 const Products: NextPage<ProductsProps> = ({ products }) => {
   const { appDispatch } = useApp();
-
+  const { isMobile } = useWindowWidth();
   const SYMBOLS = useMemo(
     () => products.map((product) => product.stock.stockSymbol),
     [products]
@@ -43,54 +44,59 @@ const Products: NextPage<ProductsProps> = ({ products }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const renderSwiper = () => (
+    <div className="layout min-h-[540px] overflow-x-hidden mask-desktop">
+      <SwiperComponent
+        modules={[Autoplay]}
+        spaceBetween={20}
+        slidesPerView={1.1}
+        centeredSlides={true}
+        loop={true}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
+        breakpoints={{
+          640: { slidesPerView: 2, spaceBetween: 20 },
+          1024: { slidesPerView: 3.1, spaceBetween: 40 },
+        }}
+        style={{
+          overflow: "visible",
+        }}
+      >
+        {[...products, ...products].map((product, index) => {
+          const currentPrice = stockData.find(
+            (data) => data.symbol === product.stock.stockSymbol
+          )?.price;
+
+          return (
+            <SwiperSlide key={index}>
+              <ProductCard
+                product={product}
+                currentPrice={currentPrice as number}
+                loading={loading}
+              />
+            </SwiperSlide>
+          );
+        })}
+      </SwiperComponent>
+    </div>
+  );
   const renderProducts = () => {
     return products.length >= 3 ? (
-      <div className="layout min-h-[540px] overflow-x-hidden mask-desktop">
-        <SwiperComponent
-          modules={[Autoplay]}
-          spaceBetween={20}
-          slidesPerView={1.1}
-          centeredSlides={true}
-          loop={true}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            640: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3.1, spaceBetween: 40 },
-          }}
-          style={{
-            overflow: "visible",
-          }}
-        >
-          {[...products, ...products].map((product) => {
-            const currentPrice = stockData.find(
-              (data) => data.symbol === product.stock.stockSymbol
-            )?.price;
-
-            return (
-              <SwiperSlide key={product.id}>
-                <ProductCard
-                  product={product}
-                  currentPrice={currentPrice as number}
-                  loading={loading}
-                />
-              </SwiperSlide>
-            );
-          })}
-        </SwiperComponent>
-      </div>
+      renderSwiper()
+    ) : isMobile ? (
+      renderSwiper()
     ) : (
-      <div className="layout min-h-[540px] grid gap-16 md:gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => {
+      <div className="layout min-h-[540px] grid gap-16 md:gap-10 grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto">
+        {products.map((product, index) => {
           const currentPrice = stockData.find(
             (data) => data.symbol === product.stock.stockSymbol
           )?.price;
 
           return (
             <ProductCard
-              key={product.id}
+              key={index}
               product={product}
               currentPrice={currentPrice as number}
               loading={loading}

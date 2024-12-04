@@ -10,6 +10,7 @@ import Title from "../common/Title";
 import ArticleCard from "./ArticleCard";
 import { useWindowWidth } from "@/lib/hooks/use-window-width";
 import SubscribeToNewsLetter from "../common/SubscribeToNewsLetter";
+import { Button } from "../ui/button";
 
 const ArticlesComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -134,7 +135,8 @@ const ArticlesComponent: React.FC = () => {
           renderArticlePageLoader()
         ) : (
           <>
-            <div className=" w-full">
+            <div className="w-full">
+              <Title text="Suggested Expert Article" size="H2" />
               <AnimateOnce>
                 <div className="h-[400px]">
                   <LazyImage
@@ -159,18 +161,23 @@ const ArticlesComponent: React.FC = () => {
                     ),
                   }}
                 />
-                <Link
-                  key={firstPost?.node?.slug ?? ""}
-                  href={firstPost?.node?.link ?? ""}
-                  target="_blank"
-                  className="bg-primary-blue-30 p-2 rounded-lg"
-                >
-                  View Article
-                </Link>
+                <Button>
+                  <Link
+                    key={firstPost?.node?.slug ?? ""}
+                    href={firstPost?.node?.link ?? ""}
+                    target="_blank"
+                  >
+                    View Article
+                  </Link>
+                </Button>
               </AnimateOnce>
             </div>
             <div className="flex flex-col gap-6">
-              <h1 className="font-bold text-2xl">Recent Articles</h1>
+              <Title
+                text="Recent Articles"
+                size="H2"
+                className="!text-2xl !mb-0"
+              />
               {filteredPost.slice(1, 4).map(({ node }) => (
                 <ArticleCard
                   key={node.slug}

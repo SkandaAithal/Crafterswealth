@@ -1,4 +1,3 @@
-import { IoTriangle } from "react-icons/io5";
 import { FaArrowRightLong } from "react-icons/fa6";
 import AnimateOnce from "../common/AnimateOnce";
 import LazyImage from "../ui/lazy-image";
@@ -6,6 +5,7 @@ import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import { useRouter } from "next/router";
 import { PLAN, PRODUCTS_DETAIL } from "@/lib/routes";
+import TrendIndicator from "../common/TrendIndicator";
 
 interface ProductCardProps {
   product: {
@@ -32,6 +32,7 @@ const ProductCard = ({ product, currentPrice, loading }: ProductCardProps) => {
   const handleReadMoreClick = (slug: string, id: string) => {
     router.push(`${PRODUCTS_DETAIL}/?type=${slug}&id=${id}`);
   };
+
   return (
     <AnimateOnce key={id}>
       <div className="relative transition-all duration-300 md:hover:scale-105 group h-auto cursor-default text-primary md:text-black md:hover:text-primary">
@@ -63,15 +64,7 @@ const ProductCard = ({ product, currentPrice, loading }: ProductCardProps) => {
                     {loading ? (
                       <Skeleton className="h-10 w-3/5 " />
                     ) : (
-                      <>
-                        <IoTriangle
-                          className="text-green-400 transform"
-                          size={24}
-                        />
-                        <span className="text-green-400">
-                          {potential.toFixed(2)}%
-                        </span>
-                      </>
+                      <TrendIndicator number={potential} className="text-4xl" />
                     )}
                   </div>
                 </div>

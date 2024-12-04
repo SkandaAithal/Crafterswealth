@@ -137,7 +137,7 @@ export const FAQ_DATA = {
     {
       question: "Who are the founders of CraftersWealth?",
       answer:
-        "CraftersWealth was co-founded by Raghu Srinivasan, a Chartered Accountant with over 40 years of expertise in corporate finance and taxation, and Rishabh Rao, a technology innovator with a background in Computer Science and a passion for stock market research.",
+        "CraftersWealth was co-founded by Raghu Srinivasan, a Chartered Accountant with over 40 years of expertise in corporate finance and taxation, and Rishabh Rao, a technology innovator with a background in Computer Science and a passion for the financial markets.",
     },
     {
       question:

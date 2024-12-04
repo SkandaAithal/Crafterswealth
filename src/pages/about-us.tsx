@@ -4,16 +4,17 @@ import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
 import { ABOUT_US } from "@/lib/routes";
 import React from "react";
-import { RiStockFill } from "react-icons/ri";
 import { twMerge } from "tailwind-merge";
 import { LuBrainCircuit } from "react-icons/lu";
-import MasonryLayout from "@/components/about-us/MasonryLayout";
 import {
   FaChartLine,
   FaCheckCircle,
   FaCogs,
   FaShieldAlt,
+  FaUsers,
 } from "react-icons/fa";
+import { HiOutlineLightBulb } from "react-icons/hi";
+import LazyImage from "@/components/ui/lazy-image";
 const AboutUs = () => {
   const pageName = "About Us";
   const pageDescription =
@@ -24,7 +25,7 @@ const AboutUs = () => {
       <SEOHead
         title={pageName}
         description={pageDescription}
-        keywords="About CraftersWealth, financial research, investment insights, SEBI registered, financial expertise, investment strategies, trusted financial advisors, stock market analysis, transparent reports, cutting-edge technology, financial compliance, customer-first innovation"
+        keywords="At CraftersWealth, we simplify the complexities of the stock market, empowering you with tailored insights and transparent guidance. Your journey to confident and informed investing starts here."
       />
 
       <PageStructuredData
@@ -37,13 +38,6 @@ const AboutUs = () => {
           <Title text={pageName} className="text-center" />
           <AnimateOnce>
             <p className="text-center max-w-screen-lg">{pageDescription}</p>
-
-            <p className="text-center max-w-screen-lg mt-5">
-              We believe that every investor deserves a partner who truly
-              understands their goals and offers tailored solutions. Whether
-              you&apos;re seeking consistent growth, strategic diversification,
-              or exploring new markets, we are here to help you succeed.
-            </p>
           </AnimateOnce>
         </section>
         <section className="layout">
@@ -52,104 +46,174 @@ const AboutUs = () => {
             <div className="mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 items-center">
               <div className="p-6 bg-[#d9ffce] shadow-lg rounded-2xl flex items-center gap-5">
                 <div className="p-6 bg-white rounded-2xl">
-                  <RiStockFill size={35} className="text-[#28d35b]" />
+                  <LuBrainCircuit size={45} className="text-[#28d35b]" />
                 </div>
-
-                <div className="leading-relaxed  space-y-2">
-                  <h1 className="font-semibold text-2xl">Mission</h1>
+                <div className="leading-relaxed space-y-2">
+                  <h1 className="font-semibold text-2xl">Empowerment</h1>
                   <p className="text-gray-600">
-                    To democratize financial research
+                    Accurate, affordable insights for confident wealth-building.
                   </p>
                 </div>
               </div>
               <div className="p-6 bg-primary-blue-30 shadow-lg rounded-2xl flex items-center gap-5">
                 <div className="p-6 bg-white rounded-2xl">
-                  <LuBrainCircuit size={35} className="text-[#287dd3]" />
+                  <HiOutlineLightBulb size={45} className="text-[#287dd3]" />
                 </div>
-
-                <div className="leading-relaxed  space-y-2">
-                  <h1 className="font-semibold text-2xl">Mission</h1>
+                <div className="leading-relaxed space-y-2">
+                  <h1 className="font-semibold text-2xl">Innovation</h1>
                   <p className="text-gray-600">
-                    To democratize financial research
+                    Revolutionizing financial research with advanced technology.
                   </p>
                 </div>
               </div>
               <div className="p-6 bg-[#fff8ce] shadow-lg rounded-2xl flex items-center gap-5">
                 <div className="p-6 bg-white rounded-2xl">
-                  <LuBrainCircuit size={35} className="text-[#d38328]" />
+                  <FaUsers size={45} className="text-[#d38328]" />
                 </div>
-
-                <div className="leading-relaxed  space-y-2">
-                  <h1 className="font-semibold text-2xl">Mission</h1>
+                <div className="leading-relaxed space-y-2">
+                  <h1 className="font-semibold text-2xl">Democratization</h1>
                   <p className="text-gray-600">
-                    To democratize financial research
+                    Empowering individuals with financial knowledge.
                   </p>
                 </div>
               </div>
             </div>
           </AnimateOnce>
         </section>
-        <section className="layout text-center">
-          <Title text="Our Approach" size="H2" className="text-center !mb-6" />
+
+        <section className="mx-auto text-center layout">
+          <Title
+            text="What Sets Us Apart"
+            size="H2"
+            className="text-center !mb-5"
+          />
+
           <AnimateOnce>
-            <p className="mx-auto max-w-screen-lg">
+            <p className="mx-auto max-w-screen-lg mb-10">
               At CraftersWealth, we combine technology and expertise to simplify
-              investment decisions for our clients. Our data-driven approach
-              ensures that every recommendation is backed by robust research and
-              strategic insights, enabling clients to achieve financial growth
-              confidently.
+              investment decisions for our clients.
             </p>
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-screen-md  mx-auto">
+              {[
+                {
+                  title: "Comprehensive Research",
+                  description:
+                    "From analyzing market trends to diving deep into stock fundamentals, we leave no stone unturned.",
+                },
+                {
+                  title: "Transparent Pricing Models",
+                  description:
+                    "Cost-effective subscriptions provide access to premium research, ensuring value for every customer.",
+                },
+                {
+                  title: "Transparency & Integrity",
+                  description:
+                    "We prioritize clear, honest communication to empower clients with confidence in their financial decisions.",
+                },
+                {
+                  title: "Tech-Driven Solutions",
+                  description:
+                    "Our proprietary tools help identify medium- and short-term opportunities with exceptional success rates.",
+                },
+              ].map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={twMerge(
+                      "bg-primary shadow-lg rounded-2xl cursor-default p-6  lg:h-48 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
+                    )}
+                  >
+                    <h3 className="text-2xl font-bold">{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                );
+              })}
+            </section>
           </AnimateOnce>
         </section>
-        <section className="layout max-w-4xl">
-          <div className="mx-auto text-center">
-            <Title
-              text="What Sets Us Apart"
-              size="H2"
-              className="text-center !mb-10"
-            />
-            <AnimateOnce>
-              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10">
-                {[
-                  {
-                    title: "Comprehensive Research",
-                    description:
-                      "From analyzing market trends to diving deep into stock fundamentals, we leave no stone unturned.",
-                  },
-                  {
-                    title: "Transparent Pricing Models",
-                    description:
-                      "Cost-effective subscriptions provide access to premium research, ensuring value for every customer.",
-                  },
-                  {
-                    title: "Transparency & Integrity",
-                    description:
-                      "We prioritize clear, honest communication to empower clients with confidence in their financial decisions.",
-                  },
-                  {
-                    title: "Tech-Driven Solutions",
-                    description:
-                      "Our proprietary tools help identify medium- and short-term opportunities with exceptional success rates.",
-                  },
-                ].map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={twMerge(
-                        "bg-primary shadow-lg rounded-2xl cursor-default p-8 md:h-64 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-t from-primary-blue-80 to-primary-blue-100 text-primary"
-                      )}
-                    >
-                      <h3 className="text-2xl font-bold">{item.title}</h3>
-                      <p>{item.description}</p>
-                    </div>
-                  );
-                })}
-              </section>
-            </AnimateOnce>
-          </div>
-        </section>
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-y-10 md:gap-10 layout">
-          <MasonryLayout />
+          <div className="col-span-2 max-w-4xl mx-auto order-2 lg:order-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
+              <div className="w-full">
+                <LazyImage
+                  src="/authentication-bg-image.jpeg"
+                  alt=""
+                  height={400}
+                  width={300}
+                  className="w-full h-60 md:h-52"
+                />
+              </div>
+              <div className="text-base">
+                <h3 className="text-2xl font-bold">Raghu Srinivasan</h3>
+                <p className="italic text-gray-600">
+                  Co-Founder and Director – Financial Research
+                </p>
+                <p className="my-2">
+                  <strong>Qualifications:</strong> B.Com., F.C.A., DISA (ICAI),
+                  NISM (RA)
+                </p>
+                <p className="text-sm">
+                  With over 40 years of expertise in corporate finance, audit,
+                  and taxation, Raghu ensures our research is deeply rooted in
+                  sound financial principles. As a mentor and leader, he fosters
+                  a culture of integrity, enabling us to deliver reliable,
+                  actionable insights.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mt-8">
+              <div className="text-base md:order-1 order-2">
+                <h3 className="text-2xl font-bold">Rishabh Rao</h3>
+                <p className="italic text-gray-600">
+                  Co-Founder and Director – Technology and Research
+                </p>
+                <p className="my-2">
+                  <strong>Qualifications:</strong> B.E. (Computer Science)
+                </p>
+                <p className="text-sm">
+                  Rishabh blends his technical background and passion for
+                  finance to develop proprietary algorithms and scalable tools
+                  that deliver unparalleled success rates.
+                </p>
+              </div>
+              <div className="w-full md:order-2 order-1">
+                <LazyImage
+                  src="/authentication-bg-image.jpeg"
+                  alt=""
+                  height={400}
+                  width={300}
+                  className="w-full h-60 md:h-52"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mt-8">
+              <div className="w-full">
+                <LazyImage
+                  src="/authentication-bg-image.jpeg"
+                  alt=""
+                  height={400}
+                  width={300}
+                  className="w-full h-60 md:h-52"
+                />
+              </div>
+              <div className="text-base">
+                <h3 className="text-2xl font-bold">Suraj Sridhar</h3>
+                <p className="italic text-gray-600">
+                  Trainee – Quantitative Investment Analyst
+                </p>
+                <p className="my-2">
+                  <strong>Qualifications:</strong> M.Sc. in Business Analytics
+                </p>
+                <p className="text-sm">
+                  Suraj applies advanced statistical models to refine strategies
+                  and explore future opportunities. His growing expertise
+                  supports the creation of cutting-edge solutions for investors.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div className="order-1 lg:order-2">
             <Title
@@ -157,17 +221,16 @@ const AboutUs = () => {
               className="text-center lg:text-left"
               noAnimate
             />
-            <p className="text-gray-700 leading-relaxed mt-10 text-center lg:text-left">
-              At CraftersWealth, we started with a simple yet powerful belief:
-              every investor deserves access to high-quality financial research.
-              Founded by a dynamic father-son duo, &nbsp;
+            <p className=" mt-10 text-center lg:text-left">
+              At CraftersWealth, we believe every investor deserves access to
+              quality financial research. Founded by the dynamic father-son duo{" "}
               <strong>Raghu Srinivasan</strong> and <strong>Rishabh Rao</strong>
-              , we blend decades of financial expertise with cutting-edge
-              technology to bridge the gap between complex market data and
-              actionable insights.
+              , we combine decades of expertise with technology to turn market
+              data into actionable insights. Our mission has always been to
+              empower smarter investment decisions in a dynamic financial world.
             </p>
 
-            <p className="mt-4 text-center lg:text-left">
+            <p className="mt-4 text-center lg:text-left hidden md:block">
               From humble beginnings, our journey has always been about
               empowering individuals to make smarter investment decisions in an
               ever-changing financial landscape.

@@ -14,21 +14,21 @@ import React, { useEffect } from "react";
 
 const Signup = () => {
   const router = useRouter();
-  const { status } = useSession();
-  const { user } = useAuth();
+  const { data: session, status } = useSession();
+  const { isAuthenticated } = useAuth();
 
   const pageName = "Sign Up - Create Your Account";
   const pageDescription =
     "Create a new account with CraftersWealth to access your personalized portfolio, insights, and exclusive features. Sign up easily with email or social logins.";
 
   useEffect(() => {
-    if (status === "authenticated" && user.id) {
+    if (isAuthenticated()) {
       router.push(HOME);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, session]);
 
-  if (status === "authenticated" && user.id) {
+  if (isAuthenticated()) {
     return <PageLoader />;
   }
   return (

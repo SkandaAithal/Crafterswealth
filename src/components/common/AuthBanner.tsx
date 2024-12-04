@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const AuthBanner = () => {
   return (
-    <section className="bg-auth-banner-image bg-center bg-cover lg:h-full w-full grid place-content-center text-primary lg:rounded-b-none  rounded-b-[35px] shadow-xl h-44 md:h-60">
+    <section className="bg-auth-banner-image bg-center bg-cover lg:h-full w-full grid place-content-center text-primary lg:rounded-b-none  rounded-b-[35px] shadow-xl h-60">
       <div className="px-10 text-center lg:text-left">
         <Title
           noAnimate
@@ -17,8 +17,12 @@ const AuthBanner = () => {
         <Title
           noAnimate
           text="CraftersWealth"
-          className="text-primary text-[28px] !mb-1"
+          className="text-primary text-[28px] !mb-0"
         />
+        <p className="text-primary text-xl md:text-2xl md:mt-3 mb-5">
+          Investment made easy
+        </p>
+
         <div className="max-w-[450px] grid w-full  md:!mt-8">
           <Scroller>
             {ICONS.map((icon, idx) => (

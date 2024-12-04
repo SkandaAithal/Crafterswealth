@@ -2,11 +2,12 @@ import { FOOTER_ROUTES } from "@/lib/constants";
 import Link from "next/link";
 import React from "react";
 import Title from "./Title";
-import { FaInstagram, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa6";
 import { PAGES_TO_HIDE_FOOTER } from "@/lib/routes";
 import { usePathname } from "next/navigation";
 
 import SubscribeToNewsLetter from "./SubscribeToNewsLetter";
+import { MdOutlineMailOutline } from "react-icons/md";
 
 const Footer = () => {
   const pathName = usePathname();
@@ -41,14 +42,20 @@ const Footer = () => {
           ))}
         </div>
         <div className="flex justify-center gap-10">
+          <Link
+            href="mailto:support@crafterswealth.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="bg-white p-4 rounded-full flex items-center justify-center">
+              <MdOutlineMailOutline className="text-3xl text-black" />
+            </div>
+          </Link>
           <div className="bg-white p-4 rounded-full flex items-center justify-center">
             <FaInstagram className="text-3xl text-black" />
           </div>
           <div className="bg-white p-4 rounded-full flex items-center justify-center">
             <FaWhatsapp className="text-3xl text-black" />
-          </div>
-          <div className="bg-white p-4 rounded-full flex items-center justify-center">
-            <FaXTwitter className="text-3xl text-black" />
           </div>
         </div>
         <h1 className="text-base">
