@@ -19,15 +19,26 @@ export default async function handler(
     return res.status(400).json({ error: "Missing compressed PDF data." });
   }
 
-  const compressedBuffer = Buffer.from(compressedBase64, "base64");
-  const pdfBuffer = zlib.inflateSync(compressedBuffer);
-
   try {
-    const tempFilePath = path.join("/tmp", `${title}.pdf`);
+    // Decompress the Base64-encoded PDF
+    const compressedBuffer = Buffer.from(compressedBase64, "base64");
+    const pdfBuffer = zlib.inflateSync(compressedBuffer);
+
+    // Sanitize the file name
+    const sanitizedTitle = title.replace(/[/\\:*?"<>|]/g, "_");
+    const tempFilePath = path.join("/tmp", `${sanitizedTitle}.pdf`);
+
+    // Write the file to the /tmp directory
     fs.writeFileSync(tempFilePath, pdfBuffer);
 
+    // Ensure the file exists
+    if (!fs.existsSync(tempFilePath)) {
+      throw new Error(`Temporary file not found: ${tempFilePath}`);
+    }
+
+    // Prepare FormData for WordPress upload
     const formData = new FormData();
-    formData.append("file", fs.createReadStream(tempFilePath), title);
+    formData.append("file", fs.createReadStream(tempFilePath), sanitizedTitle);
     formData.append("title", title);
     formData.append("description", description);
 
