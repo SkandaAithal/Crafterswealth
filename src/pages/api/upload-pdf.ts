@@ -3,6 +3,7 @@ import fs from "fs";
 import FormData from "form-data";
 import axios from "axios";
 import path from "path";
+import zlib from "zlib";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,15 +17,18 @@ export default async function handler(
   const wordpressUsername = process.env.WORDPRESS_USERNAME!;
   const wordpressAppPassword = process.env.WORDPRESS_APP_PASSWORD!;
 
-  const { pdfBase64, title, description } = req.body;
+  const { compressedBase64, title, description } = req.body;
 
-  if (!pdfBase64) {
-    return res.status(400).json({ error: "Missing PDF data." });
+  if (!compressedBase64) {
+    return res.status(400).json({ error: "Missing compressed PDF data." });
   }
+
+  const compressedBuffer = Buffer.from(compressedBase64, "base64");
+  const pdfBuffer = zlib.inflateSync(compressedBuffer);
 
   try {
     const tempFilePath = path.join("/tmp", `${title}.pdf`);
-    fs.writeFileSync(tempFilePath, Buffer.from(pdfBase64, "base64"));
+    fs.writeFileSync(tempFilePath, pdfBuffer);
 
     const formData = new FormData();
     formData.append("file", fs.createReadStream(tempFilePath), title);

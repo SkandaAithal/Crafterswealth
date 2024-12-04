@@ -125,12 +125,12 @@ const useInvoiceGeneration = () => {
         invoiceData,
       });
 
-      if (!generateResponse.pdfBase64) {
+      if (!generateResponse.compressedBase64) {
         throw new Error("Failed to generate PDF.");
       }
 
       const { data: uploadResponse } = await axios.post(UPLOAD_INVOICE_API, {
-        pdfBase64: generateResponse.pdfBase64,
+        compressedBase64: generateResponse.compressedBase64,
         title: `Invoice_${invoiceNo}`,
         description: `Invoice generated for ${order.billing.email}`,
       });

@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer-core";
 import type { NextApiRequest, NextApiResponse } from "next";
-
+import zlib from "zlib";
 import { InvoiceData } from "@/lib/types/checkout";
 import { generateInvoiceHTMLforPDF } from "@/lib/utils/email-templates/invoice";
 
@@ -47,12 +47,12 @@ export default async function handler(
     const pdfBuffer = await page.pdf({ format: "A4" });
     await browser.close();
 
-    // Convert the PDF buffer to a Base64 string
-    const pdfBase64 = (pdfBuffer as Buffer).toString("base64");
-
+    const compressedBuffer = zlib.deflateSync(pdfBuffer);
+    const compressedBase64 = compressedBuffer.toString("base64");
+    // Return the compressed Base64 string
     res.status(200).json({
-      message: "PDF generated successfully",
-      pdfBase64,
+      message: "PDF generated and compressed successfully",
+      compressedBase64,
     });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
