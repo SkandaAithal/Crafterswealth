@@ -138,7 +138,7 @@ const ArticlesComponent: React.FC = () => {
             <div className="w-full">
               <Title text="Suggested Expert Article" size="H2" />
               <AnimateOnce>
-                <div className="h-[400px]">
+                <div className="h-[400px] rounded-xl overflow-hidden">
                   <LazyImage
                     height={300}
                     width={200}

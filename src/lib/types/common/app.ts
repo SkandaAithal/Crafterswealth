@@ -1,5 +1,5 @@
-import { OrderStatus } from "../checkout";
-import { ProductCategory, ProductNode } from "../products";
+import { InvoiceData, OrderStatus } from "../checkout";
+import { AllProducts, ProductCategory, ProductNode } from "../products";
 
 export interface AppContextProps {
   appDispatch: React.Dispatch<AppAction>;
@@ -12,10 +12,12 @@ export interface AppContextProps {
   categories: ProductCategory[];
   boughtObject: Record<string, string[]>;
   allProducts: Record<string, string[]>;
+  latestProducts: Record<string, AllProducts>;
   countries: CountriesTypes[];
   isAchievementsLoading: boolean;
   achievements: AchievementsData;
-  invoiceNumber: string;
+  invoice: InvoiceState;
+  triggerInvoice: boolean;
 }
 
 export interface VerifyEmail {
@@ -74,6 +76,11 @@ export interface AchievementsData {
   [key: string]: Achievement[];
 }
 
+export interface InvoiceState {
+  invoiceNumber: string;
+  invoiceData: InvoiceData;
+  pdfLink: string;
+}
 export interface AppState {
   products: ProductNode[];
   verifyEmail: VerifyEmail;
@@ -81,10 +88,13 @@ export interface AppState {
   payment: PaymentContext;
   countries: CountriesTypes[];
   achievements: AchievementsData;
-  invoiceNumber: string;
+  invoice: InvoiceState;
+  categories: ProductCategory[];
+  triggerInvoice: boolean;
 }
 export enum AppActionTypes {
   ADD_PRODUCT = "ADD_PRODUCT",
+  ADD_CATEGORIES = "ADD_CATEGORIES",
   TOGGLE_VERIFY_EMAIL_MODAL = "TOGGLE_VERIFY_EMAIL_MODAL",
   SEND_EMAIL = "SEND_EMAIL",
   SET_EMAIL = "SET_EMAIL",
@@ -96,10 +106,12 @@ export enum AppActionTypes {
   SET_FORGOT_PASSWORD_DEFAULT = "SET_FORGOT_PASSWORD_DEFAULT",
   INITIATE_PAYMENT = "INITIATE_PAYMENT",
   SET_COUPONCODE = "SET_COUPONCODE",
-  CLEAR_PAYMENT = "CLEAR_PAYMENT",
+  CLEAR_ORDER = "CLEAR_ORDER",
   SET_COUNTRIES = "SET_COUNTRIES",
   SET_ACHIEVEMENTS = "SET_ACHIEVEMENTS",
   SET_INVOICE_NUMBER = "SET_INVOICE_NUMBER",
+  SET_PDF_LINK = "SET_PDF_LINK",
+  TRIGGER_INVOICE = "TRIGGER_INVOICE",
 }
 export type AppAction =
   | {
@@ -136,7 +148,11 @@ export type AppAction =
     }
   | {
       type: AppActionTypes.ADD_PRODUCT;
-      payload: ProductNode[];
+      payload: { products: ProductNode[]; categories: ProductCategory[] };
+    }
+  | {
+      type: AppActionTypes.ADD_CATEGORIES;
+      payload: ProductCategory[];
     }
   | {
       type: AppActionTypes.SET_COUNTRIES;
@@ -148,6 +164,10 @@ export type AppAction =
     }
   | {
       type: AppActionTypes.SET_INVOICE_NUMBER;
+      payload: { invoiceNumber: string; invoiceData: InvoiceData };
+    }
+  | {
+      type: AppActionTypes.SET_PDF_LINK;
       payload: string;
     }
   | {
@@ -159,7 +179,10 @@ export type AppAction =
       payload: string[];
     }
   | {
-      type: AppActionTypes.CLEAR_PAYMENT;
+      type: AppActionTypes.TRIGGER_INVOICE;
+    }
+  | {
+      type: AppActionTypes.CLEAR_ORDER;
     };
 
 export interface SendVerificationEmailArgs {

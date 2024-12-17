@@ -31,9 +31,8 @@ const CartComponent = () => {
   } = useAuth();
 
   const cartArray = user.cart as Cart[];
-  const { products } = useApp();
+  const { categories } = useApp();
   const [loadingIndexes, setLoadingIndexes] = useState<number[]>([]);
-
   const [updateUserMeta, { loading }] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
       const cartData = data?.updateUserMeta?.data;
@@ -56,20 +55,19 @@ const CartComponent = () => {
     },
   });
 
-  const { imageMap, slugNameMap } = products.reduce(
+  const { imageMap, slugNameMap } = categories.reduce(
     (
       acc: {
         imageMap: { [key: string]: string };
         slugNameMap: { [key: string]: string };
       },
-      product
+      category
     ) => {
-      const categoryNode = product.productCategories.nodes[0];
-      const categorySlug = categoryNode.slug;
-      const categoryName = categoryNode.name;
-      const imageUrl = product.featuredImage.node.sourceUrl;
+      const categorySlug = category.slug;
+      const categoryName = category.name;
+      const imageUrl = category.image.sourceUrl;
 
-      acc.imageMap[categorySlug] = imageUrl as string;
+      acc.imageMap[categorySlug] = imageUrl;
       acc.slugNameMap[categorySlug] = categoryName;
 
       return acc;

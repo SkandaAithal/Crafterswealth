@@ -8,11 +8,11 @@ import { AppActionTypes } from "@/lib/types/common/app";
 import { INVOICE_API, UPLOAD_INVOICE_API } from "@/lib/routes";
 import { INVOICE_NUMBER_QUERY } from "../queries/products.query";
 import client from "../apollo-client";
+import { InvoiceData } from "../types/checkout";
 
 const useInvoiceGeneration = () => {
   const { user } = useAuth();
-  const { payment, categories, appDispatch, countries, invoiceNumber } =
-    useApp();
+  const { payment, categories, appDispatch, countries, invoice } = useApp();
   const { getSuccessOrderPayload } = useProcessOrder();
   const order = getSuccessOrderPayload();
 
@@ -59,68 +59,78 @@ const useInvoiceGeneration = () => {
         month: "long",
         day: "numeric",
       });
-      let invoiceNo = invoiceNumber;
-      if (!invoiceNumber) {
+      let invoiceNo = invoice.invoiceNumber;
+      if (!invoice.invoiceNumber) {
         invoiceNo = await generateInvoiceNumber();
+      }
+      const invoiceData = user.cart.length
+        ? {
+            invoiceMetadata: {
+              invoiceNumber: invoiceNo,
+              invoiceDate: formattedDate,
+              paymentMethod: order.paymentMethod,
+            },
+            buyerDetails: {
+              name: `${order.billing.firstName} ${order.billing.lastName}`,
+              email: order.billing.email,
+              phone: order.billing.phone,
+              address: {
+                area: order.billing.address1,
+                city: order.billing.city,
+                state: order.billing.state,
+                postalCode: order.billing.postcode,
+                country: countryName ?? "",
+              },
+            },
+            orderDetails: {
+              orderNumber: payment.order.orderNumber,
+              orderDate: formattedDate,
+              placeOfSupply: order.billing.state,
+            },
+            items: user.cart.map((item) => {
+              const subProducts = item.access.map((slug) => {
+                const categoryName = categories.find(
+                  (c) => c.slug === slug
+                )?.name;
+                return categoryName;
+              });
+              return {
+                slNo: item.productId,
+                name: item.productName,
+                subProducts,
+                hsnCode: item.hsnCode,
+                quantity: 1,
+                amount: item.price,
+              };
+            }),
+            taxDetails: {
+              isWithinState,
+              sgst: isWithinState ? parseFloat((totalTax / 2).toFixed(2)) : 0,
+              cgst: isWithinState ? parseFloat((totalTax / 2).toFixed(2)) : 0,
+              igst: isWithinState ? 0 : totalTax,
+              totalTax,
+              amountInWords: formatAmountInWords(totalTax),
+            },
+            coupons: payment.coupons,
+            totals: {
+              subtotal,
+              grandTotal,
+              amountInWords: `Indian Rupees ${capitalizeWords(
+                toWords(Math.round(grandTotal))
+              )} Only`,
+            },
+          }
+        : invoice.invoiceData;
+
+      if (!invoice.invoiceNumber) {
         appDispatch({
           type: AppActionTypes.SET_INVOICE_NUMBER,
-          payload: invoiceNo,
+          payload: {
+            invoiceNumber: invoiceNo,
+            invoiceData: invoiceData as InvoiceData,
+          },
         });
       }
-      const invoiceData = {
-        invoiceMetadata: {
-          invoiceNumber: invoiceNo,
-          invoiceDate: formattedDate,
-          paymentMethod: order.paymentMethod,
-        },
-        buyerDetails: {
-          name: `${order.billing.firstName} ${order.billing.lastName}`,
-          email: order.billing.email,
-          phone: order.billing.phone,
-          address: {
-            area: order.billing.address1,
-            city: order.billing.city,
-            state: order.billing.state,
-            postalCode: order.billing.postcode,
-            country: countryName ?? "",
-          },
-        },
-        orderDetails: {
-          orderNumber: payment.order.orderNumber,
-          orderDate: formattedDate,
-          placeOfSupply: order.billing.state,
-        },
-        items: user.cart.map((item) => {
-          const subProducts = item.access.map((slug) => {
-            const categoryName = categories.find((c) => c.slug === slug)?.name;
-            return categoryName;
-          });
-          return {
-            slNo: item.productId,
-            name: item.productName,
-            subProducts,
-            hsnCode: item.hsnCode,
-            quantity: 1,
-            amount: item.price,
-          };
-        }),
-        taxDetails: {
-          isWithinState,
-          sgst: isWithinState ? parseFloat((totalTax / 2).toFixed(2)) : 0,
-          cgst: isWithinState ? parseFloat((totalTax / 2).toFixed(2)) : 0,
-          igst: isWithinState ? 0 : totalTax,
-          totalTax,
-          amountInWords: formatAmountInWords(totalTax),
-        },
-        coupons: payment.coupons,
-        totals: {
-          subtotal,
-          grandTotal,
-          amountInWords: `Indian Rupees ${capitalizeWords(
-            toWords(Math.round(grandTotal))
-          )} Only`,
-        },
-      };
       const { data: generateResponse } = await axios.post(INVOICE_API, {
         invoiceData,
       });

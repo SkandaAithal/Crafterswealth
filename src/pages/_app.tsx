@@ -11,6 +11,7 @@ import VerifyEmail from "@/components/auth/VerifyEmail";
 import ProtectedRoute from "@/lib/provider/protected-route";
 import { AuthProvider } from "@/lib/provider/auth-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import UtilityWrapper from "@/lib/provider/utility-wrapper";
 
 export default function App({
   Component,
@@ -21,14 +22,16 @@ export default function App({
       <ApolloProvider client={client}>
         <AuthProvider>
           <AppProvider>
-            <Header />
-            <ProtectedRoute>
-              <Component {...pageProps} />
-              <Footer />
-            </ProtectedRoute>
-            <VerifyEmail />
-            <Toaster />
-            <Sonner />
+            <UtilityWrapper>
+              <Header />
+              <ProtectedRoute>
+                <Component {...pageProps} />
+                <Footer />
+              </ProtectedRoute>
+              <VerifyEmail />
+              <Toaster />
+              <Sonner />
+            </UtilityWrapper>
           </AppProvider>
         </AuthProvider>
       </ApolloProvider>

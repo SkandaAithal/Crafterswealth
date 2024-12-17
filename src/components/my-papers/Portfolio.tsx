@@ -30,6 +30,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
   scrollToTop,
   isMarketPriceLoading,
   setCurrentPage,
+  productsFromApi,
 }) => {
   const { categories, isAppLoading } = useApp();
   const { isMobile, windowWidth } = useWindowWidth();
@@ -58,6 +59,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
   const TotalNet = totalMarketPrice
     ? ((totalMarketPrice - totalBuyPrice) / totalBuyPrice) * 100
     : 0;
+
   useEffect(() => {
     if (!isLoading) {
       const slug = getFirstIfArray(portfolioProducts)?.categorySlug ?? "";
@@ -69,7 +71,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, boughtProducts]);
+  }, [isLoading, productsFromApi]);
 
   const handleNext = () => {
     const newIndex = (selectedIndex + 1) % categoriesArray.length;

@@ -2,6 +2,7 @@ import CartComponent from "@/components/cart/CartComponent";
 import Title from "@/components/common/Title";
 import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
+
 import { CART } from "@/lib/routes";
 
 import React from "react";

@@ -75,12 +75,13 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
     let cartArray = user.cart as Cart[];
 
     if (!product || !plan) return;
+
     const category = product.productCategories.nodes[0].slug;
     const cartProduct = {
       productId,
       id: product.id,
       name: plan.access.length ? "Bundle Offer" : product.name,
-      productName: plan.access.length ? plan.type : product.name,
+      productName: plan.period === "0" ? product.name : plan.type,
       category: category,
       regularPlanPrice: plan.regular_price,
       price: plan.sale_price,

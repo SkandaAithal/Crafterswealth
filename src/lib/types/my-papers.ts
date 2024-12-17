@@ -6,6 +6,7 @@ export interface PortfolioProps {
   isProductsLoading: boolean;
   portfolioProducts: BoughtProduct[];
   boughtProducts: BoughtProduct[];
+  productsFromApi: BoughtProduct[];
   setSelectedStatus: React.Dispatch<InvestmentStatus>;
   selectedStatus: InvestmentStatus;
   scrollToTop: () => void;
@@ -23,6 +24,7 @@ export interface BoughtProduct {
   file: string;
   categorySlug: string;
   marketPrice?: number;
+  targetsReached: boolean;
   __typename: string;
 }
 

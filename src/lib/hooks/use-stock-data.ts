@@ -10,7 +10,7 @@ interface StockData {
   currency: string;
 }
 
-const useStockData = (symbols: string[]) => {
+const useStockData = (symbols: string[], stopPoll = false) => {
   const [stockData, setStockData] = useState<StockData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -88,7 +88,7 @@ const useStockData = (symbols: string[]) => {
     const fetchInInterval = async () => {
       await fetchStockPrices();
 
-      if (isMarketOpen && isMounted) {
+      if (isMarketOpen && isMounted && !stopPoll) {
         setTimeout(fetchInInterval, 10000);
       }
     };

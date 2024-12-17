@@ -56,9 +56,15 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
   const handleDetailPageRedirect = () => {
     const planId = products.find(
-      (product) => product.productCategories.nodes[0].slug === category.slug
+      (product) => product.productCategories.nodes[0]?.slug === category.slug
     )?.id;
-    router.push(`${PRODUCTS_DETAIL}?type=${category.slug}&id=${planId}`);
+
+    const queryParams = new URLSearchParams({
+      type: category.slug,
+      ...(planId && { id: planId }),
+    });
+
+    router.push(`${PRODUCTS_DETAIL}?${queryParams.toString()}`);
   };
 
   return (

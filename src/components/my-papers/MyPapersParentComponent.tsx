@@ -36,7 +36,10 @@ const MyPapersParentComponent = () => {
   const allp = Object.values(allProducts).flat();
 
   const SYMBOLS = useMemo(
-    () => boughtProducts.map((item) => item.stockSymbol),
+    () =>
+      boughtProducts
+        .filter((item) => !item.targetsReached)
+        .map((item) => item.stockSymbol),
     [boughtProducts]
   );
 
@@ -144,14 +147,18 @@ const MyPapersParentComponent = () => {
   const productsWithMarketPrice = useMemo(() => {
     return boughtProducts.map((product) => {
       if (stocksLoading) return product;
-      const { target, stockSymbol } = product;
+      const { target, stockSymbol, targetsReached } = product;
+
       const marketPrice =
         stockData.find((item) => item.symbol === stockSymbol)?.price || 0;
 
       const potential = marketPrice
         ? ((target - marketPrice) / marketPrice) * 100
         : 0;
-      return { ...product, marketPrice: potential <= 0 ? target : marketPrice };
+      return {
+        ...product,
+        marketPrice: potential <= 0 || targetsReached ? target : marketPrice,
+      };
     });
   }, [boughtProducts, stockData, stocksLoading]);
 
@@ -223,12 +230,15 @@ const MyPapersParentComponent = () => {
   };
 
   const handleDetailPageRedirect = () => {
-    const product = products.find(
-      (prod) => prod.productCategories.nodes[0].slug === selectedCategory
-    );
-    router.push(
-      `${PRODUCTS_DETAIL}?type=${selectedCategory}&id=${product?.id}`
-    );
+    const planId = products.find(
+      (product) => product.productCategories.nodes[0]?.slug === selectedCategory
+    )?.id;
+
+    const queryParams = new URLSearchParams({
+      type: selectedCategory,
+      ...(planId && { id: planId }),
+    });
+    router.push(`${PRODUCTS_DETAIL}?${queryParams.toString()}`);
   };
 
   const latestProduct = filteredProductsByCategory[0];
@@ -250,6 +260,7 @@ const MyPapersParentComponent = () => {
           scrollToTop={scrollToSeparator}
           isMarketPriceLoading={stocksLoading}
           setCurrentPage={setCurrentPage}
+          productsFromApi={boughtProducts}
         />
       </AnimateOnce>
 

@@ -4,19 +4,16 @@ import useProcessOrder from "@/lib/hooks/use-order-payload";
 import { useApp } from "@/lib/provider/app-provider";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { UPDATE_ORDER_MUTATION } from "@/lib/queries/products.query";
-import {
-  SEND_EMAIL_MUTATION,
-  UPDATE_USER_META,
-} from "@/lib/queries/users.query";
+import { UPDATE_USER_META } from "@/lib/queries/users.query";
 import { MY_PAPERS, PAYMENT_FAILURE, PAYMENT_SUCCESS } from "@/lib/routes";
 import { AppActionTypes } from "@/lib/types/common/app";
-import { InvoiceData, OrderStatus } from "@/lib/types/checkout";
+import { OrderStatus } from "@/lib/types/checkout";
 import {
   AuthActionTypes,
   SessionObject,
   Subscription,
 } from "@/lib/types/common/user";
-import { addDurationToDate, decodeNumericId } from "@/lib/utils";
+import { addDurationToDate, isEmpty } from "@/lib/utils";
 import { useMutation } from "@apollo/client";
 import { produce } from "immer";
 import { useSession } from "next-auth/react";
@@ -24,17 +21,14 @@ import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
-import useInvoiceGeneration from "@/lib/hooks/use-invoice-pdf";
-import { generateInvoiceEmailTemplate } from "@/lib/utils/email-templates/invoice";
 import { toast } from "@/lib/hooks/use-toast";
-import { ACCOUNTS_EMAIL, OFFICIAL_EMAIL } from "@/lib/constants";
 
 const SuccessPage = () => {
   const router = useRouter();
   const { query } = router;
 
   const transactId = query.id;
-  const { payment, products, appDispatch, allProducts } = useApp();
+  const { payment, appDispatch, allProducts, latestProducts } = useApp();
   const {
     user,
     authDispatch,
@@ -44,7 +38,6 @@ const SuccessPage = () => {
   } = useAuth();
   const { data: session } = useSession();
   const { getSuccessOrderPayload } = useProcessOrder();
-  const { generateInvoice } = useInvoiceGeneration();
 
   const [textMessage, setTextMessage] = useState("Processing Order...");
 
@@ -90,12 +83,10 @@ const SuccessPage = () => {
     user.cart.forEach((item) => {
       if (item.access.length) {
         item.access.forEach((category) => {
-          const product = products.find(
-            (product) => product.productCategories.nodes[0].slug === category
-          );
+          const product = latestProducts[category];
 
           if (product) {
-            const productId = decodeNumericId(product.id).toString();
+            const productId = product.id;
             boughtSet.add(productId);
             const pIndex =
               allProducts[category].findIndex((pid) => pid === productId) + 1;
@@ -114,7 +105,7 @@ const SuccessPage = () => {
     });
 
     return Array.from(new Set([...user.bought, ...Array.from(boughtSet)]));
-  }, [user.cart, products, user.bought, allProducts]);
+  }, [user.cart, latestProducts, user.bought, allProducts]);
 
   const [updateUserMeta] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
@@ -132,8 +123,6 @@ const SuccessPage = () => {
           payload: updatedUser,
         });
 
-        appDispatch({ type: AppActionTypes.CLEAR_PAYMENT });
-
         setTimeout(() => {
           router.push(MY_PAPERS);
         }, 3000);
@@ -145,15 +134,12 @@ const SuccessPage = () => {
     },
   });
 
-  const [sendEmail] = useMutation(SEND_EMAIL_MUTATION);
-
   const [updateOrder] = useMutation(UPDATE_ORDER_MUTATION, {
     onCompleted: async (data) => {
       if (data?.updateOrder?.order?.status === OrderStatus.COMPLETED) {
         if (!isAuthenticated() || !user.id) {
           return setRedirectTrigger(!redirectTrigger);
         }
-
         setTextMessage("Placing your order...");
 
         const variables = {
@@ -186,18 +172,7 @@ const SuccessPage = () => {
     }
 
     try {
-      setTextMessage("Generating Invoice...");
-
-      const { data, invoiceData } = await generateInvoice();
-      const pdfLink = data.wordpressMediaUrl ?? "";
-      const emailHtml = generateInvoiceEmailTemplate(
-        invoiceData as InvoiceData,
-        pdfLink
-      );
-      const emailRecipients = [user.email, ACCOUNTS_EMAIL];
       const inputPayload = getSuccessOrderPayload();
-      setTextMessage("Processing order...");
-
       await updateOrder({
         variables: {
           input: inputPayload,
@@ -208,23 +183,6 @@ const SuccessPage = () => {
           },
         },
       });
-
-      setTextMessage("Sending invoice");
-
-      await Promise.all(
-        emailRecipients.map((recipient) =>
-          sendEmail({
-            variables: {
-              input: {
-                body: emailHtml,
-                from: OFFICIAL_EMAIL,
-                subject: "Invoice Email",
-                to: recipient,
-              },
-            },
-          })
-        )
-      );
     } catch (error) {
       setTextMessage("Order failed!");
       toast({
@@ -241,12 +199,14 @@ const SuccessPage = () => {
       isAuthenticated() &&
       user.id &&
       payment.orderId &&
-      payment.transactionId === transactId
+      payment.transactionId === transactId &&
+      !isEmpty(latestProducts)
     ) {
       processOrder();
+      appDispatch({ type: AppActionTypes.TRIGGER_INVOICE });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payment, session, user.id]);
+  }, [payment, session, user.id, latestProducts]);
 
   const pageName = "Payment Success - Your Purchase is Confirmed";
   const pageDescription =

@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/router";
 import { PLAN, PRODUCTS_DETAIL } from "@/lib/routes";
 import TrendIndicator from "../common/TrendIndicator";
+import { twMerge } from "tailwind-merge";
 
 interface ProductCardProps {
   product: {
@@ -17,9 +18,15 @@ interface ProductCardProps {
   };
   currentPrice: number;
   loading: boolean;
+  className?: string;
 }
 
-const ProductCard = ({ product, currentPrice, loading }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  currentPrice,
+  loading,
+  className = "",
+}: ProductCardProps) => {
   const router = useRouter();
   const { featuredImage, id, name, productCategories, stock } = product;
   const potential = currentPrice
@@ -35,7 +42,12 @@ const ProductCard = ({ product, currentPrice, loading }: ProductCardProps) => {
 
   return (
     <AnimateOnce key={id}>
-      <div className="relative transition-all duration-300 md:hover:scale-105 group h-auto cursor-default text-primary md:text-black md:hover:text-primary">
+      <div
+        className={twMerge(
+          "relative transition-all duration-300 md:hover:scale-105 group h-auto cursor-default text-primary md:text-black md:hover:text-primary",
+          className
+        )}
+      >
         <div className="absolute z-20 -top-10 left-1/2 w-24 h-24 -translate-x-1/2 bg-black md:bg-blue-950 group-hover:bg-black rounded-full p-3 transition-colors duration-300">
           <LazyImage
             className="m-auto object-contain h-full w-full"

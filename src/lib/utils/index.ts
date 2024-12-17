@@ -422,3 +422,24 @@ export const capitalizeWords = (text: string) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+
+export async function fetchWithRetries<T>(
+  apiCall: () => Promise<T>,
+  retries: number = 5
+): Promise<T> {
+  let attempt = 0;
+  while (attempt < retries) {
+    try {
+      return await apiCall();
+    } catch (error: any) {
+      if (error.response?.status === 429 && attempt < retries - 1) {
+        const retryAfter = 2 ** attempt * 100; // Exponential backoff (100ms, 200ms, 400ms, etc.)
+        await new Promise((resolve) => setTimeout(resolve, retryAfter));
+        attempt++;
+      } else {
+        throw error;
+      }
+    }
+  }
+  throw new Error("Max retries exceeded");
+}

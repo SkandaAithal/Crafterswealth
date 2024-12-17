@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_PRODUCTS = gql`
   query Products($categories: String!) {
-    products(where: { category: $categories, status: "publish" }, first: 1) {
+    products(where: { category: $categories, status: "publish" }, first: 11) {
       nodes {
         name
         id
@@ -13,12 +13,14 @@ export const GET_PRODUCTS = gql`
               name
               id
               slug
+              threshold
             }
           }
           stock {
             stockSymbol
             target
             description
+            targetReached
           }
           plans {
             name
@@ -52,6 +54,10 @@ export const GET_PRODUCT_CATEGORIES = gql`
       nodes {
         name
         slug
+        threshold
+        image {
+          sourceUrl(size: LARGE)
+        }
       }
     }
   }
@@ -113,13 +119,14 @@ export const GET_PRODUCTS_BY_IDS = gql`
       target
       file
       categorySlug
+      targetsReached
     }
   }
 `;
 
 export const GET_ALL_PRODUCT_IDS_BY_CATEGORY = gql`
-  query GetProductIdsByCategory {
-    allProductIdsByCategory
+  query GetProductByCategory {
+    allProductsByCategory
   }
 `;
 

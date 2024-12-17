@@ -1,6 +1,10 @@
 import { useAuth } from "@/lib/provider/auth-provider";
-import { UserDetails } from "@/lib/types/common/user";
-import React, { useEffect, useState } from "react";
+import {
+  AuthActionTypes,
+  SessionObject,
+  UserDetails,
+} from "@/lib/types/common/user";
+import React, { useEffect, useMemo, useState } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { useRouter } from "next/router";
@@ -14,6 +18,10 @@ import { APPLY_COUPON_MUTATION } from "@/lib/queries/products.query";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useApp } from "@/lib/provider/app-provider";
 import { AppActionTypes } from "@/lib/types/common/app";
+import { produce } from "immer";
+import { toast } from "@/lib/hooks/use-toast";
+import { UPDATE_USER_META } from "@/lib/queries/users.query";
+import { getSession } from "next-auth/react";
 
 const OrderSummary = ({
   isCheckout = false,
@@ -25,9 +33,9 @@ const OrderSummary = ({
   setIsCouponLoading?: React.Dispatch<boolean>;
 }) => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, authDispatch } = useAuth();
   const { cart, state } = user as UserDetails;
-  const { appDispatch, payment } = useApp();
+  const { appDispatch, payment, latestProducts } = useApp();
 
   const [couponCode, setCouponCode] = useState<string>("");
   const [error, setError] = useState<{ isError: boolean; message: string }>({
@@ -41,6 +49,66 @@ const OrderSummary = ({
   const { sgst, cgst, igst } = calculateTax(subtotal, stateArg);
   const total: number = calculateTotal(subtotal, sgst, cgst, igst);
   const roundOff: number = total - (subtotal + sgst + cgst + igst);
+
+  const [updateUserMeta, { loading }] = useMutation(UPDATE_USER_META, {
+    onCompleted: (data) => {
+      const cartData = data?.updateUserMeta?.data;
+
+      const updatedUser = produce(user, (draft) => {
+        draft.cart = cartData;
+      });
+
+      authDispatch({
+        type: AuthActionTypes.SET_USER_DETAILS,
+        payload: updatedUser,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Oops! Something went wrong",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const shouldUpdateCart = useMemo(() => {
+    return !cart.every((cartItem) => {
+      const latestProduct = latestProducts[cartItem.category];
+      return (
+        latestProduct && latestProduct.id === cartItem.productId.toString()
+      );
+    });
+  }, [cart, latestProducts]);
+
+  const updateCartToLatestProduct = async () => {
+    const session = await getSession();
+    const updatedCart = cart.map((cartItem) => {
+      const latestProduct = latestProducts[cartItem.category];
+      return {
+        ...cartItem,
+        productId: Number(latestProduct.id),
+      };
+    });
+
+    const variables = {
+      variables: {
+        input: {
+          email: user.email,
+          cart: updatedCart,
+        },
+      },
+    };
+
+    await updateUserMeta({
+      ...variables,
+      context: {
+        headers: {
+          Authorization: `Bearer ${(session as SessionObject).authToken}`,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (subtotalWithoutDiscount) setTotal(subtotalWithoutDiscount);
@@ -109,7 +177,10 @@ const OrderSummary = ({
     }
   };
 
-  const handleBtnClick = () => {
+  const handleBtnClick = async () => {
+    if (shouldUpdateCart) {
+      await updateCartToLatestProduct();
+    }
     router.push(CHECKOUT);
   };
 
@@ -226,7 +297,11 @@ const OrderSummary = ({
 
       {!isCheckout && (
         <div className="flex justify-center mt-8">
-          <Button className="w-full max-w-96" onClick={handleBtnClick}>
+          <Button
+            className="w-full max-w-96"
+            onClick={handleBtnClick}
+            loading={loading}
+          >
             Checkout Now
           </Button>
         </div>

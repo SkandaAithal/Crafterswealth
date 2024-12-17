@@ -13,25 +13,67 @@ import { Button } from "@/components/ui/button";
 import LazyImage from "@/components/ui/lazy-image";
 import client from "@/lib/apollo-client";
 import { MarketBarChartGraphData, SYMBOLS_DATA } from "@/lib/constants";
+import useStockData from "@/lib/hooks/use-stock-data";
 import {
   GET_PRODUCT_CATEGORIES,
   GET_PRODUCTS,
 } from "@/lib/queries/products.query";
 import { PRODUCTS } from "@/lib/routes";
 import { InvestmentType } from "@/lib/types/components/stocks-chart";
-import { ProductsProps } from "@/lib/types/products";
+import { ProductNode, ProductsProps } from "@/lib/types/products";
 import { GetStaticProps, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
+import { twMerge } from "tailwind-merge";
 const TargetsReached = dynamic(
   () => import("@/components/products/TargetsReached"),
   {
     ssr: false,
   }
 );
-const Home: NextPage<ProductsProps> = ({ products }) => {
+const Home: NextPage<ProductsProps> = ({ products, categories = [] }) => {
   const router = useRouter();
   const handleredirectToProductsPage = () => router.push(PRODUCTS);
+  const SYMBOLS = useMemo(
+    () => products.map((product) => product.stock.stockSymbol),
+    [products]
+  );
+  const { stockData, loading } = useStockData(SYMBOLS, true);
+
+  const filteredProducts = useMemo(() => {
+    if (!stockData.length) return [];
+
+    const categoryMap: Record<
+      string,
+      { product: ProductNode; profit: number }
+    > = {};
+
+    products.forEach((product) => {
+      const stockSymbol = product.stock.stockSymbol;
+      const targetPrice = product.stock.target;
+      const threshold = product.productCategories.nodes[0]?.threshold;
+
+      const stock = stockData.find((data) => data.symbol === stockSymbol);
+      if (!stock) return;
+
+      const profitOrLossPercentage =
+        ((targetPrice - stock.price) / targetPrice) * 100;
+
+      if (profitOrLossPercentage > threshold) {
+        const category = product.productCategories.nodes[0]?.name;
+
+        if (
+          !categoryMap[category] ||
+          profitOrLossPercentage > categoryMap[category].profit
+        ) {
+          categoryMap[category] = { product, profit: profitOrLossPercentage };
+        }
+      }
+    });
+
+    return Object.values(categoryMap).map((entry) => entry.product);
+  }, [products, stockData]);
 
   return (
     <main>
@@ -83,8 +125,17 @@ const Home: NextPage<ProductsProps> = ({ products }) => {
       <section className="bg-gradient-to-b from-accent to-white pt-16 px-0 md:px-[64px] xl:px-[96px] text-center mx-auto space-y-12">
         <Title text="Today’s Must Buy" />
         <div className=" md:grid grid-cols-1 lg:grid-cols-3 place-content-center gap-6">
-          <div className="md:col-span-2 mask my-auto">
-            <ProductsSwiper products={products} />
+          <div
+            className={twMerge(
+              "md:col-span-2 my-auto",
+              filteredProducts.length === 1 ? "px-5" : "mask"
+            )}
+          >
+            <ProductsSwiper
+              products={filteredProducts}
+              categories={categories}
+              productsLoading={loading}
+            />
           </div>
           <div className="flex justify-center xl:justify-end items-center px-4 md:px-0 mt-6 ">
             <StocksBarChart
@@ -165,7 +216,6 @@ export const getStaticProps: GetStaticProps = async () => {
     });
 
     const categories = categoriesData?.productCategories?.nodes ?? [];
-
     const products = (
       await Promise.all(
         categories.map(async ({ name }: { name: string }) => {
@@ -173,7 +223,11 @@ export const getStaticProps: GetStaticProps = async () => {
             query: GET_PRODUCTS,
             variables: { categories: name },
           });
-          return data?.products?.nodes ?? [];
+          const products = data?.products?.nodes ?? [];
+          const filterTargetsReachedProducts = products.filter(
+            (item: ProductNode) => !item?.stock?.targetReached
+          );
+          return filterTargetsReachedProducts;
         })
       )
     ).flat();
@@ -181,6 +235,7 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         products,
+        categories,
       },
       revalidate: 60,
     };
@@ -188,6 +243,7 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         products: [],
+        categories: [],
       },
       revalidate: 60,
     };

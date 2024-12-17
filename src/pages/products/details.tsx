@@ -39,7 +39,11 @@ const StockDetailsPage = () => {
     PRODUCT_DETAILS_CONFIG[type as keyof typeof PRODUCT_DETAILS_CONFIG];
 
   const handleBuyNow = () => {
-    router.push(`${PLAN}/${id}`);
+    if (id) {
+      router.push(`${PLAN}/${id}`);
+    } else {
+      router.push(PRODUCTS);
+    }
   };
 
   if (!productDetails) {

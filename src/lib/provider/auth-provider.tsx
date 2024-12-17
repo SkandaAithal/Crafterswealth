@@ -13,15 +13,21 @@ import {
   UserDetails,
 } from "../types/common/user";
 import { authReducer, userInitialState } from "../utils/auth";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { getUserDetails } from "../utils/auth/handlers";
 import { toast } from "../hooks/use-toast";
+import { LOGIN_PAGE } from "../routes";
+import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const router = useRouter();
+  const pathName = usePathname();
+
   const [state, dispatch] = useReducer(authReducer, userInitialState);
 
   const [redirectTrigger, setRedirectTrigger] = useState<boolean>(false);
@@ -54,6 +60,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             "Failed to get user details, Please try again by logging in again.",
           variant: "destructive",
         });
+        await signOut({ redirect: false });
+        dispatch({ type: AuthActionTypes.CLEAR_USER_DETAILS });
+        const loginUrl = `${LOGIN_PAGE}?redirect=${encodeURIComponent(pathName)}`;
+        router.push(loginUrl);
       } finally {
         setIsAuthLoading(false);
       }

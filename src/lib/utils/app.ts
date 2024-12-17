@@ -27,6 +27,50 @@ export const paymentInitialState = {
   },
 };
 
+export const invoiceInitialState = {
+  invoiceData: {
+    invoiceMetadata: {
+      invoiceNumber: "",
+      invoiceDate: "",
+      paymentMethod: "",
+    },
+    buyerDetails: {
+      name: "",
+      email: "",
+      phone: "",
+      address: {
+        area: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "",
+      },
+    },
+    orderDetails: {
+      orderNumber: "",
+      orderDate: "",
+      placeOfSupply: "",
+    },
+    items: [],
+    taxDetails: {
+      isWithinState: false,
+      sgst: 0,
+      cgst: 0,
+      igst: 0,
+      totalTax: 0,
+      amountInWords: "",
+    },
+    coupons: [],
+    totals: {
+      subtotal: 0,
+      grandTotal: 0,
+      amountInWords: "",
+    },
+  },
+  invoiceNumber: "",
+  pdfLink: "",
+};
+
 export const initialState: AppState = {
   products: [],
   verifyEmail: verifyEmailInitialState,
@@ -34,14 +78,21 @@ export const initialState: AppState = {
   payment: paymentInitialState,
   countries: [],
   achievements: {},
-  invoiceNumber: "",
+  invoice: invoiceInitialState,
+  categories: [],
+  triggerInvoice: false,
 };
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
   return produce(state, (draft) => {
     switch (action.type) {
       case AppActionTypes.ADD_PRODUCT:
-        draft.products = action.payload;
+        draft.products = action.payload.products;
+        draft.categories = action.payload.categories;
+        break;
+
+      case AppActionTypes.ADD_CATEGORIES:
+        draft.categories = action.payload;
         break;
 
       case AppActionTypes.SET_COUNTRIES:
@@ -101,13 +152,21 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
         draft.payment.order = action.payload.order;
         break;
 
-      case AppActionTypes.CLEAR_PAYMENT:
+      case AppActionTypes.CLEAR_ORDER:
         draft.payment = paymentInitialState;
-        draft.invoiceNumber = "";
+        draft.invoice = invoiceInitialState;
+        draft.triggerInvoice = false;
         break;
 
       case AppActionTypes.SET_INVOICE_NUMBER:
-        draft.invoiceNumber = action.payload;
+        draft.invoice.invoiceNumber = action.payload.invoiceNumber;
+        draft.invoice.invoiceData = action.payload.invoiceData;
+        break;
+      case AppActionTypes.SET_PDF_LINK:
+        draft.invoice.pdfLink = action.payload;
+        break;
+      case AppActionTypes.TRIGGER_INVOICE:
+        draft.triggerInvoice = true;
         break;
 
       case AppActionTypes.SET_ACHIEVEMENTS:

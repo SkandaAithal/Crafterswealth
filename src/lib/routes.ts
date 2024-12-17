@@ -33,6 +33,7 @@ export const GET_ACHIEVEMENT_API = "/api/achievement";
 export const INVOICE_API = "/api/invoice";
 export const UPLOAD_INVOICE_API = "/api/uploadpdf";
 export const NEWSLETTER_API = "/api/newsletter";
+export const ORDERS_SHEET_API = "/api/order-sheet";
 
 //protected routes
 export const PROTECTED_ROUTES = [

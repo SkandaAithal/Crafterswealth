@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { twMerge } from "tailwind-merge";
 import { NEWSLETTER_API, PAGE_MAP } from "@/lib/routes";
@@ -79,11 +79,21 @@ const SubscribeToNewsLetter: React.FC = () => {
         });
       }
     } catch (err) {
-      toast({
-        title: "Subscription Failed",
-        description: "Failed to subscribe. Please try again later.",
-        variant: "destructive",
-      });
+      if (err instanceof AxiosError) {
+        if (err.status === 400) {
+          toast({
+            title: "Active Subscription Found",
+            description: err.response?.data?.error ?? "User already subscribed",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Subscription Failed",
+            description: "Failed to subscribe. Please try again later.",
+            variant: "destructive",
+          });
+        }
+      }
     } finally {
       setIsLoading(false);
     }

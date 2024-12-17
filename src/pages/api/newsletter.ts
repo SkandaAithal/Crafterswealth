@@ -38,6 +38,11 @@ export default async function handler(
         .status(201)
         .json({ message: "Successfully subscribed", response });
     } catch (error: any) {
+      if (error.response?.body?.title === "Member Exists") {
+        return res
+          .status(400)
+          .json({ error: `${email} is already subscribed to the newsletter` });
+      }
       const errorMessage =
         error.response?.body?.detail ||
         "Something went wrong. Please try again.";

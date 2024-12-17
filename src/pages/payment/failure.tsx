@@ -27,7 +27,7 @@ const FailurePage = () => {
   const [updateOrder] = useMutation(UPDATE_ORDER_MUTATION, {
     onCompleted: async (data) => {
       if (data?.updateOrder?.order?.status === OrderStatus.FAILED) {
-        appDispatch({ type: AppActionTypes.CLEAR_PAYMENT });
+        appDispatch({ type: AppActionTypes.CLEAR_ORDER });
       }
     },
   });

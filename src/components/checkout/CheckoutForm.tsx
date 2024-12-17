@@ -59,8 +59,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     setRedirectTrigger,
     isAuthenticated,
   } = useAuth();
-  const { products, appDispatch, payment } = useApp();
-
+  const { appDispatch, payment, latestProducts } = useApp();
   const [states, setStates] = useState<StateOption[]>([]);
   const [cities, setCities] = useState<CityOption[]>([]);
   const [loadingStates, setLoadingStates] = useState(false);
@@ -99,12 +98,10 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     user.cart.forEach((item) => {
       if (item.access.length) {
         item.access.forEach((category) => {
-          const product = products.find(
-            (product) => product.productCategories.nodes[0].slug === category
-          );
+          const product = latestProducts[category];
           if (product) {
             const p = {
-              productId: decodeNumericId(product.id),
+              productId: Number(product.id),
               quantity: 1,
               total: (item.price / item.access.length).toString(),
             };
@@ -126,7 +123,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
     });
 
     return items;
-  }, [user.cart, products]);
+  }, [user.cart, latestProducts]);
 
   const handleSubmit = async (data: CheckoutFormData) => {
     if (!user.cart.length) return;
@@ -370,7 +367,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                             : ""
                         )}
                         {...field}
-                        readOnly
+                        readOnly={!!user.firstName}
                       />
                     </FormControl>
                     <FormMessage />
@@ -392,7 +389,7 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
                             : ""
                         )}
                         {...field}
-                        readOnly
+                        readOnly={!!user.lastName}
                       />
                     </FormControl>
                     <FormMessage />

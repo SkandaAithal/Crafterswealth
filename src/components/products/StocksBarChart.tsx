@@ -111,7 +111,7 @@ const StocksBarChart: React.FC<StocksBarChartProps> = ({
         </div>
       </div>
 
-      <div className="h-[320px] flex flex-col justify-end">
+      <div className="h-[340px] flex flex-col justify-end">
         <div className="space-y-4">
           <div className="flex justify-around mt-8 border-b-[1px] border-gray-300 h-[260px]">
             {Object.keys(barChartGraphData[timePeriod]).map((key) => (

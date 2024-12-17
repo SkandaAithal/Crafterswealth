@@ -18,7 +18,7 @@ import LazyImage from "@/components/ui/lazy-image";
 const AboutUs = () => {
   const pageName = "About Us";
   const pageDescription =
-    "Navigating the stock market is a journey filled with opportunities and challenges. At CraftersWealth, we make this journey simpler, more transparent, and rewarding for investors. With the financial world constantly evolving, our mission is to empower you with the tools, insights, and confidence needed to make informed decisions.";
+    "At CraftersWealth, we simplify the complexities of the stock market, empowering you with tailored insights and transparent guidance. Your journey to confident and informed investing starts here.";
 
   return (
     <main>
@@ -43,7 +43,7 @@ const AboutUs = () => {
         <section className="layout">
           <Title text="Mission" size="H2" className="text-center !mb-10" />
           <AnimateOnce>
-            <div className="mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 items-center">
+            <div className="mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 items-center">
               <div className="p-6 bg-[#d9ffce] shadow-lg rounded-2xl flex items-center gap-5">
                 <div className="p-6 bg-white rounded-2xl">
                   <LuBrainCircuit size={45} className="text-[#28d35b]" />
@@ -80,7 +80,6 @@ const AboutUs = () => {
             </div>
           </AnimateOnce>
         </section>
-
         <section className="mx-auto text-center layout">
           <Title
             text="What Sets Us Apart"

@@ -3,6 +3,10 @@ import { Plan } from "./plan";
 export interface ProductCategory {
   name: string;
   slug: string;
+  threshold: number;
+  image: {
+    sourceUrl: string;
+  };
 }
 
 export interface FeaturedImage {
@@ -17,6 +21,7 @@ export interface Stock {
   stockSymbol: string;
   target: number;
   description: string;
+  targetReached: boolean;
 }
 
 export interface ProductNode {
@@ -39,6 +44,8 @@ export interface ProductsData {
 
 export interface ProductsProps {
   products: ProductNode[];
+  categories?: ProductCategory[];
+  productsLoading?: boolean;
 }
 
 export interface Cart {
@@ -56,10 +63,14 @@ export interface Cart {
   hsnCode: string;
 }
 
+export interface AllProducts {
+  id: string;
+  name: string;
+}
 export interface CategoryProductIds {
-  [category: string]: string[];
+  [category: string]: AllProducts[];
 }
 
-export interface GetProductIdsByCategoryData {
-  allProductIdsByCategory: CategoryProductIds;
+export interface GetProductByCategoryData {
+  allProductsByCategory: CategoryProductIds;
 }

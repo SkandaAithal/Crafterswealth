@@ -14,9 +14,10 @@ import {
   GET_ALL_PRODUCT_IDS_BY_CATEGORY,
   GET_PRODUCT_CATEGORIES,
 } from "../queries/products.query";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
-  GetProductIdsByCategoryData,
+  AllProducts,
+  GetProductByCategoryData,
   ProductCategory,
 } from "../types/products";
 import { useAuth } from "./auth-provider";
@@ -37,32 +38,68 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     initialState,
     APP_INFO
   );
+  const {
+    categories,
+    products,
+    achievements,
+    countries,
+    forgotPassword,
+    invoice,
+    payment,
+    verifyEmail,
+    triggerInvoice,
+  } = state;
+
   const [isMounted, setIsMounted] = useState(false);
   const [isAchievementsLoading, setIsAchievementsLoading] =
     useState<boolean>(true);
   const { user, redirectTrigger, setRedirectTrigger, isAuthenticated } =
     useAuth();
   const { subscription, bought } = user;
-  const { data, loading: isCategoriesLoading } = useQuery(
+  const [getCategories, { data, loading: isCategoriesLoading }] = useLazyQuery(
     GET_PRODUCT_CATEGORIES,
     {
       fetchPolicy: "cache-first",
     }
   );
   const { data: allProductsData, loading: isAllProductsLoading } =
-    useQuery<GetProductIdsByCategoryData>(GET_ALL_PRODUCT_IDS_BY_CATEGORY, {
+    useQuery<GetProductByCategoryData>(GET_ALL_PRODUCT_IDS_BY_CATEGORY, {
       fetchPolicy: "cache-first",
     });
   const [updateUserMeta] = useMutation(UPDATE_USER_META);
 
-  const categories = useMemo(
-    () => (data?.productCategories?.nodes as ProductCategory[]) ?? [],
-    [data]
-  );
-  const allProducts = useMemo(
-    () => allProductsData?.allProductIdsByCategory ?? {},
+  const allProductsWithNames = useMemo(
+    () => allProductsData?.allProductsByCategory ?? {},
     [allProductsData]
   );
+
+  const allProducts = useMemo(() => {
+    return Object.keys(allProductsWithNames).reduce(
+      (acc: Record<string, string[]>, category: string) => {
+        acc[category] = allProductsWithNames[category].map(
+          (product: { id: string }) => product.id
+        );
+        return acc;
+      },
+      {} as Record<string, string[]>
+    );
+  }, [allProductsWithNames]);
+
+  const latestProducts = useMemo(() => {
+    const result: Record<string, AllProducts> = {};
+
+    Object.keys(allProductsWithNames).forEach((category) => {
+      if (allProductsWithNames[category].length > 0) {
+        const firstProduct = allProductsWithNames[category][0];
+        result[category] = {
+          id: firstProduct.id,
+          name: firstProduct.name,
+        };
+      }
+    });
+
+    return result;
+  }, [allProductsWithNames]);
 
   function isSubscribed(expiryDate: string) {
     const currentDate = new Date();
@@ -98,6 +135,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const allUniqueItems = useMemo(() => {
     return Array.from(new Set(Object.values(boughtObject).flat()));
   }, [boughtObject]);
+
   const boughtArray = useMemo(() => {
     return [...allUniqueItems, ...user.bought];
   }, [allUniqueItems, user.bought]);
@@ -214,26 +252,39 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     setIsMounted(true);
     fetchAchievements();
     fetchCountries();
+    if (!categories.length) {
+      getCategories();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      const ctgry = (data?.productCategories?.nodes as ProductCategory[]) ?? [];
+      dispatch({ type: AppActionTypes.ADD_CATEGORIES, payload: ctgry });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.productCategories?.nodes]);
 
   return (
     <AppContext.Provider
       value={{
         appDispatch: dispatch,
-        products: state.products,
-        verifyEmail: state.verifyEmail,
-        forgotPassword: state.forgotPassword,
+        products,
+        verifyEmail,
+        forgotPassword,
         isMounted,
-        payment: state.payment,
+        payment,
         isAppLoading: isCategoriesLoading || isAllProductsLoading,
         categories,
         boughtObject,
         allProducts,
-        countries: state.countries,
-        isAchievementsLoading: isAchievementsLoading,
-        achievements: state.achievements,
-        invoiceNumber: state.invoiceNumber,
+        latestProducts,
+        countries,
+        isAchievementsLoading,
+        achievements,
+        invoice,
+        triggerInvoice,
       }}
     >
       {children}
