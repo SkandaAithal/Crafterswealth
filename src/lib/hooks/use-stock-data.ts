@@ -95,6 +95,8 @@ const useStockData = (symbols: string[], stopPoll = false) => {
 
     if (symbols.length > 0) {
       fetchInInterval();
+    } else {
+      setLoading(false);
     }
     return () => {
       isMounted = false;

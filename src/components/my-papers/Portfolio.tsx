@@ -62,7 +62,11 @@ const Portfolio: React.FC<PortfolioProps> = ({
 
   useEffect(() => {
     if (!isLoading) {
-      const slug = getFirstIfArray(portfolioProducts)?.categorySlug ?? "";
+      let slug = "";
+      slug = getFirstIfArray(portfolioProducts)?.categorySlug ?? "";
+      if (!slug) {
+        slug = getFirstIfArray(categories).slug;
+      }
       setProductCategory(slug);
       const ctgIdx = categoriesArray.findIndex((ctg) => ctg.slug === slug);
       if (ctgIdx >= 0 && swiperRef.current) {
