@@ -30,7 +30,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
       )}
       <div
         className={twMerge(
-          "grid  gap-4 h-full",
+          "grid gap-4",
           onlyTargets ? "grid-cols-1" : "md:grid-cols-[auto,auto]"
         )}
       >
