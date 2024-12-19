@@ -97,8 +97,8 @@ const ArticlesComponent: React.FC = () => {
     <>
       <div className="space-y-4 w-full">
         <Skeleton className="h-[400px] w-full" />
-        <Skeleton className="h-[40px] w-[500px]" />
-        <Skeleton className="h-[40px] w-96" />
+        <Skeleton className="h-[40px] md:w-[500px]" />
+        <Skeleton className="h-[40px] md:w-96" />
         <Skeleton className="h-[20px] w-full" />
         <Skeleton className="h-[20px] w-full" />
       </div>
@@ -138,13 +138,13 @@ const ArticlesComponent: React.FC = () => {
             <div className="w-full">
               <Title text="Suggested Expert Article" size="H2" />
               <AnimateOnce>
-                <div className="h-[400px] rounded-xl overflow-hidden">
+                <div className="h-80 md:h-[400px] rounded-xl overflow-hidden">
                   <LazyImage
                     height={300}
                     width={200}
                     src={firstPost?.node.featuredImage.node.sourceUrl}
                     alt={firstPost?.node.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain bg-black"
                   />
                 </div>
                 <Title

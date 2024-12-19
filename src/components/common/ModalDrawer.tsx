@@ -53,7 +53,7 @@ const ModalDrawer: React.FC<ModalDrawerProps> = ({
 
   return isMobile ? (
     <Drawer open={isModalOpen} onOpenChange={showModal}>
-      <DrawerContent className="flex flex-col items-center justify-center text-center bg-card px-8">
+      <DrawerContent className="flex flex-col items-center justify-center text-center bg-card px-8 h-fit">
         {imageUrl ? (
           <LazyImage
             src={imageUrl}

@@ -9,7 +9,7 @@ import React, {
 import { AppActionTypes, AppContextProps } from "../types/common/app";
 import usePersistentReducer from "../hooks/use-persistent-reducer";
 import { appReducer, initialState } from "../utils/app";
-import { APP_INFO } from "../constants";
+import { APP_INFO, FETCH_TIME } from "../constants";
 import {
   GET_ALL_PRODUCT_IDS_BY_CATEGORY,
   GET_PRODUCT_CATEGORIES,
@@ -67,6 +67,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
       fetchPolicy: "cache-first",
     });
   const [updateUserMeta] = useMutation(UPDATE_USER_META);
+  const FETCH_INTERVAL_MS = 60 * 60 * 1000;
+  const isAdmin = user?.roles?.nodes[0]?.name === "administrator";
 
   const allProductsWithNames = useMemo(
     () => allProductsData?.allProductsByCategory ?? {},
@@ -109,28 +111,37 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
 
   const boughtObject = useMemo(() => {
     const result: Record<string, string[]> = {};
+    if (isAdmin) {
+      categories.forEach((category) => {
+        if (allProducts[category.slug]) {
+          result[category.slug] = allProducts[category.slug].filter(
+            (product) => !bought.includes(product)
+          );
+        }
+      });
+    } else {
+      categories.forEach((category) => {
+        if (subscription[category.slug] && allProducts[category.slug]) {
+          if (isSubscribed(subscription[category.slug].period)) {
+            const indices = bought
+              .map((id) => allProducts[category.slug].indexOf(id))
+              .filter((index) => index !== -1);
 
-    categories.forEach((category) => {
-      if (subscription[category.slug] && allProducts[category.slug]) {
-        if (isSubscribed(subscription[category.slug].period)) {
-          const indices = bought
-            .map((id) => allProducts[category.slug].indexOf(id))
-            .filter((index) => index !== -1);
-
-          if (indices.length) {
-            const lowestIndex = Math.min(...indices);
-            const remainingIds = allProducts[category.slug].slice(
-              0,
-              lowestIndex
-            );
-            result[category.slug] = remainingIds;
+            if (indices.length) {
+              const lowestIndex = Math.min(...indices);
+              const remainingIds = allProducts[category.slug].slice(
+                0,
+                lowestIndex
+              );
+              result[category.slug] = remainingIds;
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     return result;
-  }, [categories, subscription, bought, allProducts]);
+  }, [isAdmin, categories, allProducts, subscription, bought]);
 
   const allUniqueItems = useMemo(() => {
     return Array.from(new Set(Object.values(boughtObject).flat()));
@@ -177,7 +188,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   }, [boughtArray]);
 
   const fetchCountries = async () => {
-    if (!state.countries.length) {
+    if (!countries.length) {
       try {
         const restCountriesResponse = await axios.get(
           process.env.NEXT_PUBLIC_REST_COUNTRIES_API!
@@ -233,10 +244,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchAchievements = async () => {
+    const lastFetchTime = localStorage.getItem(FETCH_TIME);
+    const isFetchNeeded =
+      !lastFetchTime ||
+      new Date().getTime() - new Date(lastFetchTime).getTime() >
+        FETCH_INTERVAL_MS;
+
+    if (!isFetchNeeded) {
+      setIsAchievementsLoading(false);
+      return;
+    }
+
     setIsAchievementsLoading(true);
     try {
       const { data } = await axios.get(GET_ACHIEVEMENT_API);
       dispatch({ type: AppActionTypes.SET_ACHIEVEMENTS, payload: data });
+      localStorage.setItem(FETCH_TIME, new Date().toISOString());
     } catch (error) {
       toast({
         title: "Oops! Something went wrong",

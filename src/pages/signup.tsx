@@ -7,8 +7,14 @@ import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
 import PageLoader from "@/components/ui/page-loader";
 import { useAuth } from "@/lib/provider/auth-provider";
-import { HOME, SINGN_UP_PAGE } from "@/lib/routes";
+import {
+  HOME,
+  PRIVACY_POLICY,
+  SINGN_UP_PAGE,
+  TERMS_AND_CONDITION,
+} from "@/lib/routes";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
@@ -53,6 +59,24 @@ const Signup = () => {
             className="!w-max mx-auto text-center text-4xl !m-0"
           />
           <p className="text-gray-700 text-base">Create your account</p>
+
+          <div className="text-center px-4 text-base text-gray-700">
+            By continuing, you agree to our&nbsp;
+            <Link
+              href={TERMS_AND_CONDITION}
+              className="text-primary-blue font-semibold hover:underline"
+            >
+              Terms and Conditions
+            </Link>
+            &nbsp;and&nbsp;
+            <Link
+              href={PRIVACY_POLICY}
+              className="text-primary-blue font-semibold hover:underline"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </div>
         </div>
         <div className="w-[340px] md:min-w-[500px] mx-auto">
           <AnimateOnce>

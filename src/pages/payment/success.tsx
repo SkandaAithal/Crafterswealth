@@ -60,6 +60,7 @@ const SuccessPage = () => {
             subscriptionMap[category] = {
               plan: item.plan,
               period: newPeriod.toISOString(),
+              duration: item.period,
             };
           } else {
             const existingPeriod = new Date(subscriptionMap[category].period);
@@ -67,6 +68,7 @@ const SuccessPage = () => {
               subscriptionMap[category] = {
                 plan: item.plan,
                 period: newPeriod.toISOString(),
+                duration: item.period,
               };
             }
           }

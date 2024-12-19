@@ -157,7 +157,7 @@ const Contact = () => {
               />
             </Link>
             <Link
-              href="https://www.instagram.com/crafterswealth"
+              href="https://www.instagram.com/crafterswealth/profilecard/?igsh=OHVyaWU1Yzllam9s"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -167,7 +167,7 @@ const Contact = () => {
               />
             </Link>
             <Link
-              href="https://wa.me/1234567890"
+              href="https://api.whatsapp.com/send/?phone=917204159510&text&type=phone_number&app_absent=0"
               target="_blank"
               rel="noopener noreferrer"
             >

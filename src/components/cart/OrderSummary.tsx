@@ -15,7 +15,7 @@ import { Cart } from "@/lib/types/products";
 import { Input } from "../ui/input";
 import { useMutation } from "@apollo/client";
 import { APPLY_COUPON_MUTATION } from "@/lib/queries/products.query";
-import { IoIosCheckmarkCircle } from "react-icons/io";
+import { IoIosCheckmarkCircle, IoMdClose } from "react-icons/io";
 import { useApp } from "@/lib/provider/app-provider";
 import { AppActionTypes } from "@/lib/types/common/app";
 import { produce } from "immer";
@@ -121,9 +121,7 @@ const OrderSummary = ({
         if (data.applyCustomDiscount.percentageApplied && couponCode) {
           appDispatch({
             type: AppActionTypes.SET_COUPONCODE,
-            payload: Array.from(
-              new Set([...payment.coupons, couponCode.toLowerCase()])
-            ),
+            payload: [couponCode.toLowerCase()],
           });
 
           setTotal(data.applyCustomDiscount.discountedTotal);
@@ -177,6 +175,19 @@ const OrderSummary = ({
     }
   };
 
+  const handleDeleteCoupon = () => {
+    appDispatch({
+      type: AppActionTypes.SET_COUPONCODE,
+      payload: [],
+    });
+    setCouponCode("");
+    setTotal(subtotalWithoutDiscount);
+    setError({
+      isError: false,
+      message: "",
+    });
+  };
+
   const handleBtnClick = async () => {
     if (shouldUpdateCart) {
       await updateCartToLatestProduct();
@@ -213,22 +224,37 @@ const OrderSummary = ({
             >
               <Input
                 placeholder="Enter Coupon Code"
-                value={couponCode}
+                value={
+                  payment.coupons.length >= 1 ? payment.coupons[0] : couponCode
+                }
                 className="border-none rounded-full"
                 disabled={couponLoading}
                 onChange={(e) => setCouponCode(e.target.value)}
               />
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleApplyCoupon();
-                }}
-                className="!h-10"
-                loading={couponLoading}
-              >
-                Apply
-              </Button>
+              {payment.coupons.length >= 1 ? (
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteCoupon();
+                  }}
+                  className="!h-10 bg-destructive hover:bg-red-600"
+                >
+                  <IoMdClose className="text-white" size={20} />
+                </Button>
+              ) : (
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleApplyCoupon();
+                  }}
+                  className="!h-10"
+                  loading={couponLoading}
+                >
+                  Apply
+                </Button>
+              )}
             </div>
             {error.message && (
               <p
@@ -245,7 +271,7 @@ const OrderSummary = ({
       <Separator />
 
       <div className="text-base grid gap-2 my-4">
-        {discountPercentage && (
+        {!!(discountPercentage && payment.coupons.length) && (
           <div className="flex justify-between">
             <div className="flex items-center gap-4">
               <span className="font-semibold">Discount</span>

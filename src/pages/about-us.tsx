@@ -186,7 +186,7 @@ const AboutUs = () => {
                 />
               </div>
             </div>
-
+            {/* 
             <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mt-8">
               <div className="w-full">
                 <LazyImage
@@ -211,7 +211,7 @@ const AboutUs = () => {
                   supports the creation of cutting-edge solutions for investors.
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="order-1 lg:order-2">

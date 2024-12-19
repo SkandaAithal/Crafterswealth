@@ -9,9 +9,15 @@ import PageLoader from "@/components/ui/page-loader";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { HOME, LOGIN_PAGE } from "@/lib/routes";
+import {
+  HOME,
+  LOGIN_PAGE,
+  PRIVACY_POLICY,
+  TERMS_AND_CONDITION,
+} from "@/lib/routes";
 import SEOHead from "@/components/seo/SeoHead";
 import PageStructuredData from "@/components/seo/PageStructuredData";
+import Link from "next/link";
 
 const Login = () => {
   const router = useRouter();
@@ -58,6 +64,23 @@ const Login = () => {
           <p className="text-gray-700 text-base">
             Enter your credentials to login
           </p>
+          <div className="text-center px-4 text-base text-gray-700">
+            By continuing, you agree to our&nbsp;
+            <Link
+              href={TERMS_AND_CONDITION}
+              className="text-primary-blue font-semibold hover:underline"
+            >
+              Terms and Conditions
+            </Link>
+            &nbsp;and&nbsp;
+            <Link
+              href={PRIVACY_POLICY}
+              className="text-primary-blue font-semibold hover:underline"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </div>
         </div>
         <AnimateOnce>
           <div className="pb-16">

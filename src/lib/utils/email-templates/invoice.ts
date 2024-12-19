@@ -322,7 +322,7 @@ export const generateInvoiceEmailTemplate = (
     </div>
     <div class="content">
       <p>Hi ${buyerDetails.name},</p>
-      <p>Thank you for your business with CraftersWealth! Please download your invoice below:</p>
+      <p>Thank you for your purchase with CraftersWealth! Please download your invoice below:</p>
       <div class="invoice-number">Invoice Number: ${invoiceMetadata.invoiceNumber}</div>
       <div style="display: flex; justify-content: center;">
        <a href="${pdfLink}" class="pdf-link" download>Download Invoice</a>

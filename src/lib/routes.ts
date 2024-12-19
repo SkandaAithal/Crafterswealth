@@ -16,12 +16,16 @@ export const CART = "/cart";
 export const CHECKOUT = "/checkout";
 export const PAYMENT_SUCCESS = "/payment/success";
 export const PAYMENT_FAILURE = "/payment/failure";
+export const DISCLAIMER = "/disclaimer";
+export const REFUND_POLICY = "/refund-policy";
+export const DISCLOSURE = "/disclosure";
 export const PAGES_TO_HIDE_FOOTER = [
   LOGIN_PAGE,
   SINGN_UP_PAGE,
   FORGOT_PASSWORD_PAGE,
   PAYMENT_SUCCESS,
   PAYMENT_FAILURE,
+  DISCLAIMER,
 ];
 
 export const PAGES_TO_HIDE_HEADER = [PAYMENT_SUCCESS];

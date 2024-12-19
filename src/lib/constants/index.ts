@@ -3,10 +3,13 @@ import {
   ABOUT_US,
   ARTICLES,
   CONTACT,
+  DISCLAIMER,
+  DISCLOSURE,
   HOME,
   MY_PAPERS,
   PRIVACY_POLICY,
   PRODUCTS,
+  REFUND_POLICY,
   TERMS_AND_CONDITION,
 } from "../routes";
 import { CiWallet } from "react-icons/ci";
@@ -34,6 +37,7 @@ export const SUPPORT_EMAIL = "support@crafterswealth.com";
 export const OFFICIAL_EMAIL = "Rishabh@crafterswealth.com";
 export const ACCOUNTS_EMAIL = "account@crafterswealth.com";
 export const APP_INFO = "app-info";
+export const FETCH_TIME = "fetch-sync";
 
 //seo
 export const DEFAULT_IMAGE = "/opengraph-crafterswealth.jpg";
@@ -59,10 +63,20 @@ export const HEADER_ROUTES = [
 
 export const FOOTER_ROUTES = [
   { name: "Home", route: HOME },
+  { name: "Refund Policy", route: REFUND_POLICY },
+  {
+    name: "Investor Charter",
+    route:
+      "https://crafterswealth.com/wp-content/uploads/2024/12/Investment-Charter_Circular.pdf",
+    inNewTab: true,
+  },
+  { name: "Disclosure", route: DISCLOSURE },
+];
+
+export const BOTTOM_FOOTER_ROUTES = [
   { name: "Privacy Policy", route: PRIVACY_POLICY },
+  { name: "Disclaimer", route: DISCLAIMER },
   { name: "Terms and Conditions", route: TERMS_AND_CONDITION },
-  { name: "About Us", route: ABOUT_US },
-  { name: "Contact Us", route: CONTACT },
 ];
 
 export const ICONS = [
@@ -187,22 +201,22 @@ export const FAQ_DATA = {
     {
       question: "What pricing plans do you offer for your services?",
       answer:
-        "We offer both Standard and Premium plans for all our products. The Standard plan includes one single transactional paper or a monthly subscription to all papers. The Premium plan offers full access to all products with three options: Quarterly (₹1199), Half-Yearly (₹1999), and Yearly (₹2999).",
+        "We offer both Standard and Premium plans for all our products. The Standard plan includes one single transactional paper(₹199) or a monthly(₹499) access to all products. The Premium plan offers full access to all products with three options: Quarterly (₹1199), Half-Yearly (₹2199), and Yearly (₹3999).",
     },
     {
       question: "Are there any free trials or sample reports available?",
       answer:
-        "Yes! Our Standard plan offers a one-time transactional paper at ₹99, with 10 free papers from our archive. You can also subscribe for a month at ₹499 to access all papers.",
+        "Yes! Our Standard plan offers a one-time transactional paper at ₹199, with 10 free papers from our archive. You can also subscribe for a month at ₹499 to access all papers.",
     },
     {
       question: "How do I know which pricing plan is right for me?",
       answer:
-        "Choose a plan based on your risk tolerance and product preference. If you’re looking to try out services on a budget, the ₹99 paper is a good start. Most customers prefer the Quarterly Plan because it bundles access to all our products, making it cost-effective.",
+        "Choose a plan based on your risk tolerance and product preference. If you’re looking to try out services on a budget, the ₹199 paper is a good start. Most customers prefer the Quarterly Plan because it bundles access to all our products, making it cost-effective.",
     },
     {
       question: "Do you offer any discounts or promotional offers?",
       answer:
-        "Yes, we provide discounted future renewals for Half-Yearly and Yearly plans. Keep an eye out for special promotions or limited-time offers that may come up.",
+        "Yes, keep an eye out for special promotions or limited-time offers that may come up.",
     },
     {
       question: "Can I upgrade my plan at any time?",

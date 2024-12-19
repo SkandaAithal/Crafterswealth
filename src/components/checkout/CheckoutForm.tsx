@@ -41,7 +41,7 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { SHA256 } from "crypto-js";
 import { useRouter } from "next/router";
-import { POST_STATUS_API } from "@/lib/routes";
+import { DISCLAIMER, POST_STATUS_API, REFUND_POLICY } from "@/lib/routes";
 import OrderSummary from "../cart/OrderSummary";
 import { useApp } from "@/lib/provider/app-provider";
 import { getSession } from "next-auth/react";
@@ -49,6 +49,7 @@ import client from "@/lib/apollo-client";
 import { CREATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { AppActionTypes } from "@/lib/types/common/app";
 import { produce } from "immer";
+import Link from "next/link";
 
 const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
   const router = useRouter();
@@ -592,7 +593,25 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
               stateProp={stateValue}
               setIsCouponLoading={setIsCouponLoading}
             />
-            <div className="flex justify-center !mt-8">
+            <div className="text-base text-gray-700 mt-6">
+              By proceeding, you agree to our{" "}
+              <Link
+                href={REFUND_POLICY}
+                className="text-primary-blue font-semibold hover:underline inline"
+              >
+                Refund&nbsp;Policy
+              </Link>{" "}
+              and{" "}
+              <Link
+                href={DISCLAIMER}
+                className="text-primary-blue font-semibold hover:underline inline"
+              >
+                Disclaimer
+              </Link>
+              .
+            </div>
+
+            <div className="flex justify-center !mt-4">
               <Button
                 type="submit"
                 className="w-full max-w-96"

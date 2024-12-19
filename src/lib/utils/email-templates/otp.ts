@@ -59,7 +59,7 @@ export const generateOTPEmailTemplate = (randomOtp: string) => {
     </div>
     <div class="content">
       <p>Dear User,</p>
-      <p>Thank you for using CraftersWealth services. Please use the OTP below to complete your verification process:</p>
+      <p>Thank you for using CraftersWealth's services. Please use the OTP below to complete your verification process:</p>
       <div class="otp">${randomOtp}</div>
       <p>This OTP is valid for the next <strong>2 minutes</strong>. Do not share it with anyone.</p>
       <p>If you did not request this OTP, please ignore this email or contact our support team.</p>
