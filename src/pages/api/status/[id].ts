@@ -15,16 +15,16 @@ export default async function handler(
   try {
     const { merchantId, transactionId } = req.body;
 
-    const st =
+    const string =
       `/pg/v1/status/${merchantId}/${transactionId}` +
       process.env.NEXT_PUBLIC_SALT_KEY;
-    const dataSha256 = sha256(st).toString();
+    const dataSha256 = sha256(string).toString();
 
     const checksum = dataSha256 + "###" + process.env.NEXT_PUBLIC_SALT_INDEX;
 
     const options = {
       method: "GET",
-      url: `https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/${merchantId}/${transactionId}`,
+      url: `https://api.phonepe.com/apis/hermes/pg/v1/status/${merchantId}/${transactionId}`,
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",

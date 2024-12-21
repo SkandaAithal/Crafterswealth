@@ -264,30 +264,90 @@ const StockDetailsPage = () => {
         </AnimateOnce>
 
         <AnimateOnce>
-          <div className="max-w-screen-lg py-16 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
-            <div className="">
+          <div className="max-w-screen-lg py-16 mx-auto grid grid-cols-1 gap-20">
+            <div>
               <Title
-                text="Real Stories of How CraftersWealth Empowers Investors with Innovative Solutions"
+                text="Success Stories of How CraftersWealth Empowers Investors with Innovative Solutions"
                 size="H2"
               />
 
-              <p className="mt-10">
-                Rajesh, a beginner investor, struggled to navigate the
-                complexities of the stock market. After discovering
-                CraftersWealth, he gained access to clear, actionable research
-                papers and personalized insights. Within months, Rajesh&apos;s
-                confidence grew, and he achieved consistent returns, turning his
-                financial goals into reality with our expert guidance.
-              </p>
-            </div>
-            <div className="w-full h-full">
-              <LazyImage
-                src="/authentication-bg-image.jpeg"
-                alt=""
-                height={400}
-                width={300}
-                className="w-full h-full"
-              />
+              <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div className="my-auto h-[400px]">
+                  <LazyImage
+                    src="/abhishek-success-story.jpg"
+                    alt="Abhishek’s Investment Triumph"
+                    height={400}
+                    width={300}
+                    className="w-full h-full"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold">
+                    Abhishek’s Investment Triumph
+                  </h3>
+                  <p className="mt-4">
+                    Abhishek was new to the stock market and unsure where to
+                    begin. When he joined CraftersWealth, he decided to test the
+                    waters with a research paper on Aavas Financiers Ltd.
+                  </p>
+                  <h4 className="mt-4 font-semibold">
+                    From Hesitation to Action
+                  </h4>
+                  <p>
+                    The report’s clear insights and actionable plan gave him the
+                    confidence to invest at the recommended buy price of
+                    ₹1632.30. For the first time, he felt in control of his
+                    investment decisions.
+                  </p>
+                  <h4 className="mt-4 font-semibold">
+                    Success in Just 12 Days
+                  </h4>
+                  <p>
+                    To his delight, the stock hit the target price of ₹1943
+                    within just 12 days, earning him an impressive 19.02%
+                    return.
+                  </p>
+                  <blockquote className="mt-4 italic">
+                    &quot;CraftersWealth made investing simple and achievable
+                    for me. Their research turned my hesitation into
+                    success!&quot;
+                  </blockquote>
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-bold">Dhanush’s Steady Gains</h3>
+                  <p className="mt-4">
+                    Dhanush Sringeri was familiar with investing but struggled
+                    to navigate the complexities of stock analysis. That changed
+                    when he turned to CraftersWealth.
+                  </p>
+                  <h4 className="mt-4 font-semibold">Clarity and Confidence</h4>
+                  <p>
+                    Dhanush purchased a report on Dabur, following its buy and
+                    target recommendations. He appreciated how the analysis
+                    removed guesswork and set realistic expectations.
+                  </p>
+                  <h4 className="mt-4 font-semibold">Profits Made Easy</h4>
+                  <p>
+                    In a short time, Dabur reached its target, giving him a
+                    solid 10.6% return.
+                  </p>
+                  <blockquote className="mt-4 italic">
+                    &quot;CraftersWealth does the hard work, so I can invest
+                    confidently. They deliver results without
+                    overpromising.&quot;
+                  </blockquote>
+                </div>
+                <div className="my-auto h-[400px]">
+                  <LazyImage
+                    src="/dhanush-success-story.jpg"
+                    alt="Dhanush’s Steady Gains"
+                    height={400}
+                    width={300}
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </AnimateOnce>

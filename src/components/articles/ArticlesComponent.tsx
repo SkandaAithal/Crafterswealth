@@ -172,21 +172,25 @@ const ArticlesComponent: React.FC = () => {
                 </Button>
               </AnimateOnce>
             </div>
-            <div className="flex flex-col gap-6">
-              <Title
-                text="Recent Articles"
-                size="H2"
-                className="!text-2xl !mb-0"
-              />
-              {filteredPost.slice(1, 4).map(({ node }) => (
-                <ArticleCard
-                  key={node.slug}
-                  node={node}
-                  formatDateToReadable={formatDateToReadable}
-                  inSideView
+            {posts.length > 1 ? (
+              <div className="flex flex-col gap-6">
+                <Title
+                  text="Recent Articles"
+                  size="H2"
+                  className="!text-2xl !mb-0"
                 />
-              ))}
-            </div>
+                {filteredPost.slice(1, 4).map(({ node }) => (
+                  <ArticleCard
+                    key={node.slug}
+                    node={node}
+                    formatDateToReadable={formatDateToReadable}
+                    inSideView
+                  />
+                ))}
+              </div>
+            ) : (
+              <></>
+            )}
           </>
         )}
       </section>

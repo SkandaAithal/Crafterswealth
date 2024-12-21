@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "stage.crafterswealth.com",
+        hostname: "crafterswealth.com",
         pathname: "**",
       },
       {

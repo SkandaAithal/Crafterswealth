@@ -38,9 +38,12 @@ import {
 import { twMerge } from "tailwind-merge";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { SHA256 } from "crypto-js";
-import { useRouter } from "next/router";
-import { DISCLAIMER, POST_STATUS_API, REFUND_POLICY } from "@/lib/routes";
+import {
+  DISCLAIMER,
+  PHONE_PE_API,
+  POST_STATUS_API,
+  REFUND_POLICY,
+} from "@/lib/routes";
 import OrderSummary from "../cart/OrderSummary";
 import { useApp } from "@/lib/provider/app-provider";
 import { getSession } from "next-auth/react";
@@ -52,7 +55,6 @@ import Link from "next/link";
 import { countries } from "@/lib/constants/countries";
 
 const CheckoutForm = () => {
-  const router = useRouter();
   const {
     user,
     authDispatch,
@@ -219,45 +221,17 @@ const CheckoutForm = () => {
           merchantTransactionId: transactId,
           merchantUserId: "MUID-" + user.id,
           amount: total * 100,
+          name: user.firstName,
           redirectUrl: `${BASE_URL}${POST_STATUS_API}/${transactId}`,
           redirectMode: "POST",
-          callbackUrl: `${BASE_URL}${POST_STATUS_API}/${transactId}`,
+          // callbackUrl: `${BASE_URL}${POST_STATUS_API}/${transactId}`,
           mobileNumber: data.phoneNumber,
           paymentInstrument: {
             type: "PAY_PAGE",
           },
         };
 
-        const dataPayload = JSON.stringify(payload);
-
-        const dataBase64 = Buffer.from(dataPayload).toString("base64");
-
-        const fullURL =
-          dataBase64 + "/pg/v1/pay" + process.env.NEXT_PUBLIC_SALT_KEY;
-        const dataSha256 = SHA256(fullURL);
-
-        const checksum =
-          dataSha256 + "###" + process.env.NEXT_PUBLIC_SALT_INDEX;
-
-        const UAT_PAY_API_URL =
-          "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
-
-        const response = await axios.post(
-          UAT_PAY_API_URL,
-          {
-            request: dataBase64,
-          },
-          {
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-              "X-VERIFY": checksum,
-            },
-          }
-        );
-
-        const redirect = response.data.data.instrumentResponse.redirectInfo.url;
-        router.push(redirect);
+        await axios.post(PHONE_PE_API, { payload });
       }
     } catch (error) {
       toast({

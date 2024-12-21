@@ -156,17 +156,15 @@ const usePlaceOrder = () => {
         updateUserPromise,
       ]);
 
-      const updateSheetResult = results[0];
       const emailResults = results.slice(1);
 
-      const sheetUpdateSuccessful = updateSheetResult.status === "fulfilled";
       const emailSuccesses = emailResults.filter(
         (res) => res.status === "fulfilled" && res.value?.data?.sendEmail?.sent
       );
 
       const allEmailsSent = emailSuccesses.length === emailRecipients.length;
 
-      if (sheetUpdateSuccessful && allEmailsSent) {
+      if (allEmailsSent) {
         appDispatch({ type: AppActionTypes.CLEAR_ORDER });
         toast({
           title: "Invoice sent successfully",

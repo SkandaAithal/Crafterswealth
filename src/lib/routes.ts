@@ -41,6 +41,7 @@ export const NEWSLETTER_API = "/api/newsletter";
 export const ORDERS_SHEET_API = "/api/order-sheet";
 export const COMPLAINTS_API = "/api/complaints";
 export const MAILCHIMP_TAGS_API = "/api/mailchimp-tags";
+export const PHONE_PE_API = "/api/phonepe";
 
 //protected routes
 export const PROTECTED_ROUTES = [
