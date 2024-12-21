@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/table";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { Button } from "../ui/button";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdLinkOff, MdOutlineRemoveRedEye } from "react-icons/md";
 import AnimateOnce from "../common/AnimateOnce";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
 import { useApp } from "@/lib/provider/app-provider";
 import { Achievement } from "@/lib/types/common/app";
+import { Skeleton } from "../ui/skeleton";
 
 enum SortOrder {
   ASC = "asc",
@@ -35,18 +36,20 @@ const TargetsReachedTable = ({
 }) => {
   const { achievements, isAchievementsLoading } = useApp();
   const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: "Stock Name",
+    key: "Company Name",
     order: SortOrder.ASC,
   });
+  const [selectedAchievement, setSelectedAchievement] = useState<Achievement[]>(
+    []
+  );
 
-  const selectedAchievement = useMemo(() => {
+  useEffect(() => {
     const arr = isAchievementsLoading
       ? []
       : achievements[selectedCategory] ||
         achievements[Object.keys(achievements)[0]];
-    return arr;
+    setSelectedAchievement(arr);
   }, [achievements, isAchievementsLoading, selectedCategory]);
-
   const handleSort = (key: keyof Achievement) => {
     const newOrder =
       sortConfig.key === key && sortConfig.order === SortOrder.ASC
@@ -94,10 +97,10 @@ const TargetsReachedTable = ({
           <TableHeader className={twMerge("sticky top-0", headerClassName)}>
             <TableHead
               className="cursor-pointer"
-              onClick={() => handleSort("Stock Name")}
+              onClick={() => handleSort("Company Name")}
             >
               <div className="flex items-center gap-2">
-                Stock {getSortIcon("Stock Name")}
+                Stock {getSortIcon("Company Name")}
               </div>
             </TableHead>
             <TableHead
@@ -119,27 +122,52 @@ const TargetsReachedTable = ({
             <TableHead className="w-32">View Paper</TableHead>
           </TableHeader>
           <TableBody>
-            {sortedItems.map((item) => {
-              return (
-                <TableRow key={item["Product Name"]}>
-                  <TableCell>{item["Stock Name"]}</TableCell>
+            {isAchievementsLoading
+              ? Array.from({ length: 10 }).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Skeleton className="h-10 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-10 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-10 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-10 w-full" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              : sortedItems.map((item, index) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{item["Company Name"]}</TableCell>
 
-                  <TableCell className="text-green-500 font-semibold">
-                    {item["Profit"]} %
-                  </TableCell>
+                      <TableCell className="text-green-500 font-semibold">
+                        {item["Profit"]} %
+                      </TableCell>
 
-                  <TableCell>{item["Days Held"].split(".")[0]} days</TableCell>
+                      <TableCell>
+                        {item["Days Held"].split(".")[0]} days
+                      </TableCell>
 
-                  <TableCell className="text-center text-primary-blue">
-                    <Link href={item.PdfLink} target="_blank">
-                      <div className="flex items-center justify-center gap-1 cursor-pointer">
-                        View <MdOutlineRemoveRedEye />
-                      </div>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                      <TableCell className="text-center text-primary-blue">
+                        {item.PdfLink ? (
+                          <Link href={item.PdfLink} target="_blank">
+                            <div className="flex items-center justify-center gap-1 cursor-pointer">
+                              View <MdOutlineRemoveRedEye />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex items-center justify-center gap-1 text-gray-500 cursor-not-allowed">
+                            Void <MdLinkOff />
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
           </TableBody>
         </Table>
       </div>

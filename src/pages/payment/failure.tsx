@@ -7,7 +7,6 @@ import { useAuth } from "@/lib/provider/auth-provider";
 import { UPDATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { CONTACT, PAYMENT_FAILURE } from "@/lib/routes";
 import { AppActionTypes } from "@/lib/types/common/app";
-import { OrderStatus } from "@/lib/types/checkout";
 import { SessionObject } from "@/lib/types/common/user";
 import { useMutation } from "@apollo/client";
 import { useSession } from "next-auth/react";
@@ -24,13 +23,7 @@ const FailurePage = () => {
   const { data: session } = useSession();
   const { getFailureOrderPayload } = useProcessOrder();
   const [isLoading, setIsloading] = useState(true);
-  const [updateOrder] = useMutation(UPDATE_ORDER_MUTATION, {
-    onCompleted: async (data) => {
-      if (data?.updateOrder?.order?.status === OrderStatus.FAILED) {
-        appDispatch({ type: AppActionTypes.CLEAR_ORDER });
-      }
-    },
-  });
+  const [updateOrder] = useMutation(UPDATE_ORDER_MUTATION);
   const processOrder = async () => {
     if (!isAuthenticated() || !user.id) {
       return setRedirectTrigger(!redirectTrigger);
@@ -52,6 +45,7 @@ const FailurePage = () => {
 
   useEffect(() => {
     if (isAuthenticated() && user.id && payment.orderId) {
+      appDispatch({ type: AppActionTypes.CLEAR_ORDER });
       processOrder();
     } else {
       setIsloading(false);

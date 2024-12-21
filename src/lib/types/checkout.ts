@@ -1,14 +1,3 @@
-export interface Country {
-  name: string;
-  code: string;
-  flag: string;
-  geoNameId: number;
-}
-
-export interface CheckoutProps {
-  countries: Country[];
-}
-
 export interface CountryOption {
   value: string;
   label: React.ReactNode;
@@ -74,6 +63,7 @@ export interface InvoiceData {
     hsnCode: string;
     quantity: number;
     amount: number;
+    period: string;
   }>;
   taxDetails: {
     isWithinState: boolean;

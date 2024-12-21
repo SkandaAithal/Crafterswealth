@@ -119,7 +119,7 @@ const MyPapersCard: React.FC<MyPapersCardsProps> = ({
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-wrap">{stockName}</h1>
           <div className="flex items-center gap-3">
-            <div className="text-xl font-bold ml-2">Invest</div>
+            <div className="text-xl font-bold ml-2">Invested</div>
 
             <Checkbox
               checked={isChecked}

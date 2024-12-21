@@ -68,7 +68,7 @@ const Testimonials = () => {
       >
         {TESTIMONIALS.map(({ id, name, title, testimonial }) => (
           <SwiperSlide key={id} className="md:p-10 p-6 relative">
-            <div className="p-8 rounded-3xl shadow-md text-center space-y-6 border border-t-4 border-r-4 border-l-4 border-b-4 border-t-primary-blue border-r-primary-blue border-l-primary-blue-100 border-b-primary-blue-100 lg:h-80 h-[350px]">
+            <div className="p-8 rounded-3xl shadow-md text-center space-y-6 border border-t-4 border-r-4 border-l-4 border-b-4 border-t-primary-blue border-r-primary-blue border-l-primary-blue-100 border-b-primary-blue-100 lg:h-[350px] h-[400px]">
               <div className="text-gray-800 text-lg font-semibold flex justify-center items-center gap-4">
                 <div className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit">
                   {getInitials(name)}
@@ -79,7 +79,7 @@ const Testimonials = () => {
                 </div>
               </div>
               <div className="mt-4 text-gray-700">
-                <span className="inline text-base">{testimonial}</span>
+                <span className="inline text-sm">{testimonial}</span>
               </div>
               <div className="bg-primary-blue-80 text-accent p-6 absolute -top-6 md:-top-3 md:left-4 left-1 rounded-full w-fit">
                 <ImQuotesLeft size={28} className="inline-block" />

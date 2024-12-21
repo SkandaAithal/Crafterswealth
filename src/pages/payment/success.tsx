@@ -97,12 +97,7 @@ const SuccessPage = () => {
           }
         });
       } else {
-        const arr = allProducts[item.category] ?? [];
-        const pIndex =
-          arr.findIndex((pid) => pid === item.productId.toString()) + 1;
         boughtSet.add(item.productId.toString());
-        const archives = arr.slice(pIndex, pIndex + 10);
-        archives.forEach((item) => boughtSet.add(item));
       }
     });
 

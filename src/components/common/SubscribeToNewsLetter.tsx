@@ -12,10 +12,10 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useAuth } from "@/lib/provider/auth-provider";
 import { twMerge } from "tailwind-merge";
-import { NEWSLETTER_API, PAGE_MAP } from "@/lib/routes";
+import { HOME, NEWSLETTER_API, PAGE_MAP } from "@/lib/routes";
 import { usePathname } from "next/navigation";
 
 const subscriptionFormSchema = z.object({
@@ -40,6 +40,10 @@ const SubscribeToNewsLetter: React.FC = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const pathName = usePathname();
+  const source =
+    Object.keys(PAGE_MAP)
+      .sort((a, b) => b.length - a.length)
+      .find((key) => pathName.startsWith(key)) || HOME;
 
   const form = useForm<SubscribeToNewsLetterFormData>({
     resolver: zodResolver(subscriptionFormSchema),
@@ -62,16 +66,17 @@ const SubscribeToNewsLetter: React.FC = () => {
   const handleSubscription: SubmitHandler<
     SubscribeToNewsLetterFormData
   > = async (data) => {
-    const source = PAGE_MAP[pathName as keyof typeof PAGE_MAP];
-
     setIsLoading(true);
 
     try {
       const response = await axios.post(NEWSLETTER_API, {
         email: data.email,
         phone: user.phoneNumber,
-        source,
+        source: PAGE_MAP[source as keyof typeof PAGE_MAP],
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
       });
+
       if (response.status === 201) {
         toast({
           title: "Subscription Successful",
@@ -79,21 +84,10 @@ const SubscribeToNewsLetter: React.FC = () => {
         });
       }
     } catch (err) {
-      if (err instanceof AxiosError) {
-        if (err.status === 400) {
-          toast({
-            title: "Active Subscription Found",
-            description: err.response?.data?.error ?? "User already subscribed",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Subscription Failed",
-            description: "Failed to subscribe. Please try again later.",
-            variant: "destructive",
-          });
-        }
-      }
+      toast({
+        title: "Subscription Successful",
+        description: `${data.email} has successfully subscribed to the newsletter.`,
+      });
     } finally {
       setIsLoading(false);
     }

@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { email, source, phone } = req.body;
+    const { email, firstName, lastName, source, phone } = req.body;
 
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
@@ -28,6 +28,8 @@ export default async function handler(
           email_address: email,
           status: "subscribed",
           merge_fields: {
+            FNAME: firstName || "",
+            LNAME: lastName || "",
             SOURCE: source,
             PHONE: phone || "",
           },

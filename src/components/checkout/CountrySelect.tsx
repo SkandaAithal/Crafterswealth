@@ -1,21 +1,20 @@
 import React from "react";
 import Select from "react-select";
-import { CheckoutFormData, Country, CountryOption } from "@/lib/types/checkout";
+import { CheckoutFormData, CountryOption } from "@/lib/types/checkout";
 import { FormItem, FormLabel, FormMessage } from "../ui/form";
 import Image from "next/image";
 import { customDropDownStyles } from "@/lib/constants";
 import { twMerge } from "tailwind-merge";
 import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
+import { countries } from "@/lib/constants/countries";
 
 interface CountrySelectProps {
-  countries: Country[];
   field: ControllerRenderProps<CheckoutFormData, "country">;
   onCountryChange: (geoNameId: number) => Promise<void>;
   form: UseFormReturn<CheckoutFormData, undefined>;
 }
 
 const CountrySelect: React.FC<CountrySelectProps> = ({
-  countries,
   field,
   onCountryChange,
   form,

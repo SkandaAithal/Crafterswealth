@@ -3,13 +3,11 @@ import AnimateOnce from "@/components/common/AnimateOnce";
 import Title from "@/components/common/Title";
 import PageStructuredData from "@/components/seo/PageStructuredData";
 import SEOHead from "@/components/seo/SeoHead";
-import { useApp } from "@/lib/provider/app-provider";
 import { CHECKOUT } from "@/lib/routes";
 import { NextPage } from "next";
 import React from "react";
 
 const CheckoutPage: NextPage = () => {
-  const { countries } = useApp();
   const pageName = "Checkout - Complete Your Purchase";
   const pageDescription =
     "Securely complete your purchase with CraftersWealth. Provide your details and finalize your order with ease.";
@@ -30,7 +28,7 @@ const CheckoutPage: NextPage = () => {
         <Title text="Checkout" />
       </section>
       <AnimateOnce>
-        <CheckoutForm countries={countries} />
+        <CheckoutForm />
       </AnimateOnce>
     </main>
   );

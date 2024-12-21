@@ -19,6 +19,7 @@ export const PAYMENT_FAILURE = "/payment/failure";
 export const DISCLAIMER = "/disclaimer";
 export const REFUND_POLICY = "/refund-policy";
 export const DISCLOSURE = "/disclosure";
+export const GRIEVANCES = "/grievances";
 export const PAGES_TO_HIDE_FOOTER = [
   LOGIN_PAGE,
   SINGN_UP_PAGE,
@@ -38,6 +39,8 @@ export const INVOICE_API = "/api/invoice";
 export const UPLOAD_INVOICE_API = "/api/uploadpdf";
 export const NEWSLETTER_API = "/api/newsletter";
 export const ORDERS_SHEET_API = "/api/order-sheet";
+export const COMPLAINTS_API = "/api/complaints";
+export const MAILCHIMP_TAGS_API = "/api/mailchimp-tags";
 
 //protected routes
 export const PROTECTED_ROUTES = [
@@ -61,6 +64,15 @@ export const PAGE_MAP = {
   [PRODUCTS_DETAIL]: "Product Details Page",
   [ACCOMPLISHMENTS]: "Accomplishments Page",
   [MY_PAPERS]: "My Papers Page",
+  [LOGIN_PAGE]: "Login Page",
+  [SINGN_UP_PAGE]: "Signup Page",
+  [FORGOT_PASSWORD_PAGE]: "Forgot Password Page",
   [CART]: "Cart Page",
   [CHECKOUT]: "Checkout Page",
+  [PAYMENT_SUCCESS]: "Payment Success Page",
+  [PAYMENT_FAILURE]: "Payment Failure Page",
+  [DISCLAIMER]: "Disclaimer Page",
+  [REFUND_POLICY]: "Refund Policy Page",
+  [DISCLOSURE]: "Disclosure Page",
+  [GRIEVANCES]: "Grievances Page",
 };

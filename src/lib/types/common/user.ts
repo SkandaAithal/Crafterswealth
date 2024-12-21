@@ -7,6 +7,24 @@ export type Subscription = Record<
   string,
   { plan: string; period: string; duration: string }
 >;
+
+export interface UserOrders {
+  orderNumber: string;
+  invoiceNumber: string;
+  coupons: string[];
+  invoice: string;
+  totalPaid: number;
+  date: string;
+  products: {
+    name: string;
+    productId: string | number;
+    period: string;
+  }[];
+}
+
+export interface SavedDataType {
+  orders: UserOrders[];
+}
 export interface UserDetails {
   firstName: string;
   email: string;
@@ -25,6 +43,7 @@ export interface UserDetails {
   postcode: string;
   state: string;
   subscription: Subscription;
+  savedData: SavedDataType;
 }
 
 export interface UserObject extends User {
@@ -77,4 +96,5 @@ export interface AuthContextProps {
   isAuthLoading: boolean;
   redirectTrigger: boolean;
   isAuthenticated: () => boolean;
+  isUserSubscribedToEitherCategory: () => boolean;
 }

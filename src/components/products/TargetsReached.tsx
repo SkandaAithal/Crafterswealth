@@ -17,6 +17,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
   const router = useRouter();
   const { achievements, isAchievementsLoading } = useApp();
   const allAchievements = Object.values(achievements).flat();
+
   return (
     <AnimateOnce>
       {!onlyTargets ? (
@@ -45,18 +46,22 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
           </Scroller>
         ) : (
           <Scroller move="left" onHoverStop baseSpeed={6}>
-            {allAchievements.map((item) => {
-              return (
+            {allAchievements.map((item, index) => {
+              return item.PdfLink ? (
                 <Link
-                  key={item["Product Name"]}
+                  key={index}
                   href={item.PdfLink}
                   target="_blank"
-                  className=" rounded-2xl overflow-hidden m-4 h-[260px] w-72 shadow-lg"
+                  className="rounded-2xl overflow-hidden m-4 h-[260px] w-72 shadow-lg"
                 >
                   <div className="p-6 bg-primary-blue-30 hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
                     <h1 className="text-xl font-bold text-center mb-4">
-                      <p className="line-clamp-2">{item["Stock Name"]}</p>
-                      <p className="line-clamp-1">({item["Product Name"]})</p>
+                      <p className="line-clamp-2">{item["Company Name"]}</p>
+                      {item["Product Name"] ? (
+                        <p className="line-clamp-1">({item["Product Name"]})</p>
+                      ) : (
+                        <></>
+                      )}
                     </h1>
 
                     <div className="flex justify-between mb-4">
@@ -86,20 +91,19 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
                     </div>
                   </div>
                 </Link>
-              );
-            })}
-            {allAchievements.map((item) => {
-              return (
-                <Link
-                  key={item["Product Name"]}
-                  href={item.PdfLink}
-                  target="_blank"
-                  className=" rounded-2xl overflow-hidden m-4 h-[260px] w-72 shadow-lg"
+              ) : (
+                <div
+                  key={index}
+                  className="rounded-2xl overflow-hidden m-4 h-[260px] w-72 shadow-lg cursor-default"
                 >
                   <div className="p-6 bg-primary-blue-30 hover:bg-[#c5e0ff] transition-colors duration-300  h-full flex flex-col justify-between">
                     <h1 className="text-xl font-bold text-center mb-4">
-                      <p className="line-clamp-2">{item["Stock Name"]}</p>
-                      <p className="line-clamp-1">({item["Product Name"]})</p>
+                      <p className="line-clamp-2">{item["Company Name"]}</p>
+                      {item["Product Name"] ? (
+                        <p className="line-clamp-1">({item["Product Name"]})</p>
+                      ) : (
+                        <></>
+                      )}
                     </h1>
 
                     <div className="flex justify-between mb-4">
@@ -128,7 +132,7 @@ const TargetsReached = ({ onlyTargets = false }: { onlyTargets?: boolean }) => {
                       {item.Profit}%
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </Scroller>

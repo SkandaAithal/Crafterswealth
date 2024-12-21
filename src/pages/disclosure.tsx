@@ -95,6 +95,13 @@ const DisclosurePage = () => {
               appearances are as specified by the Board under any other
               regulations.
             </li>
+            <li>
+              The Research Report has been generated using artificial
+              intelligence (AI) following the identification of an opportunity
+              by our proprietary in-house software. Clients are hereby advised
+              to thoroughly assess all potential risks associated with the use
+              of generative AI.
+            </li>
           </ol>
         </section>
       </main>

@@ -14,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CountrySelect from "./CountrySelect";
 import { useAuth } from "@/lib/provider/auth-provider";
 import {
-  CheckoutProps,
   StateOption,
   CityOption,
   CheckoutFormData,
@@ -50,8 +49,9 @@ import { CREATE_ORDER_MUTATION } from "@/lib/queries/products.query";
 import { AppActionTypes } from "@/lib/types/common/app";
 import { produce } from "immer";
 import Link from "next/link";
+import { countries } from "@/lib/constants/countries";
 
-const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
+const CheckoutForm = () => {
   const router = useRouter();
   const {
     user,
@@ -449,7 +449,6 @@ const CheckoutForm: React.FC<CheckoutProps> = ({ countries }) => {
               name="country"
               render={({ field }) => (
                 <CountrySelect
-                  countries={countries}
                   field={field}
                   onCountryChange={fetchStates}
                   form={form}

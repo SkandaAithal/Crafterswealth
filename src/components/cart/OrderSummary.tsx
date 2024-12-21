@@ -76,7 +76,9 @@ const OrderSummary = ({
     return !cart.every((cartItem) => {
       const latestProduct = latestProducts[cartItem.category];
       return (
-        latestProduct && latestProduct.id === cartItem.productId.toString()
+        latestProduct &&
+        latestProduct.id === cartItem.productId.toString() &&
+        cartItem.period === "0"
       );
     });
   }, [cart, latestProducts]);

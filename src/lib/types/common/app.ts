@@ -13,7 +13,6 @@ export interface AppContextProps {
   boughtObject: Record<string, string[]>;
   allProducts: Record<string, string[]>;
   latestProducts: Record<string, AllProducts>;
-  countries: CountriesTypes[];
   isAchievementsLoading: boolean;
   achievements: AchievementsData;
   invoice: InvoiceState;
@@ -55,21 +54,14 @@ export interface PaymentContext {
   coupons: string[];
 }
 
-export interface CountriesTypes {
-  name: string;
-  code: string;
-  flag: string;
-  geoNameId: number;
-}
-
 export interface Achievement {
   "Pur. Price": string;
   "Target Price": string;
   "Days Held": string;
-  "Stock Name": string;
   PdfLink: string;
   "Product Name": string;
   Profit: string;
+  "Company Name": string;
 }
 
 export interface AchievementsData {
@@ -86,7 +78,6 @@ export interface AppState {
   verifyEmail: VerifyEmail;
   forgotPassword: ForgotPasswordContext;
   payment: PaymentContext;
-  countries: CountriesTypes[];
   achievements: AchievementsData;
   invoice: InvoiceState;
   categories: ProductCategory[];
@@ -107,7 +98,6 @@ export enum AppActionTypes {
   INITIATE_PAYMENT = "INITIATE_PAYMENT",
   SET_COUPONCODE = "SET_COUPONCODE",
   CLEAR_ORDER = "CLEAR_ORDER",
-  SET_COUNTRIES = "SET_COUNTRIES",
   SET_ACHIEVEMENTS = "SET_ACHIEVEMENTS",
   SET_INVOICE_NUMBER = "SET_INVOICE_NUMBER",
   SET_PDF_LINK = "SET_PDF_LINK",
@@ -153,10 +143,6 @@ export type AppAction =
   | {
       type: AppActionTypes.ADD_CATEGORIES;
       payload: ProductCategory[];
-    }
-  | {
-      type: AppActionTypes.SET_COUNTRIES;
-      payload: CountriesTypes[];
     }
   | {
       type: AppActionTypes.SET_ACHIEVEMENTS;

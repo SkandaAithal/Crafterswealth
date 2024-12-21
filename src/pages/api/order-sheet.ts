@@ -18,7 +18,7 @@ export default async function handler(
     });
 
     const sheets = google.sheets({ version: "v4", auth });
-    const spreadsheetId = "174EJ23VgUGNTVBo8avDi7wkHKJXy0WdvpQYPPbVeSF0";
+    const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID!;
     const sheetName = "Orders";
 
     const {
@@ -49,10 +49,10 @@ export default async function handler(
       email || "",
       customer || "",
       customerType || "",
-      products.join(", "),
+      (products || []).join(", "),
       itemsSold || "",
+      coupons && coupons.length > 0 ? coupons.join(", ") : "",
       invoiceNumber || "",
-      coupons.join(", "),
       netSales || "",
       cgst || "",
       sgst || "",

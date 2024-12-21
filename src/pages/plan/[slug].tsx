@@ -6,25 +6,30 @@ import PlansLayout from "@/components/subcription-and-plan/PlansLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWindowWidth } from "@/lib/hooks/use-window-width";
 import { useApp } from "@/lib/provider/app-provider";
+import { useAuth } from "@/lib/provider/auth-provider";
 import { GET_PRODUCT_PLANS } from "@/lib/queries/products.query";
 import { PRODUCTS } from "@/lib/routes";
 import { Plan, ProductResponse } from "@/lib/types/plan";
-import { isEmpty } from "@/lib/utils";
+import { decodeNumericId, isEmpty } from "@/lib/utils";
 import { useLazyQuery } from "@apollo/client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 
 const PlansPage = () => {
   const [isPremium, setIsPremium] = useState(false);
+  const router = useRouter();
+  const [isChecked, setIsChecked] = useState(true);
   const param = useParams();
+  const { user, isUserSubscribedToEitherCategory } = useAuth();
   const { products } = useApp();
   const slug = param?.slug ?? "";
   const [getPlans, { data, loading }] =
     useLazyQuery<ProductResponse>(GET_PRODUCT_PLANS);
-
+  const isLoading = isChecked || loading;
   const pageName = "Plans & Pricing - Choose Your Investment Plan";
   const pageDescription = "Unlock High Returns with Our Flexible Plans";
   const plansApiData = data?.product?.plans;
@@ -39,10 +44,24 @@ const PlansPage = () => {
 
   useEffect(() => {
     if (slug && isEmpty(products)) {
-      getPlans({ variables: { id: param.slug } });
+      getPlans({ variables: { id: slug } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, products]);
+
+  useEffect(() => {
+    const productId = decodeNumericId(slug as string);
+
+    if (
+      !isUserSubscribedToEitherCategory() &&
+      user.bought.includes(productId.toString())
+    ) {
+      router.push(PRODUCTS);
+    } else {
+      setIsChecked(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUserSubscribedToEitherCategory, slug, user.bought]);
 
   const { windowWidth } = useWindowWidth();
 
@@ -87,9 +106,9 @@ const PlansPage = () => {
       </div>
 
       <section className="layout !pt-8 pb-16">
-        {!isEmpty(plans) && !loading ? (
+        {!isEmpty(plans) && !isLoading ? (
           <PlansLayout
-            loading={loading}
+            loading={isLoading}
             plans={plans as Plan[]}
             checkIfPremium={checkIfPremium}
           />

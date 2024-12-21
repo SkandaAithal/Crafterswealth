@@ -4,6 +4,7 @@ import SEOHead from "@/components/seo/SeoHead";
 
 import client from "@/lib/apollo-client";
 import useStockData from "@/lib/hooks/use-stock-data";
+import { useAuth } from "@/lib/provider/auth-provider";
 
 import {
   GET_PRODUCT_CATEGORIES,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/queries/products.query";
 
 import { ProductNode, ProductsProps } from "@/lib/types/products";
+import { decodeNumericId } from "@/lib/utils";
 import { GetStaticProps, NextPage } from "next";
 import React, { useMemo } from "react";
 
@@ -21,17 +23,28 @@ const Products: NextPage<ProductsProps> = ({ products, categories = [] }) => {
     () => products.map((product) => product.stock.stockSymbol),
     [products]
   );
+  const {
+    user,
+    isUserSubscribedToEitherCategory,
+    isAuthLoading,
+    isAuthenticated,
+  } = useAuth();
   const { stockData, loading } = useStockData(SYMBOLS, true);
+  const isLoading = isAuthenticated() ? isAuthLoading || loading : loading;
 
   const filteredProducts = useMemo(() => {
     if (!stockData.length) return [];
 
-    const categoryMap: Record<
-      string,
-      { product: ProductNode; profit: number }
-    > = {};
+    const finalProducts = isUserSubscribedToEitherCategory()
+      ? products
+      : products.filter(
+          (product) =>
+            !user.bought.includes(decodeNumericId(product.id).toString())
+        );
 
-    products.forEach((product) => {
+    const categoryMap: Record<string, ProductNode> = {};
+
+    finalProducts.forEach((product) => {
       const stockSymbol = product.stock.stockSymbol;
       const targetPrice = product.stock.target;
       const threshold = product.productCategories.nodes[0]?.threshold;
@@ -40,22 +53,19 @@ const Products: NextPage<ProductsProps> = ({ products, categories = [] }) => {
       if (!stock) return;
 
       const profitOrLossPercentage =
-        ((targetPrice - stock.price) / targetPrice) * 100;
+        ((targetPrice - stock.price) / stock.price) * 100;
 
       if (profitOrLossPercentage > threshold) {
         const category = product.productCategories.nodes[0]?.name;
-
-        if (
-          !categoryMap[category] ||
-          profitOrLossPercentage > categoryMap[category].profit
-        ) {
-          categoryMap[category] = { product, profit: profitOrLossPercentage };
+        if (!categoryMap[category]) {
+          categoryMap[category] = product;
         }
       }
     });
 
-    return Object.values(categoryMap).map((entry) => entry.product);
-  }, [products, stockData]);
+    return Object.values(categoryMap);
+  }, [isUserSubscribedToEitherCategory, products, stockData, user.bought]);
+
   return (
     <main>
       <SEOHead title="Today's Must Buy" description={DESCRIPTION} />
@@ -63,7 +73,7 @@ const Products: NextPage<ProductsProps> = ({ products, categories = [] }) => {
       <ProductsPage
         products={filteredProducts}
         categories={categories}
-        productsLoading={loading}
+        productsLoading={isLoading}
       />
     </main>
   );

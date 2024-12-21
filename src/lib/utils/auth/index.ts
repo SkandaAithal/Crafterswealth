@@ -24,6 +24,7 @@ export const initialUser: UserDetails = {
   postcode: "",
   state: "",
   subscription: {},
+  savedData: { orders: [] },
 };
 
 export const userInitialState: AuthState = {

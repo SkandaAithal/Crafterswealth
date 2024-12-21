@@ -14,15 +14,8 @@ export default async function handler(
     });
 
     const sheets = google.sheets({ version: "v4", auth });
-    const spreadsheetId = "1GguhNSRIfRy19Xr2q9MX3mMRJUhxC97XCZn6lg-GJvg";
-
-    const metadata = await fetchWithRetries(() =>
-      sheets.spreadsheets.get({ spreadsheetId })
-    );
-
-    const sheetNames = metadata.data.sheets?.map(
-      (sheet) => sheet.properties?.title
-    );
+    const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID!;
+    const sheetNames = ["Momentum Pulse", "Value Sprint"];
 
     if (!sheetNames || sheetNames.length === 0) {
       return res
@@ -36,9 +29,9 @@ export default async function handler(
       "Target Price",
       "Days Held",
       "Profit",
-      "Stock Name",
       "PdfLink",
       "Product Name",
+      "Company Name",
     ];
 
     for (const sheetName of sheetNames) {
@@ -67,14 +60,16 @@ export default async function handler(
           fieldsToInclude.reduce(
             (acc, field) => {
               const fieldIndex = headers.indexOf(field);
-              if (fieldIndex !== -1) {
-                acc[field] = row[fieldIndex] || null;
-              }
+              acc[field] = fieldIndex !== -1 ? row[fieldIndex] || "" : "";
               return acc;
             },
             {} as Record<string, any>
           )
-        );
+        )
+        .filter((row) => {
+          const profitValue = parseFloat(row["Profit"] || "0");
+          return profitValue > 0;
+        });
 
       sheetData[sheetName as string] = filteredData;
     }

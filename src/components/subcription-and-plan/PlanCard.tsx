@@ -13,7 +13,7 @@ import { AuthActionTypes, SessionObject } from "@/lib/types/common/user";
 import { UPDATE_USER_META } from "@/lib/queries/users.query";
 import { toast } from "@/lib/hooks/use-toast";
 import { useRouter } from "next/router";
-import { CART } from "@/lib/routes";
+import { CART, MY_PAPERS, PRODUCTS } from "@/lib/routes";
 import { produce } from "immer";
 import { Cart } from "@/lib/types/products";
 import {} from "@/lib/utils/auth";
@@ -32,11 +32,14 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
     redirectTrigger,
     authDispatch,
     isAuthenticated,
+    isUserSubscribedToEitherCategory,
   } = useAuth();
   const param = useParams();
   const slug = param?.slug ?? "";
   const [isLoading, setIsLoading] = useState(false);
-
+  const isNotSubscription = plan?.period === "0";
+  const isSinglePaperBought =
+    isUserSubscribedToEitherCategory() && isNotSubscription;
   const [updateUserMeta, { loading }] = useMutation(UPDATE_USER_META, {
     onCompleted: (data) => {
       const cartData = data?.updateUserMeta?.data;
@@ -63,7 +66,10 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
 
   const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+    if (isSinglePaperBought) {
+      router.push(MY_PAPERS);
+      return;
+    }
     setIsLoading(true);
     const session = await getSession();
     if (!isAuthenticated() || !user.id) {
@@ -74,14 +80,18 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
 
     let cartArray = user.cart as Cart[];
 
-    if (!product || !plan) return;
+    if (!product || !plan) {
+      setIsLoading(false);
+      router.push(PRODUCTS);
+      return;
+    }
 
     const category = product.productCategories.nodes[0].slug;
     const cartProduct = {
       productId,
       id: product.id,
       name: plan.access.length ? "Bundle Offer" : product.name,
-      productName: plan.period === "0" ? product.name : plan.type,
+      productName: isNotSubscription ? product.name : plan.type,
       category: category,
       regularPlanPrice: plan.regular_price,
       price: plan.sale_price,
@@ -201,7 +211,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, className = "" }) => {
           loading={loading || isLoading}
           onClick={handleAddToCart}
         >
-          {buttonText}
+          {isSinglePaperBought ? "Already Unlocked" : buttonText}
         </Button>
       </div>
     </div>

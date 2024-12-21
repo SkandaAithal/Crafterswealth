@@ -5,6 +5,7 @@ import {
   CONTACT,
   DISCLAIMER,
   DISCLOSURE,
+  GRIEVANCES,
   HOME,
   MY_PAPERS,
   PRIVACY_POLICY,
@@ -38,6 +39,7 @@ export const OFFICIAL_EMAIL = "Rishabh@crafterswealth.com";
 export const ACCOUNTS_EMAIL = "account@crafterswealth.com";
 export const APP_INFO = "app-info";
 export const FETCH_TIME = "fetch-sync";
+export const SUBSCRIPTION_STATUS = "subscription-status";
 
 //seo
 export const DEFAULT_IMAGE = "/opengraph-crafterswealth.jpg";
@@ -71,6 +73,7 @@ export const FOOTER_ROUTES = [
     inNewTab: true,
   },
   { name: "Disclosure", route: DISCLOSURE },
+  { name: "Grievances", route: GRIEVANCES },
 ];
 
 export const BOTTOM_FOOTER_ROUTES = [
@@ -280,49 +283,68 @@ export const FAQ_DATA = {
 
 export const creds = {
   type: "service_account",
-  project_id: "crafterswealth-demo",
-  private_key_id: "80deeb2aa069ecee0a002fb29d42258c7aff4617",
+  project_id: "crafterswealth",
+  private_key_id: "0b134001f9cd5d4bd9fdfb69e6099375713fbf9d",
   private_key:
-    "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQChzY7gyVZHnmqG\nIhGua9Qdk4GWUim+nFdv7muK7OH3nMy3348yCzjrmq0c3fBD3Xr/X6Ypyb8f7ncy\nL51uoil2EaM9jMzT8HLXN1X5yi9yOwUFzAS33sg5vwE3vMt5f8oDZNdFCMDxuVt+\nxrX3n0k6Anw1Zyi5aUqvdS05eOGZDjx52m01TIUxvhneIeDt1X1/7edfLVS9AG6O\nzD6+ktFwxUnTKpm1aNCfjCF956fpEiofGcMKV3FG49mI5zwDSUHcSY9dCRrr3+kk\n0TcEZCE5E0W1l4dctP7ZRUMlycZ0nwfakcR4Xgn0GJnbALcZmsOXwDiCXmDE/tfY\nfYL6YmTLAgMBAAECggEAJT6JVHHT4/FxqMV/12vnrBUvn5fzFvaq4894PsbPLu2P\nbAXQUt8lb4ovrfTiYOTC8rSkLXtMfL+p/UnbjcNTEuP1dO4Lmf9/l82bgz+Ik11F\nhzOSpHZqFWzDjX5uQd3p9MUKDlB5BUs65eA8s66dLvaye6Juy9sSP3gT/GY4W7/+\n8Oj6L+Fth6haONdi26jP7XlllQ99IvsVrJdsp9e4ThXdvnTvofeB6kbvA5kYkY71\n+Z0VAJWpE6DcKxeRMj17M0uH4r6e5d+N4p5gZYTrzdxOO8WycF6N4UCVDZKgl9K5\nUT6Ag8RpWhV28c8aXXOQCrXl275y2Dj3VD4ufFwRSQKBgQDP8BoMTeiBiNSN9jjh\nZIvCqy0v9zJfQACITodRAtXGm0x4nh3Tg9zjSA+SDiWBX8rWFKZr2A1NhPGcqIDa\n83svX+rmRsXOWRQLOdvoQGmx0SgbJjBbYrupQQ3YjVpGzbOruSfWX9oz88OHDNjm\nZT+UIB9xqXDmvoypo/soPbihWQKBgQDHM5rfkeTpNfFlq1ng+yudfDTmcGeY3etu\nWNK1Uhx2NublRvVnsrX9NljKjQEUqg45T9kf1EX83+QJk8bSqWnxLXj8fVI68Rcz\nVUMQTQwr+Jo5/jWbhMvxq59K7UpodHiJ9ViOk23zgOzVyzGHEAMWCqxvFb4hCCvz\nFAungh2uwwKBgQCLFmKGCnLUem8bCjCf6z5lF1TheasS9V+lzUlMEeZms6hiIfl3\nawOMb74ihx3lPOsTabqr9ldnm951WGzgh+7FEJayM3LKhOEYZTpITxWj4HDAQDom\nVpOKMj6NtHdHVv6wheg0x+bPy2TlZ92Jtv3hGd+OirU/UwQJ0OsFzss5+QKBgQCu\n9IwZwDGlAlO6T/zotLFh6C0uF5tlj8OvbyPhTPTifuXcia4QHc3pT0o83AsO8yz6\n+T5hzjaKGrpWDwyZCWKbCK0yVX9bdVRDKad1MbZ3CCmstbCvnrrgzzNgw3iOtX0I\n7guRbbssGxfnzkb5sP6E5Wr9RcNvj5XKMNjrjkQzsQKBgBAcbuZFvLVxo4q64xWE\ns3UUBMbUWKqkRpbp8S01qfqt+w+iPXWssuY4X++bha5QpOvYhr+OU5A/pv/uxEuS\nVgnpmOdKc1le5rOrMZcdzrDDVI2vi8DvFkzElW5ZMiySVRDmwWBMpkxd+r6dvqOn\nA3+uCRGw1lpIlI1B+pEPPmrf\n-----END PRIVATE KEY-----\n",
-  client_email:
-    "crafterswealth-spreadsheet@crafterswealth-demo.iam.gserviceaccount.com",
-  client_id: "114593522544168159598",
+    "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCUEUIvec9RiFoF\nW3WPXOJRHIjG21wA5aIOZx+5ZPVLwXpHxFwD6dnnYb6s8fupUqCvi1M3wgAJuTqo\nvCIdD5RLnf3HkIW1AdYLkbboKpY52tVJwv7529/LbnY3Et0bvKuWqD9XJVamyOQI\nVfszzThvch7QrFfXkJo8BBP+v1k901DIOy48hDNnHxQSbYfWvPR5eZ9wDErGd7aL\nlRSKT1XLdocVqyd9ww/tnsYPg46IUEBicz2NGMbrKo64ZE6Wf0rX47+yAOuGg7Q1\nWJ+W0mqEbDoZts8rv1ruAHW02Ubqvn/D9sQGmsGdbTRNsA8Ah6hz7RaCMu/0LWxm\n5iBpLUdrAgMBAAECggEABjezT8sNqZ7QKOluRlbgKgfItpD/jAoYhAJQkrhqlIPL\nXrggJQns3Ip+N0TyDGor1TNEi1LaLY5ZqDw+Mno0//ficD7hXnh1RIcZ5yXiqQtH\naZGGo3dYLnK1BBsGreN+URU/k6k9ukM1UCRMKCC1/fgM0zZpeePYliyVqlzeonns\nzkIgWM/NKxQ2XXq7NviyPc77ff1L+WjkeSGBy5jbraAyoiJ1hGtEh8lSIptVM+Ts\nV8cKFeIjAfAmCnEHVFMbRLRTPmyb+kttCqifZGs9BXHdMqT7Lr1o4OPqU9EY3TIC\njYmLuu6IkLqjRARPQoEydz/kZIQxriyOvaEAGZAUAQKBgQDJTLl87BOet8Alj7Oq\nNBUtQUAOQqY72TiHn26CEf87cEcor3pJRacJTXv9mh0hqGmk606HGa9QWSVmr0+b\nAxBiekB4tKab+OAzs5eUi44gSel6zaFDN6+mXJjZ2qNcQCaiByFg0I1r+rhXmbWK\njakLlpnCzh68TJw1lpv5ArLKeQKBgQC8TXdnXdJBz/yQlfkOl996tSJgV75vDAzG\njFasCqu0izJSRnYcF0rSP5dxBgH6V4RaSLByRZ+0s/WHy2Zlrr3USlOnemPDAQsB\nbeDaM/PIrTgVNBFIoWbPhE7AV6jUf+hC/TJK+w0CWvd3nm/LQbX23pgyjJUdG9L9\nTtNLoIIoAwKBgDFEfgF9JjAqePS4fxihNq2k0rCqz1TGjXdkJf/ft8Ascr4adKuK\nSJ+WP0qKdabPOUwL62RVfPsFVooTTkB6N4Biu3TPgheaigUdZ3QL0/VDIcnUmiuB\nbZQiBacMQ/9IFCyD4j93y6Up8ARAspX+pekYKvnqyMr9VR4ohnQjnO7BAoGBAIUU\nRpfyEb/ba0cQBuXOZe3GCBaIzJiUro6/7h1GqVU+rwDAtYZi28k9kh0ZvtobcfmQ\nt8r688T1Dki7cpHYbmaTZQ3PDKRrn0iSTEBKSTeBXEp38uMe1pdAjZuYGESeZRq6\n8QlW5jnM6mpKuf2vYhen9256NoRM/s9xHxmqxXHbAoGAIAeXX2XAtPSE4StY9q1U\nhZydBs+fNRSgMzTfc9RdZtM9w08QUCBlX5bm/2m5tGKDkeuybZ9ayi7hiVL1KcLe\nJUtq/v/i6SyI/AABjO/FbJl151iq8btFosi+c2OFeu27FYLQT764WqVCipXI6VaU\ntI3QVouixmavgxGq0kiaFzo=\n-----END PRIVATE KEY-----\n",
+  client_email: "crafterswealth@crafterswealth.iam.gserviceaccount.com",
+  client_id: "112036356864735981093",
   auth_uri: "https://accounts.google.com/o/oauth2/auth",
   token_uri: "https://oauth2.googleapis.com/token",
   auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
   client_x509_cert_url:
-    "https://www.googleapis.com/robot/v1/metadata/x509/crafterswealth-spreadsheet%40crafterswealth-demo.iam.gserviceaccount.com",
+    "https://www.googleapis.com/robot/v1/metadata/x509/crafterswealth%40crafterswealth.iam.gserviceaccount.com",
   universe_domain: "googleapis.com",
 };
 
 export const TESTIMONIALS = [
   {
     id: 1,
-    name: "Rajesh Patel",
-    title: "Software Engineer",
+    name: "Sreenathan Unni",
+    title: "Investor",
     testimonial:
-      "Impressive insights! Their research papers are a game-changer in the stock market arena. A must-have for any serious investor!",
+      "I appreciate  the focus on good quality stocks recommended by Crafterswealth, as they provide a good balance of growth and stability. The suggestion to diversify across industries and sectors also stood out as a sound strategy.",
   },
   {
     id: 2,
-    name: "Rahul Kapoor",
-    title: "Financial Analyst",
-    testimonial:
-      "Incredible attention to detail! Their research papers provide invaluable guidance, helping me make informed investment decisions.",
+    name: "Pavan Biddanda",
+    title: "Consultant",
+    testimonial: "The guidance and information was very useful.",
   },
   {
     id: 3,
-    name: "Shreya balaji",
-    title: "Architect",
+    name: "Hs Vishwanath",
+    title: "Social Impact professional ",
     testimonial:
-      "A true asset to the investment community! Their research papers are a goldmine of valuable information, offering unparalleled insights into market trends.",
+      "Loved their indepth technical research and recommendations on a broad set of stocks. Impressed with significant % of recommendations that hit targets.",
   },
   {
     id: 4,
-    name: "Priya sharma",
-    title: "Doctor",
+    name: "Sanjeet Sharma",
+    title: "Veterinarian",
     testimonial:
-      "Trustworthy and reliable! Their expertise in market analysis shines through in every paper they produce. Highly recommended for anyone navigating the stock market.",
+      "The scripts are very useful and trustworthy, only thing i have managed is that i don't buy it at once but on every dip. It would be beneficial if its target price or stop loss is sent by a message.",
+  },
+  {
+    id: 5,
+    name: "Dhanush Sringeri",
+    title: "Manager of Direct Sales",
+    testimonial:
+      "Investing has become so easy and accessible in today’s busy world. I need not sit and analyse a stock before investing because CraftersWealth does that for me. The best part is they do not set unrealistic expectations.",
+  },
+  {
+    id: 6,
+    name: "Nidish G",
+    title: "Data Analyst",
+    testimonial:
+      "There was a time when I used insights from crafterswealth.com to gain ~12% in just 6 days of investing. Great curated stock selections that work well in bull market runs.",
+  },
+  {
+    id: 7,
+    name: "Shubhankar Srivastava",
+    title: "Salaried employe",
+    testimonial:
+      "I wanted to know about a good recommendation to invest my money into and their research papers helped a lot. The paper had all the necessary insights in an easy to understand manner.",
   },
 ];
 

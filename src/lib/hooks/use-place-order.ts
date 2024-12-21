@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { ACCOUNTS_EMAIL, OFFICIAL_EMAIL } from "../constants";
 import { useAuth } from "../provider/auth-provider";
-import { SEND_EMAIL_MUTATION } from "../queries/users.query";
+import { SEND_EMAIL_MUTATION, UPDATE_USER_META } from "../queries/users.query";
 import { InvoiceData } from "../types/checkout";
 import { generateInvoiceEmailTemplate } from "../utils/email-templates/invoice";
 import useInvoiceGeneration from "./use-invoice-pdf";
@@ -11,12 +11,59 @@ import { AppActionTypes } from "../types/common/app";
 import { OrderDetailsForSheet } from "../types/components/orders";
 import { ORDERS_SHEET_API } from "../routes";
 import axios from "axios";
+import { produce } from "immer";
+import {
+  AuthActionTypes,
+  SessionObject,
+  UserOrders,
+} from "../types/common/user";
+import { getSession } from "next-auth/react";
 
 const usePlaceOrder = () => {
-  const { user } = useAuth();
+  const { user, authDispatch } = useAuth();
   const { appDispatch, invoice } = useApp();
   const { generateInvoice } = useInvoiceGeneration();
   const [sendEmail] = useMutation(SEND_EMAIL_MUTATION);
+
+  const [updateUserMeta] = useMutation(UPDATE_USER_META, {
+    onCompleted: (data) => {
+      const status = data?.updateUserMeta?.statusCode;
+      const savedData = data?.updateUserMeta?.data;
+      if (status === 200) {
+        const updatedUser = produce(user, (draft) => {
+          draft.savedData = savedData;
+        });
+
+        authDispatch({
+          type: AuthActionTypes.SET_USER_DETAILS,
+          payload: updatedUser,
+        });
+      }
+    },
+  });
+
+  const updateUserSavedData = async (updatedOrders: UserOrders[]) => {
+    const session = await getSession();
+
+    const variables = {
+      input: {
+        email: user.email,
+        savedData: {
+          ...user.savedData,
+          orders: updatedOrders,
+        },
+      },
+    };
+
+    await updateUserMeta({
+      variables,
+      context: {
+        headers: {
+          Authorization: `Bearer ${(session as SessionObject).authToken}`,
+        },
+      },
+    });
+  };
 
   const updateOrdersSheet = async (order: OrderDetailsForSheet) => {
     const { data } = await axios.post(ORDERS_SHEET_API, order);
@@ -66,8 +113,28 @@ const usePlaceOrder = () => {
         attribution: "Website",
       };
 
-      const emailRecipients = [user.email, ACCOUNTS_EMAIL];
+      const newOrder: UserOrders = {
+        orderNumber: invoiceDataVariable.orderDetails.orderNumber,
+        invoiceNumber: invoiceDataVariable.invoiceMetadata.invoiceNumber,
+        coupons: invoiceDataVariable.coupons,
+        invoice: pdfLink,
+        totalPaid: Math.round(invoiceDataVariable.totals.grandTotal),
+        date: new Date().toISOString(),
+        products: invoiceDataVariable.items.map((item) => ({
+          name: item.name,
+          productId: item.slNo,
+          period: item.period,
+        })),
+      };
+      const userOrders = user?.savedData?.orders ?? [];
+      const updatedOrders =
+        !newOrder?.orderNumber ||
+        userOrders.some((order) => order.orderNumber === newOrder.orderNumber)
+          ? userOrders
+          : [...userOrders, newOrder];
 
+      const updateUserPromise = updateUserSavedData(updatedOrders);
+      const emailRecipients = [user.email, ACCOUNTS_EMAIL];
       const updateSheetPromise = updateOrdersSheet(orderSheetData);
 
       const emailPromises = emailRecipients.map((recipient) =>
@@ -86,6 +153,7 @@ const usePlaceOrder = () => {
       const results = await Promise.allSettled([
         updateSheetPromise,
         ...emailPromises,
+        updateUserPromise,
       ]);
 
       const updateSheetResult = results[0];
@@ -93,7 +161,7 @@ const usePlaceOrder = () => {
 
       const sheetUpdateSuccessful = updateSheetResult.status === "fulfilled";
       const emailSuccesses = emailResults.filter(
-        (res) => res.status === "fulfilled" && res.value.data?.sendEmail?.sent
+        (res) => res.status === "fulfilled" && res.value?.data?.sendEmail?.sent
       );
 
       const allEmailsSent = emailSuccesses.length === emailRecipients.length;

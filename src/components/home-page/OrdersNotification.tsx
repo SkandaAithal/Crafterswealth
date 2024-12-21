@@ -5,12 +5,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import LazyImage from "../ui/lazy-image";
 import { twMerge } from "tailwind-merge";
-import { useApp } from "@/lib/provider/app-provider";
 import { useWindowWidth } from "@/lib/hooks/use-window-width";
 import { RxCross2 } from "react-icons/rx";
+import { countries } from "@/lib/constants/countries";
 
 const OrdersNotification = () => {
-  const { countries } = useApp();
   const { isMobile } = useWindowWidth();
   const { data } = useQuery<PublicOrderResponse>(GET_PUBLIC_ORDERS, {
     fetchPolicy: "cache-first",

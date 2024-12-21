@@ -59,6 +59,7 @@ export const invoiceInitialState = {
       igst: 0,
       totalTax: 0,
       amountInWords: "",
+      period: "",
     },
     coupons: [],
     totals: {
@@ -76,7 +77,6 @@ export const initialState: AppState = {
   verifyEmail: verifyEmailInitialState,
   forgotPassword: forgotPasswordInitialState,
   payment: paymentInitialState,
-  countries: [],
   achievements: {},
   invoice: invoiceInitialState,
   categories: [],
@@ -93,10 +93,6 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
 
       case AppActionTypes.ADD_CATEGORIES:
         draft.categories = action.payload;
-        break;
-
-      case AppActionTypes.SET_COUNTRIES:
-        draft.countries = action.payload;
         break;
 
       case AppActionTypes.TOGGLE_VERIFY_EMAIL_MODAL:

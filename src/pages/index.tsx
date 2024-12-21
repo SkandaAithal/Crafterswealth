@@ -14,6 +14,7 @@ import LazyImage from "@/components/ui/lazy-image";
 import client from "@/lib/apollo-client";
 import { MarketBarChartGraphData, SYMBOLS_DATA } from "@/lib/constants";
 import useStockData from "@/lib/hooks/use-stock-data";
+import { useAuth } from "@/lib/provider/auth-provider";
 import {
   GET_PRODUCT_CATEGORIES,
   GET_PRODUCTS,
@@ -21,6 +22,7 @@ import {
 import { PRODUCTS } from "@/lib/routes";
 import { InvestmentType } from "@/lib/types/components/stocks-chart";
 import { ProductNode, ProductsProps } from "@/lib/types/products";
+import { decodeNumericId } from "@/lib/utils";
 import { GetStaticProps, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -34,22 +36,33 @@ const TargetsReached = dynamic(
 );
 const Home: NextPage<ProductsProps> = ({ products, categories = [] }) => {
   const router = useRouter();
+  const {
+    user,
+    isAuthenticated,
+    isAuthLoading,
+    isUserSubscribedToEitherCategory,
+  } = useAuth();
   const handleredirectToProductsPage = () => router.push(PRODUCTS);
   const SYMBOLS = useMemo(
     () => products.map((product) => product.stock.stockSymbol),
     [products]
   );
   const { stockData, loading } = useStockData(SYMBOLS, true);
+  const isLoading = isAuthenticated() ? isAuthLoading || loading : loading;
 
   const filteredProducts = useMemo(() => {
     if (!stockData.length) return [];
 
-    const categoryMap: Record<
-      string,
-      { product: ProductNode; profit: number }
-    > = {};
+    const finalProducts = isUserSubscribedToEitherCategory()
+      ? products
+      : products.filter(
+          (product) =>
+            !user.bought.includes(decodeNumericId(product.id).toString())
+        );
 
-    products.forEach((product) => {
+    const categoryMap: Record<string, ProductNode> = {};
+
+    finalProducts.forEach((product) => {
       const stockSymbol = product.stock.stockSymbol;
       const targetPrice = product.stock.target;
       const threshold = product.productCategories.nodes[0]?.threshold;
@@ -58,22 +71,18 @@ const Home: NextPage<ProductsProps> = ({ products, categories = [] }) => {
       if (!stock) return;
 
       const profitOrLossPercentage =
-        ((targetPrice - stock.price) / targetPrice) * 100;
+        ((targetPrice - stock.price) / stock.price) * 100;
 
       if (profitOrLossPercentage > threshold) {
         const category = product.productCategories.nodes[0]?.name;
-
-        if (
-          !categoryMap[category] ||
-          profitOrLossPercentage > categoryMap[category].profit
-        ) {
-          categoryMap[category] = { product, profit: profitOrLossPercentage };
+        if (!categoryMap[category]) {
+          categoryMap[category] = product;
         }
       }
     });
 
-    return Object.values(categoryMap).map((entry) => entry.product);
-  }, [products, stockData]);
+    return Object.values(categoryMap);
+  }, [isUserSubscribedToEitherCategory, products, stockData, user.bought]);
 
   return (
     <main>
@@ -115,7 +124,7 @@ const Home: NextPage<ProductsProps> = ({ products, categories = [] }) => {
           alt="banner-image"
           height={300}
           width={300}
-          skeletonClassName="rounded-xl m-auto hidden md:block w-[250px] h-[450px]"
+          skeletonClassName="rounded-xl m-auto hidden md:block w-[250px] lg:h-[400px]"
           className="w-full lg:h-[300px] xl:h-[400px] hidden md:block 2xl:h-[500px]"
         />
       </section>
@@ -134,7 +143,7 @@ const Home: NextPage<ProductsProps> = ({ products, categories = [] }) => {
             <ProductsSwiper
               products={filteredProducts}
               categories={categories}
-              productsLoading={loading}
+              productsLoading={isLoading}
             />
           </div>
           <div className="flex justify-center xl:justify-end items-center px-4 md:px-0 mt-6 ">

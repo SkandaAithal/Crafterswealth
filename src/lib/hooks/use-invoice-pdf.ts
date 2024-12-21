@@ -9,10 +9,11 @@ import { INVOICE_API, UPLOAD_INVOICE_API } from "@/lib/routes";
 import { INVOICE_NUMBER_QUERY } from "../queries/products.query";
 import client from "../apollo-client";
 import { InvoiceData } from "../types/checkout";
+import { countries } from "../constants/countries";
 
 const useInvoiceGeneration = () => {
   const { user } = useAuth();
-  const { payment, categories, appDispatch, countries, invoice } = useApp();
+  const { payment, categories, appDispatch, invoice } = useApp();
   const { getSuccessOrderPayload } = useProcessOrder();
   const order = getSuccessOrderPayload();
 
@@ -101,6 +102,7 @@ const useInvoiceGeneration = () => {
                 hsnCode: item.hsnCode,
                 quantity: 1,
                 amount: item.price,
+                period: item.period,
               };
             }),
             taxDetails: {

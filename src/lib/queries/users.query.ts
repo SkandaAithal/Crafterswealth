@@ -35,6 +35,7 @@ export const USER_DETAILS_QUERY = gql`
       cart
       phoneNumber
       subscription
+      savedData
       roles {
         nodes {
           displayName
