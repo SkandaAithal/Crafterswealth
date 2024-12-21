@@ -43,7 +43,7 @@ const SubscribeToNewsLetter: React.FC = () => {
   const source =
     Object.keys(PAGE_MAP)
       .sort((a, b) => b.length - a.length)
-      .find((key) => pathName.startsWith(key)) || HOME;
+      .find((key) => pathName?.startsWith(key)) || HOME;
 
   const form = useForm<SubscribeToNewsLetterFormData>({
     resolver: zodResolver(subscriptionFormSchema),

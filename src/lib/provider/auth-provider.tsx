@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const source =
     Object.keys(PAGE_MAP)
       .sort((a, b) => b.length - a.length)
-      .find((key) => pathName.startsWith(key)) || HOME;
+      .find((key) => pathName?.startsWith(key)) || HOME;
 
   const subscribeUserToMailChimp = async (userDetails: UserDetails) => {
     const localStorageKey = SUBSCRIPTION_STATUS;

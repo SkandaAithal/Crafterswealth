@@ -12,56 +12,56 @@ import { PRODUCTS } from "@/lib/routes";
 import { Plan, ProductResponse } from "@/lib/types/plan";
 import { decodeNumericId, isEmpty } from "@/lib/utils";
 import { useLazyQuery } from "@apollo/client";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 
-const PlansPage = () => {
+const PlansPage = ({ slug }: { slug: string }) => {
   const [isPremium, setIsPremium] = useState(false);
   const router = useRouter();
   const [isChecked, setIsChecked] = useState(true);
-  const param = useParams();
   const { user, isUserSubscribedToEitherCategory } = useAuth();
   const { products } = useApp();
-  const slug = param?.slug ?? "";
+
   const [getPlans, { data, loading }] =
     useLazyQuery<ProductResponse>(GET_PRODUCT_PLANS);
+
   const isLoading = isChecked || loading;
+
   const pageName = "Plans & Pricing - Choose Your Investment Plan";
   const pageDescription = "Unlock High Returns with Our Flexible Plans";
-  const plansApiData = data?.product?.plans;
+  const plansApiData = data?.product?.plans ?? [];
   const plansFromState =
     products.find((product) => product.id === slug)?.plans ?? [];
 
-  const plans = isEmpty(plansFromState)
-    ? isEmpty(plansApiData)
-      ? []
-      : plansApiData
-    : plansFromState;
+  const plans = !isEmpty(plansFromState)
+    ? plansFromState
+    : !isEmpty(plansApiData)
+      ? plansApiData
+      : [];
 
   useEffect(() => {
     if (slug && isEmpty(products)) {
       getPlans({ variables: { id: slug } });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, products]);
+  }, [slug, products, getPlans]);
 
   useEffect(() => {
-    const productId = decodeNumericId(slug as string);
-
-    if (
-      !isUserSubscribedToEitherCategory() &&
-      user.bought.includes(productId.toString())
-    ) {
-      router.push(PRODUCTS);
-    } else {
-      setIsChecked(false);
+    if (slug) {
+      const productId = decodeNumericId(slug as string);
+      if (
+        !isUserSubscribedToEitherCategory() &&
+        user.bought?.includes(productId.toString())
+      ) {
+        router.push(PRODUCTS);
+      } else {
+        setIsChecked(false);
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUserSubscribedToEitherCategory, slug, user.bought]);
+  }, [isUserSubscribedToEitherCategory, slug, user.bought, router]);
 
   const { windowWidth } = useWindowWidth();
 
@@ -91,7 +91,7 @@ const PlansPage = () => {
       <PlansStructuredData
         name={pageName}
         description={pageDescription}
-        planCategories={plans ?? []}
+        planCategories={plans}
         id={(slug as string) ?? ""}
       />
       <div className="relative text-center layout h-40">
@@ -124,4 +124,22 @@ const PlansPage = () => {
   );
 };
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const slug = context.params?.slug;
+
+  if (!slug) {
+    return {
+      redirect: {
+        destination: PRODUCTS,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      slug,
+    },
+  };
+};
 export default PlansPage;

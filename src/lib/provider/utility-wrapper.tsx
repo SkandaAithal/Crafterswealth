@@ -13,7 +13,7 @@ const UtilityWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   const source =
     Object.keys(PAGE_MAP)
       .sort((a, b) => b.length - a.length)
-      .find((key) => pathName.startsWith(key)) || HOME;
+      .find((key) => pathName?.startsWith(key)) || HOME;
   const { completeOrderPlacementFlow } = usePlaceOrder();
 
   const addOrUpdateMailchimpUserTags = async () => {

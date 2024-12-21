@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { status } = useSession();
   const isProtected = pathName
     ? PROTECTED_ROUTES.some((protectedRoute) =>
-        pathName.startsWith(protectedRoute)
+        pathName?.startsWith(protectedRoute)
       )
     : false;
 
