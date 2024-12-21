@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import sha256 from "crypto-js/sha256";
+import crypto from "crypto";
 import axios from "axios";
 import { BASE_URL } from "@/lib/constants";
 import { PAYMENT_FAILURE, PAYMENT_SUCCESS } from "@/lib/routes";
@@ -15,16 +15,20 @@ export default async function handler(
   try {
     const { merchantId, transactionId } = req.body;
 
-    const string =
-      `/pg/v1/status/${merchantId}/${transactionId}` +
-      process.env.NEXT_PUBLIC_SALT_KEY;
-    const dataSha256 = sha256(string).toString();
+    const { SALT_KEY, SALT_INDEX } = process.env;
+    if (!SALT_KEY || !SALT_INDEX) {
+      throw new Error("Missing required environment variables.");
+    }
 
-    const checksum = dataSha256 + "###" + process.env.NEXT_PUBLIC_SALT_INDEX;
+    const string = `/pg/v1/status/${merchantId}/${transactionId}` + SALT_KEY;
+    const dataSha256 = crypto.createHash("sha256").update(string).digest("hex");
+    const checksum = `${dataSha256}###${SALT_INDEX}`;
+
+    const sandbox_URL = `https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/${merchantId}/${transactionId}`;
 
     const options = {
       method: "GET",
-      url: `https://api.phonepe.com/apis/hermes/pg/v1/status/${merchantId}/${transactionId}`,
+      url: sandbox_URL,
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",

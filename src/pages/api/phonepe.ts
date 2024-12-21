@@ -3,7 +3,6 @@ import axios from "axios";
 import crypto from "crypto";
 
 type Payload = {
-  merchantId: string;
   merchantTransactionId: string;
   merchantUserId: string;
   amount: number;
@@ -11,7 +10,6 @@ type Payload = {
   redirectMode: string;
   callbackUrl: string;
   mobileNumber: string;
-  name: string;
   paymentInstrument: {
     type: string;
   };
@@ -30,28 +28,43 @@ export default async function handler(
   }
 
   try {
+    const { MERCHANT_ID, SALT_KEY, SALT_INDEX } = process.env;
+    if (!MERCHANT_ID || !SALT_KEY || !SALT_INDEX) {
+      throw new Error("Missing required environment variables.");
+    }
+
     const { payload }: { payload: Payload } = req.body;
 
-    if (!payload || !payload.merchantId || !payload.merchantTransactionId) {
+    if (!payload || !payload.merchantTransactionId || !payload.amount) {
       return res
         .status(400)
         .json({ error: "Invalid or missing payload fields" });
     }
 
-    const dataBase64 = Buffer.from(JSON.stringify(payload)).toString("base64");
+    const payloadWithMerchantId = {
+      ...payload,
+      merchantId: MERCHANT_ID,
+    };
 
-    const fullURL =
-      dataBase64 + "/pg/v1/pay" + process.env.NEXT_PUBLIC_SALT_KEY!;
+    const dataBase64 = Buffer.from(
+      JSON.stringify(payloadWithMerchantId)
+    ).toString("base64");
+
+    const apiPath = "/pg/v1/pay";
+    const fullURL = dataBase64 + apiPath + SALT_KEY;
     const dataSha256 = crypto
       .createHash("sha256")
       .update(fullURL)
       .digest("hex");
-    const checksum = `${dataSha256}###${process.env.NEXT_PUBLIC_SALT_INDEX!}`;
+    const checksum = `${dataSha256}###${SALT_INDEX}`;
 
-    const prod_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
+    // UAT/Sandbox URL for PhonePe
+    const sandbox_URL =
+      "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
+
     const options = {
       method: "POST",
-      url: prod_URL,
+      url: sandbox_URL,
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
@@ -62,16 +75,20 @@ export default async function handler(
       },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return res.redirect(
-          response.data.data.instrumentResponse.redirectInfo.url
-        );
-      })
-      .catch(function (error) {
-        throw new Error(error);
-      });
+    const response = await axios.request(options);
+
+    if (
+      response.data &&
+      response.data.data?.instrumentResponse?.redirectInfo?.url
+    ) {
+      return res
+        .status(200)
+        .json(response.data.data.instrumentResponse.redirectInfo.url);
+    } else {
+      return res
+        .status(500)
+        .json({ error: "Unexpected response from PhonePe." });
+    }
   } catch (error: any) {
     res.status(500).json({
       error:

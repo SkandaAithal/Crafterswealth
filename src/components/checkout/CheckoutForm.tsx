@@ -53,6 +53,7 @@ import { AppActionTypes } from "@/lib/types/common/app";
 import { produce } from "immer";
 import Link from "next/link";
 import { countries } from "@/lib/constants/countries";
+import { useRouter } from "next/router";
 
 const CheckoutForm = () => {
   const {
@@ -62,6 +63,7 @@ const CheckoutForm = () => {
     setRedirectTrigger,
     isAuthenticated,
   } = useAuth();
+  const router = useRouter();
   const { appDispatch, payment, latestProducts } = useApp();
   const [states, setStates] = useState<StateOption[]>([]);
   const [cities, setCities] = useState<CityOption[]>([]);
@@ -217,21 +219,20 @@ const CheckoutForm = () => {
         });
 
         const payload = {
-          merchantId: process.env.NEXT_PUBLIC_MERCHANT_ID,
           merchantTransactionId: transactId,
           merchantUserId: "MUID-" + user.id,
           amount: total * 100,
-          name: user.firstName,
           redirectUrl: `${BASE_URL}${POST_STATUS_API}/${transactId}`,
           redirectMode: "POST",
-          // callbackUrl: `${BASE_URL}${POST_STATUS_API}/${transactId}`,
+          callbackUrl: `${BASE_URL}${POST_STATUS_API}/${transactId}`,
           mobileNumber: data.phoneNumber,
           paymentInstrument: {
             type: "PAY_PAGE",
           },
         };
 
-        await axios.post(PHONE_PE_API, { payload });
+        const resp = await axios.post(PHONE_PE_API, { payload });
+        router.push(resp.data);
       }
     } catch (error) {
       toast({
